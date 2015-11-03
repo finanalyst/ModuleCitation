@@ -22,12 +22,12 @@ TODO: the --date options are not implemented.
 Two ways of creating an archive to process are envisaged. Once the archive is created it can be analysed using
 **CitationProcessed.pl** and **CitationForModule.pl**
 
-1  Working with the 'Archive' subdirectory in this repository, which should be updated regularly. This contains
+1)  Working with the 'Archive' subdirectory in this repository, which should be updated regularly. This contains
 the Citation data run remotely.
 
    The remote archive is created and refreshed with **CitationRetrieve.pl**
 
-2  Working with a local sparse repository, which creates a local 'Archive' subdirectory.
+2)  Working with a local sparse repository, which creates a local 'Archive' subdirectory.
 
    The local archive is created and refreshed with **CitationCreate.pl** and **CitationGather.pl**
 
@@ -56,6 +56,7 @@ are downloaded for each Ecosystem Module.
   use ModuleCitation;
   my $retval = CitationCreate(Str :CitPath('/path/to/directory/for/Citations') );
   # $retval = ['Module Name' 'Module Name' ... ]
+  ```
   
 * **CitationGather.pl** [--CitPath=/path/to/directory/for/Citations] [--force]
   The script expects for a Repository at `--CitPath` (default ~.local/ModuleCitations).
