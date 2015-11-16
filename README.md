@@ -5,17 +5,26 @@ Scripts and modules for generating a citation index for modules in the Perl6 eco
 The Perl6 Ecosystem has a large number of modules and it is interesting to see which are used the most, 
 and it will be interesting to see how this profile changes over time.
 
-Since each module in the Ecosystem contains a `META.info` or `META6.json` file for the module's meta-information,
-this can be searched for the `"depends"` key to see which external module it is dependent on. This is a 
-*citation* of another module (a module may only *cite* another specific module once), which then becomes 
-a *cited* module. By gathering information over the whole
-ecosystem, it is possible to generate a *citation index* for a single "top line" Ecosystem module as the fraction
-of the number of times that module is cited compared to the total number of citations (or cited modules, which
-is the same number because of the one citation constraint). 
+The Ecosystem has a file with meta information about each _top line_ module (other modules in the ecosystem
+are contained in sub-directories of the _top line_ modules.
 
-Modules that do not have a `META.info` or `META6.json` file are considered **non-compliant** and are ignored.
+Each module lists the modules it `"depends"` on. We call this a 
+*citation* of another module, which is then called *cited* module. By gathering information over the whole
+ecosystem, it is possible to generate a *citation index* for each _top line_ Ecosystem module. The citation index is
+defined as the fraction as a percentage 
+of the number of times that module is cited compared to the total number of citations. Since each module is only 
+allowed to *cite* another module once, which means that the number of citations is the number of cited module.
 
-TODO: the --date options are not implemented. 
+A *simple* search collects only citations in the `"depends"` list. A *recursive*^1 search collects citations in modules
+that are *cited* by the modules in the `"depends"` list, and the citations in those modules. 
+
+*TODO:* the --date options are not implemented. 
+
+^1 To prevent a 
+citation loop, eg. Module1 -> module2 -> ... -> Module1, the recursion level is clamped at 50. 
+
+TODO: use a cycle detection algorithm to break a recursive loop. But currently, 50 levels of recursion seems sufficient to gather 
+all citations.
 
 ##Repository
 
