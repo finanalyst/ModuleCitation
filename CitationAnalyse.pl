@@ -185,7 +185,7 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 			%params<ErrorsExist> = Bool::False ;
 		}
 		$template.with_params( %params );
-		"./html/ModuleCitation.html".IO.spurt: $template.output;
+		"index.html".IO.spurt: $template.output;
 	}
 
 
