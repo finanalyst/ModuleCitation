@@ -15,12 +15,12 @@ defined as the fraction as a percentage
 of the number of times that module is cited compared to the total number of citations. Since each module is only 
 allowed to *cite* another module once, which means that the number of citations is the number of cited module.
 
-A *simple* search collects only citations in the `"depends"` list. A *recursive*^1 search collects citations in modules
+A *simple* search collects only citations in the `"depends"` list. A *recursive*<sup>1</sup> search collects citations in modules
 that are *cited* by the modules in the `"depends"` list, and the citations in those modules. 
 
 *TODO:* the --date options are not implemented. 
 
-^1 To prevent a 
+<sup>1</sup> To prevent a 
 citation loop, eg. Module1 -> module2 -> ... -> Module1, the recursion level is clamped at 50. 
 
 TODO: use a cycle detection algorithm to break a recursive loop. But currently, 50 levels of recursion seems sufficient to gather 
