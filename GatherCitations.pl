@@ -24,9 +24,9 @@ for $list.list -> $mod {
 	}
 }
 
-say "\nCitation data gathered. Stored in './archive/CitationData_{%citing<__date>}'. Use CitationAnalyse.pl to process.";
+say "\nCitation data gathered. Stored in './archive/CitationData_{%citing<__date>}.json'. Use CitationAnalyse.pl to process.";
 
-"./archive/CitationData_{%citing<__date>}".IO.spurt: to-json(%citing);
+"./archive/CitationData_{%citing<__date>}.json".IO.spurt: to-json(%citing);
 
 
 sub update ($projectsfile, $store) {
