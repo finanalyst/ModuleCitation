@@ -5,7 +5,7 @@
 
 use ModuleCitation;
 
-multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html = False, Bool :$screen = True, Int :$rowtotal = 50) {
+multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html = False, Bool :$screen = True) {
 
 	use JSON::Fast;
 
@@ -165,7 +165,7 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 		my @citPlaces_s = @citIndicies.sort(*.[1]).reverse.map( *.[0] );
 		my @citPlaces_r = @citIndicies.sort(*.[2]).reverse.map( *.[0] );
 
-		for 0 ..^ $rowtotal -> $n {
+		for 0 ..^ $top -> $n {
 			%params<modules>.push( %( 
 				:s_name(  sprintf("%s",    @citPlaces_s[$n]                ) ), 
 				:s_s_ord( sprintf("% 3d",   %citPlaces{@citPlaces_s[$n]}[0] ) ), 
