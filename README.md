@@ -21,10 +21,6 @@ that are *cited* by the modules in the `"depends"` list, and the citations in th
 <sup>1</sup> To prevent a 
 citation loop, eg. Module1 -> module2 -> ... -> Module1, the recursion level is clamped at 50. 
 
-TODO: use a cycle detection algorithm to break a recursive loop. But currently, 50 levels of recursion seems sufficient to gather 
-all citations.
-TODO: implement date options to show the change in CI for a module(s) using data in the ./archive/ directory.
-
 ##Scripts
 
 * **GatherCitations.pl**
@@ -47,4 +43,10 @@ depending on the inputs.
   No options assumes the defaults: top=50, col=2, textfile=false, screen=true, html=false.
 
   Other parameter(s) or invalid input trigger the useage string.
+
+##TODO 
+* use a cycle detection algorithm to break a recursive loop. Currently, 50 levels of recursion seems sufficient to gather 
+all citations.
+* implement date options to show the change in CI for a module(s) using data in the ./archive/ directory.
+
 
