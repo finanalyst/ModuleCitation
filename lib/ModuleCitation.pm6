@@ -7,7 +7,7 @@ class ModuleCitation {
 #Cited modules that are not in the ecosystem are counted into the citations but are added to an non-ecosystem list
 #
 	has %.citing;
-	has $.date = %!citing<__date>:delete;
+	has DateTime $.date .= new(%!citing<__date>:delete);
 	has @.ecosystem = %!citing.keys.grep({ ! m/^ __ / }).map( { .trim } ).sort;
 	has %.non-ecosystem;
 	has @.parts = <simple recursive>;

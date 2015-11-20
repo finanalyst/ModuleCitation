@@ -2,90 +2,106 @@
 <head>
 	<meta charset="UTF-8" />
 	<title>Perl6Citations</title>
-	<style>
-		h1, h2 {
-			text-align: center;
-		}
-	</style>
+	<link rel="stylesheet" href="min.css" />
+	<link rel="stylesheet" href="second.min.css" />
+	<link href="favicon.ico".
+		rel="shortcut icon"
+		type="image/x-icon">
 </head>
 <body>
-	<H1>Perl6 Ecosystem Module Citation Index</H1>
-	<table>
-		<tr><td>Data Gathered on</td><td><TMPL_VAR DATE></td></tr>
-		<tr><td>Citation Index </td><td>100 * # times cited by any module / # cited modules</td></tr>
-		<tr><td>Number of Topline Modules in Ecosystem </td><td>= <TMPL_VAR N_MOD></td></tr>
-		<tr><td>Number of Modules Cited</td><td>= <TMPL_VAR N_CIT></td></tr>
-		<tr><td>Cited / Number of Ecosystem Modules</td><td>= <TMPL_VAR PC_CIT></tr></td>
-	</table>
-	<P>
-	<table>
-		<thead>
-			<tr>
-				<th></th>
-				<th colspan="4">In simple order</th>
-				<th></th>
-				<th colspan="4">In recursive order</th>
-			</tr>
-				<th></th>
-				<th colspan="2">Simple</th>
-				<th colspan="2">Recursive</th>
-				<th></th>
-				<th colspan="2">Simple</th>
-				<th colspan="2">Recursive</th>
-			</tr>
-			<tr>
-				<th>Module Name</th>
-				<th>Order</th>
-				<th>Index</td>
-				<th>Order</th>
-				<th>Index</td>
-				<th>Module Name</th>
-				<th>Order</th>
-				<th>Index</th>
-				<th>Order</th>
-				<th>Index</th>
-			</tr>
-		</thead>
-		<tbody>
-			<TMPL_LOOP modules>
-			<tr>
-				<td><TMPL_VAR s_name></td>
-				<td><TMPL_VAR s_s_ord></td>
-				<td><TMPL_VAR s_s_sim></td>
-				<td><TMPL_VAR s_r_ord></td>
-				<td><TMPL_VAR s_r_rec></td>
-				<td><TMPL_VAR r_name></td>
-				<td><TMPL_VAR r_s_ord></td>
-				<td><TMPL_VAR r_s_sim></td>
-				<td><TMPL_VAR r_r_ord></td>
-				<td><TMPL_VAR r_r_rec></td>
-			</tr>
-			</TMPL_LOOP>
-		</tbody>
-	</table>
-	<H2>Methodology</H2>
-	<P>Data is gathered on given date from Ecosystem projects file (used by panda). A module simply <I>cites</I> another
-	if it lists it in the <B>"depends"</B> list. A module recursively <I>cites</I> another if a cited 
-	module in turn cites another module.</P>
-	<TMPL_IF ErrorsExist>
-	<H2>Errors</H2>
-	<P>The <B>depends</B> list of a <I>topline</I> ecosystem module sometimes contains a module name that is
-	not itself a topline ecosystem module, but may be in a sub-directory of another module that is normally included.
-	It is possible that such a reference could
-	cause an installation failure if the module cannot be directly found. 
-	<P>Test module is explicitly excluded from this list.
-	<P>These cited non-topline modules are:
-	
-	<table>
-		<thead>
-			<tr><th>Module Name</th><th>Cited by</th></tr>
-		</thead>
-		<tbody>
-			<TMPL_LOOP ErrorLoop>
-			<tr><td><TMPL_VAR ModName></td><td><TMPL_VAR CitedBy></td></tr>
-			</TMPL_LOOP>
-		</tbody>
-	</table>
-	</TMPL_IF>
+	<div class="container">
+		<header class="panel panel-primary lead">
+			<div class="panel-heading">
+				<h1 class="panel-title">Ecosystem Citation Index</h1>
+			</div>
+			<div class="panel-body suckin-btm">
+				<img class="pull-right" alt="»ö«" id="logo" src="camelia-logo.png">
+				<p>Citation indices are tabulated based on the <TMPL_VAR N_MOD> Perl6 modules in the ecosystem.
+				The data was collected on <TMPL_VAR DATE></p>
+				<p>A total of <TMPL_VAR N_CIT> <i>Topline</i> <a href="http://modules.perl6.org">Modules in the Ecosystem</a>
+					 were cited, or <TMPL_VAR PC_CIT> of the Ecosystem Modules</p>
+				<p>The Citation Index id defined as <code>100 * # times cited by any module / # cited modules</code></p>
+				<P>Data is gathered on given date from Ecosystem projects file (used by panda). 
+					A module simply <I>cites</I> another
+					if it lists it in the <B>"depends"</B> list. A module recursively <I>cites</I> another if a cited 
+					module in turn cites another module.</P>
+			</div>
+		</header>
+		<div class="panel panel-default">
+			<div class="table-responsive">
+			  <table class="table table-condensed table-striped panel-body" id="dists">	
+			    <thead>
+			      <tr>
+			        <th></th>
+			        <th colspan="4" style="text-align: center">Sorted in simple order</th>
+			        <th></th>
+			        <th colspan="4" style="text-align: center">Sorted in recursive order</th>
+			      </tr>
+			        <th></th>
+			        <th colspan="2" style="text-align: center">Simple</th>
+			        <th colspan="2" style="text-align: center">Recursive</th>
+			        <th></th>
+			        <th colspan="2" style="text-align: center">Simple</th>
+			        <th colspan="2" style="text-align: center">Recursive</th>
+			      </tr>
+			      <tr>
+			        <th>Module Name</th>
+			        <th>Order</th>
+			        <th>Index</td>
+			        <th>Order</th>
+			        <th>Index</td>
+			        <th>Module Name</th>
+			        <th>Order</th>
+			        <th>Index</th>
+			        <th>Order</th>
+			        <th>Index</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <TMPL_LOOP modules>
+			      <tr>
+			        <td class="name"><TMPL_VAR s_name></td>
+			        <td><TMPL_VAR s_s_ord></td>
+			        <td><TMPL_VAR s_s_sim></td>
+			        <td><TMPL_VAR s_r_ord></td>
+			        <td><TMPL_VAR s_r_rec></td>
+			        <td><TMPL_VAR r_name></td>
+			        <td><TMPL_VAR r_s_ord></td>
+			        <td><TMPL_VAR r_s_sim></td>
+			        <td><TMPL_VAR r_r_ord></td>
+			        <td><TMPL_VAR r_r_rec></td>
+			      </tr>
+			      </TMPL_LOOP>
+			    </tbody>
+			  </table>
+			</div>
+		</div>
+		<TMPL_IF ErrorsExist>
+		<footer class="panel panel-primary">
+			<div class="panel-heading">
+				<h1 class="panel-title">Errors</h1>
+			</div>
+			<div class="panel-body suckin-btm">
+				<P>The <B>depends</B> list of a <I>topline</I> ecosystem module sometimes contains a module name that is
+				not itself a topline ecosystem module, but may be in a sub-directory of another module 
+				that is normally included.
+				It is possible that such a reference could
+				cause an installation failure if the module cannot be directly found. </p>
+				<P>Test module is explicitly excluded from this list.</p>
+				<P>These cited non-topline modules are:</p>
+				<table class="table table-condensed table-striped panel-body">
+					<thead>
+						<tr><th>Module Name</th><th>Cited by</th></tr>
+					</thead>
+					<tbody>
+						<TMPL_LOOP ErrorLoop>
+						<tr><td><TMPL_VAR ModName></td><td><TMPL_VAR CitedBy></td></tr>
+						</TMPL_LOOP>
+					</tbody>
+				</table>
+			</div>
+		</footer>
+		</TMPL_IF>
+	</div>
 </body>
 </html>

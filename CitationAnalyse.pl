@@ -5,7 +5,7 @@
 
 use ModuleCitation;
 
-multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html = False, Bool :$screen = True ) {
+multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html = False, Bool :$screen = True, Int :$rowtotal = 50) {
 
 	use JSON::Fast;
 
@@ -153,9 +153,8 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 		say "\nProcessing HTML files\n";
 
 		use HTML::Template;
-		my $rowtotal = 50;
 		my $template = HTML::Template.from_file( 'CitationTemplate.tmpl' );
-		my %params = N_MOD => $all-modules, N_CIT => $total-cited, PC_CIT => sprintf("%6.2f%%",100 * $total-cited / $all-modules), DATE => $mc.date;
+		my %params = N_MOD => $all-modules, N_CIT => $total-cited, PC_CIT => sprintf("%6.2f%%",100 * $total-cited / $all-modules), DATE => $mc.date.Date.Str;
 
 		
 		my @errors;
