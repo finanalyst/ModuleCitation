@@ -11,9 +11,9 @@ are contained in sub-directories of the _top line_ modules.
 Each module lists the modules it `"depends"` on. We call this a 
 *citation* of another module, which is then called *cited* module. By gathering information over the whole
 ecosystem, it is possible to generate a *citation index* for each _top line_ Ecosystem module. The citation index is
-defined as the fraction as a percentage 
-of the number of times that module is cited compared to the total number of citations. Since each module is only 
-allowed to *cite* another module once, which means that the number of citations is the number of cited module.
+defined as the percentage fraction 
+of the number of times that module is cited compared to the total number of citations. Each module is only 
+allowed to *cite* another module once.
 
 A *simple* search collects only citations in the `"depends"` list. A *recursive*<sup>1</sup> search collects citations in modules
 that are *cited* by the modules in the `"depends"` list, and the citations in those modules. 
@@ -37,12 +37,12 @@ TODO: implement date options to show the change in CI for a module(s) using data
   The script finds the latest CitationData file in archive, calculates the simple and recursive indices, then outputs the results
 depending on the inputs.
 
-  **textfile**=True puts the **top** results into three columns and creates a local text file.
+  **textfile**=True puts the **top** results into **col** columns and creates a local text file.
 
   **screen**=True puts the results onto the screen
 
-  **html**=True uses CitationTemplate.tmpl (HTML::Template) to create the local file `index.html`. This is the file used for the
-	github gh-pages build.
+  **html**=True outputs results for **top** modules uses CitationTemplate.tmpl (HTML::Template) to create the local 
+	file `index.html`. This is the file used for the github gh-pages build.
 
   No options assumes the defaults: top=50, col=2, textfile=false, screen=true, html=false.
 
