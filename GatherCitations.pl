@@ -5,6 +5,7 @@ use JSON::Fast;
 my $projectsfile = 'projects.txt';
 my %citing;
 %citing<__date> = DateTime.new(now).Str;
+say "Downloading projects file";
 
 update $projectsfile, "./archive/projects_{ %citing<__date> }.txt";
 
