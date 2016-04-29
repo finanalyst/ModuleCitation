@@ -7,21 +7,51 @@ use ModuleCitation;
 
 multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html = False, Bool :$screen = True) {
 
+	use JSON::Fast;
+
 	my @Citationfiles = dir( './archive', test=> / ^ CitationData / ).sort;
 
-	my $mc = ModuleCitation.new( :in-string( @Citationfiles[*-1].IO.slurp ) );
+	my $mc = ModuleCitation.new( :citing( from-json @Citationfiles[*-1].IO.slurp ) );
+	my %cited;
+
+	for $mc.ecosystem -> $citer {
+		next unless $mc.citing{$citer}.keys;
 	
+		for <simple recursive> -> $part {
+			for $mc.citations-from( $citer, :mode( $part ) ).flat -> $cited { 
+				%cited{$part}{ $cited }{ $citer } = 1 ; 
+				# instead of a SetHash. If the element exists, it will be replaced
+			}
+		}
+	}
+	
+	my %citNumbers;
 	my %citPlaces;
 	my @citIndicies;
+	my $total-cited;
 	my $row = $top % $col;
 	$row++ while $row * $col < $top;
 
-	my $max-name = $mc.ecosystem.grep({ $mc.citations{$_}<simple> > 0 })>>.chars.max; # longest name in both sections of ecosytem
+	my $all-modules = +$mc.ecosystem;
+	my $max-name = %cited.keys.map( { slip( %cited{$_}.keys ) } )>>.chars.max; # longest name in both sections of cited
+
+	for %cited.kv -> $part, %cited-part { 
+		%citNumbers{ $part } = hash( gather for %cited-part.sort>>.kv -> ($mod, $list) {
+				take $mod => +$list.keys;
+			} )
+	}
+
+	$total-cited = +(%citNumbers<simple>.keys);
+	# simple and recursive totals should be the same
 
 	for $mc.ecosystem -> $mod {
 		@citIndicies.push: [ $mod, 
 			|( gather for $mc.parts { 
-				take 100 * $mc.citations{$mod}{ $_ } / $mc.tot-cited ;
+				take 100 * ( 
+					%citNumbers{ $_ }{ $mod }:exists ?? 
+						%citNumbers{ $_ }{ $mod } / $total-cited 
+						!! 0
+				)	
 			} )
 		]
 	}
@@ -35,10 +65,10 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 
 	if $screen {
 		say "Date gathered               = { $mc.date }";
-		say "Ecosystem compliant modules = { $mc.tot-modules }";
-		printf "Modules cited               =%4d\n", $mc.tot-cited;
+		say "Ecosystem compliant modules = $all-modules";
+		printf "Modules cited               =%4d\n", $total-cited;
 		printf "Cited / Compliant modules   =%6.2f%%\n", 
-			100 * $mc.tot-cited / $mc.tot-modules ;
+			100 * $total-cited / $all-modules ;
 	
 
 		for  $mc.parts.kv -> $npart, $part {
@@ -68,8 +98,8 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 		if $mc.non-ecosystem.keys.elems {
 			temp $max-name = $mc.non-ecosystem.keys>>.chars.max;
 			say "\nModules are cited that are not in a top-line module in the ecosystem. They are:";
-			for $mc.non-ecosystem.keys -> $mod {
-				printf("%-{$max-name}s is cited by %s\n", $mod, $mc.is-cited-by($mod) );
+			for $mc.non-ecosystem.keys -> $cited {
+				printf("%-{$max-name}s is cited by %s\n", $cited, %cited<simple>{$cited}.keys.join( ', ' ) );
 			}
 			say "Reason: module may be in a \"depends\" list, but actually in a sub-directory of another top-line module";
 		}
@@ -80,10 +110,10 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 	
 		my $fh = open "Citation_{$mc.date}.dat", :w;
 		$fh.say("Date gathered               = { $mc.date }");
-	        $fh.say("Ecosystem compliant modules = { $mc.tot-modules }");
-		$fh.print(sprintf("Modules cited               =%4d\n", $mc.tot-cited));
+	        $fh.say("Ecosystem compliant modules = $all-modules");
+		$fh.print(sprintf("Modules cited               =%4d\n", $total-cited));
 		$fh.print(sprintf("Cited / Compliant modules   =%6.2f%%\n", 
-			100 * $mc.tot-cited / $mc.tot-modules ));
+			100 * $total-cited / $all-modules ));
 	
 		for $mc.parts.kv -> $npart, $part {
 			$fh.say( "\nCitation Index of Top $top modules, sorted in $part order" );
@@ -112,8 +142,8 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 		$fh.say("\nNote: Citation index = <# times cited by any module> / <# cited modules> x 100");
 		if $mc.non-ecosystem.keys.elems {
 			$fh.say( "\nModules are cited that are not top-line modules in the ecosystem. They are:");
-			for $mc.non-ecosystem.keys -> $mod {
-				$fh.print(sprintf("%-{$max-name}s is cited by %s\n", $mod, $mc.is-cited-by($mod)));
+			for $mc.non-ecosystem.keys -> $cited {
+				$fh.print(sprintf("%-{$max-name}s is cited by %s\n", $cited, %cited<simple>{$cited}.keys.join( ', ' ) ));
 			}
 			$fh.say("Reason: module may be in a \"depends\" list, but actually in a sub-directory of another top-line module");
 		}
@@ -125,9 +155,9 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 
 		use HTML::Template;
 		my $template = HTML::Template.from_file( 'CitationTemplate.tmpl' );
-		my %params = N_MOD => $mc.tot-modules, 
-			N_CIT => $mc.tot-cited, 
-			PC_CIT => sprintf("%6.2f%%",100 * $mc.tot-cited / $mc.tot-modules), 
+		my %params = N_MOD => $all-modules, 
+			N_CIT => $total-cited, 
+			PC_CIT => sprintf("%6.2f%%",100 * $total-cited / $all-modules), 
 			DATE => $mc.date.Date.Str,
 			N_ROWS => $top;
 
@@ -153,7 +183,7 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 		if +$mc.non-ecosystem.keys > 0 {
 			%params<ErrorsExist> = Bool::True;
 			for $mc.non-ecosystem.keys -> $mod {
-				%params<ErrorLoop>.push: %( :ModName( $mod ), :CitedBy( $mc.is-cited-by($mod) ) );
+				%params<ErrorLoop>.push: %( :ModName( $mod ), :CitedBy( %cited<simple>{$mod}.keys.join(', ') ) );
 			}
 		} else {
 			%params<ErrorsExist> = Bool::False ;
@@ -161,6 +191,9 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 		$template.with_params( %params );
 		"index.html".IO.spurt: $template.output;
 	}
+
+
+		
 };
 
 

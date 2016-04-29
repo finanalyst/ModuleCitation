@@ -5,44 +5,78 @@ class ModuleCitation {
 #The citation placing of a module is the position of the module when the citation indices are listed in descending order
 #
 #Cited modules that are not in the ecosystem are counted into the citations but are added to an non-ecosystem list
-#
+
+       	use JSON::Fast;
+
+	has Int $.limit is rw;
 	has %.citing;
-	has DateTime $.date .= new(%!citing<__date>:delete);
-	has @.ecosystem = %!citing.keys.grep({ ! m/^ __ / }).map( { .trim } ).sort;
+	has %.citations;
+	has DateTime $.date;
+	has @.ecosystem;
 	has %.non-ecosystem;
-	has @.parts = <simple recursive>;
-	has $.limit is rw = 50;
+	has %.cited;
+	has @.parts;
+	has $.tot-modules;
+	has $.tot-cited;
 	# a simple minded avoidance of recursion abyss. Should check for citing loops.
 	# eg. mod1 'requires' mod2 'requires' .... 'requires' mod1.
+	# also no need to check that multiple calls to the same module in a recursive call as this dealt with later.
+	# we just want a simple flat list of module names
 
-	method citations-from ( Str $citer, Int :$lev = 0, Bool :$recursive = False ) {
-		unless %.citing{$citer}:exists or $citer eq 'Test' { # recursively a cited module may be a citer.
+	method citations-from ( Str $citer, Str :$mode = 'simple', Int :$lev is copy = $.limit ) {
+                return Empty if $citer ~~ m/^ Test $/; # This is a core module and not counted
+		unless %.citing{$citer}:exists { # recursively a cited module may be a citer.
 			%.non-ecosystem{$citer} = 'Error';
-			%.citing{$citer} = []; # fake entry
+			%.citing{$citer} = (); # fake entry with zero keys in case this happens again, or for recursive calls
 		}
-		my @keys = %.citing{$citer}.keys;
-		return () unless +@keys;
+		my @cited-candidates = grep { !m/^ Test $/ }, %.citing{$citer}.keys;
 
 		#handle simple citations, which is the default
-		for @keys -> $cited {
-			unless %.citing{$cited}:exists or $cited eq 'Test' {
-				%.non-ecosystem{$cited} = 'Error';
-				%.citing{$cited} = []; # fake entry
-			}
+		return |@cited-candidates unless $mode ~~ / recursive /;
+		# check for recursive abyss Looping shouldn't occur. 150 levels of modules unlikely.
+		if --$lev < 1 {
+			note "Recursion limit of { $!limit } passed. TODO: Better loop algorithm than checking for limit.";
+			return @cited-candidates; # soft fail
 		}
-		return @keys unless $recursive;
-		# deal with recursive citations	
-		if $lev >= $.limit {
-			die "Recursion limit of { $.limit } passed. TODO: Better loop algorithm than checking for limit.";
-		}
-		# prevent recursive abyss. Looping shouldn't occur. 50 levels of modules unlikely.
-		return | gather for @keys -> $target { 
-			my @tmp = $.citations-from( $target, :lev($lev + 1) , :recursive(True) ).flat ;
+		# we need to check whether 
+		return gather for @cited-candidates -> $target { 
+			my @tmp = $.citations-from( $target, :lev($lev) , :mode<recursive> ).flat ;
 			take @tmp.elems ?? ( $target , @tmp.list, ) !! $target ;
 		}
 	}
+	method make-cited-matrix {
+            for @!ecosystem -> $citer {
+                next unless %!citing{$citer}.keys;
+                for @!parts -> $part {
+                    for self.citations-from( $citer, :mode( $part ) ).flat -> $cited { 
+                    next unless $cited;
+                        %!cited{ $cited }{ $part }{ $citer } = 1
+                    }
+                }
+            }
+        }
+        method get-citations {
+            for @!ecosystem -> $mod {
+                %!citations{$mod} = hash( @!parts X=> 0 );
+                for @!parts -> $part {
+                    %!citations{$mod}{$part} = +%!cited{$mod}{$part}.keys;
+                }
+            }
+        }
+        method is-cited-by ( Str $mod ) { # currently only needed for simple
+            join ',', %!cited{$mod}<simple>.keys;
+        }
+            
 
-	submethod BUILD (:%!citing) {};
+	submethod BUILD (:$in-string, :@!ecosystem, :%!cited) {
+            @!parts = <simple recursive>;
+            $!limit = 150;
+            %!citing = from-json($in-string);
+            @!ecosystem  = %!citing.keys.grep({ ! m/^ __ | ^ Test $ /  }).map( { .trim } ).sort;
+            $!tot-modules = +@!ecosystem;
+            $!date .= new(%!citing<__date>:delete);
+            self.make-cited-matrix;
+            self.get-citations;
+            $!tot-cited = +grep { %!citations{$_}<simple> > 0 }, %!citations.keys;
+        }
 }
-
-

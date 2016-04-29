@@ -19,7 +19,7 @@ A *simple* search collects only citations in the `"depends"` list. A *recursive*
 that are *cited* by the modules in the `"depends"` list, and the citations in those modules. 
 
 <sup>1</sup> To prevent a 
-citation loop, eg. Module1 -> module2 -> ... -> Module1, the recursion level is clamped at 50. 
+citation loop, eg. Module1 -> module2 -> ... -> Module1, the recursion level is clamped at 150. 
 
 ##Scripts
 
