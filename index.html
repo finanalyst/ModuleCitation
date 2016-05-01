@@ -31,8 +31,8 @@
 				<P>The citation indices of the top 50 <i>topline</i> modules are given later.</P>
 			</div>
 		</header>
-		<div class="panel panel-default" id="recursive"></div>
-		<div class="panel panel-default" id="simple"></div>
+		<div id="recursive"></div>
+		<div id="simple"></div>
 		<div class="panel panel-default">
 			<div class="table-responsive">
 			  <table class="table table-condensed table-striped panel-body" id="dists">	
@@ -789,7 +789,7 @@
 		</footer>
 		
 		<footer class="panel panel-primary">
-                    <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dygraphs</A>. </P>
+                    <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dynagraphs</A>. </P>
                 </footer>
 	</div>
 	<script type="text/javascript">
@@ -803,6 +803,8 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
+                
+                series: { "Total_Cited": { axis: 'y2' }, "Total_Modules": { axis: 'y2' }},
 
                 highlightSeriesOpts: {
                 strokeWidth: 3,
