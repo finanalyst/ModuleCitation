@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Perl6Citations - Debug</title>
+	<link rel="stylesheet" href="min.css" />
+	<link rel="stylesheet" href="second.min.css" />
+	<link href="favicon.ico".
+		rel="shortcut icon"
+		type="image/x-icon">
+        <script type="text/javascript"
+            src="dygraph-combined.js"></script>
+</head>
+<body>
+		<div class="panel panel-default" id="recursive"></div>
+		<div class="panel panel-default" id="simple"></div>
+
+		<footer class="panel panel-primary">
+                    <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dygraphs</A>. </P>
+                </footer>
+	<script type="text/javascript">
+	g = new Dygraph(
+            document.getElementsById("recursive"),
+            "GraphData_recursive.csv",
+            {   width: 480,
+                height: 320,
+                stackedGraph: 0,
+
+                highlightCircleSize: 2,
+                strokeWidth: 1,
+                strokeBorderWidth: 1,
+
+                highlightSeriesOpts: {
+                strokeWidth: 3,
+                strokeBorderWidth: 1,
+                highlightCircleSize: 5
+            }}
+            );
+        </script>
+</body>
+</html>
