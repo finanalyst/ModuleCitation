@@ -8,7 +8,12 @@
 		rel="shortcut icon"
 		type="image/x-icon">
         <script type="text/javascript"
-            src="dygraph-combined.js"></script>
+            src="dygraph-combined.js">
+        </script>
+        <style> 
+            .dygraph-legend > span { display: none; }
+            .dygraph-legend > span.highlight { display: inline; }
+        </style>
 </head>
 <body>
 	<div class="container">
@@ -31,20 +36,21 @@
 				<P>The citation indices of the top 50 <i>topline</i> modules are given later.</P>
 			</div>
 		</header>
-		<table><tr>
-		<td><div id="recursive"></div></td>
-		<td><div id="simple"></div></td>
+		<table class="table table-condensed panel-body"><tr>
+		<td><div class="panel panel-default" id="recursive"></div></td>
+		<td><div class="panel panel-default" id="simple"></div></td>
 		</tr></table>
 		<div class="panel panel-default">
 			<div class="table-responsive">
 			  <table class="table table-condensed table-striped panel-body" id="dists">	
 			    <thead>
-<!-- 			      <tr> -->
+			      <tr>
 			        <th></th>
 			        <th colspan="4" style="text-align: center">Sorted in simple order</th>
 			        <th></th>
 			        <th colspan="4" style="text-align: center">Sorted in recursive order</th>
 			      </tr>
+			      <tr>
 			        <th></th>
 			        <th colspan="2" style="text-align: center">Simple</th>
 			        <th colspan="2" style="text-align: center">Recursive</th>
@@ -807,8 +813,8 @@
                 strokeBorderWidth: 1,
                 
                 series: { 
-                    'Total_Cited': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }, 
-                    'Total_Modules': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }
+                    'ModulesCited': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 3.5 }, 
+                    'AllModules': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 3.5 }
                 },
                 axes: { 
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
