@@ -10,7 +10,7 @@
         <script type="text/javascript"
             src="dygraph-combined.js">
         <script type="text/javascript"
-            src="synchroniser.js">
+            src="synchronizer.js">
         </script>
         <style> 
             .dygraph-legend > span { display: none; }
@@ -38,13 +38,21 @@
 				<P>The citation indices of the top 50 <i>topline</i> modules are given later.</P>
 			</div>
 		</header>
-		<table class="table table-condensed panel-body"><tr>
-		<th><td>Simply Cited</td><td>Recursively Cited</td></th>
-		<td><div class="panel panel-default" id="simple"></div></td>
-		<td><div class="panel panel-default" id="recursive"></div></td>
-		<th><td span="2">All Module Numbers</td></th>
-		<tr><td><div class="panel panel-default" id="allmods"></div></td>
-		</tr></table>
+		<table class="table table-condensed panel-body">
+                    <tr>
+                        <th>Simply Cited</th><th>Recursively Cited</th>
+                    </tr>
+                    <tr>
+                        <td><div class="panel panel-default" id="simple"></div></td>
+                        <td><div class="panel panel-default" id="recursive"></div></td>
+                    </tr>
+                    <tr>
+                        <th span="2">All Module Numbers</th>
+                    </tr>
+                    <tr>
+                        <td span="2"><div class="panel panel-default" id="allmods"></div></td>
+                    </tr>
+		</table>
 		<div class="panel panel-default">
 			<div class="table-responsive">
 			  <table class="table table-condensed table-striped panel-body" id="dists">	
