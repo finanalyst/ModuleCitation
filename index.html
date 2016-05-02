@@ -38,17 +38,17 @@
 		</header>
 		<table class="table table-condensed" id="graphs">
                     <tr>
-                        <th align="center">Simply Cited</th><th align="center">Recursively Cited</th>
+                        <th style="text-align:center">Simply Cited</th><th style="text-align:center">Recursively Cited</th>
                     </tr>
                     <tr>
                         <td><div class="panel panel-default" id="simple"></div></td>
                         <td><div class="panel panel-default" id="recursive"></div></td>
                     </tr>
                     <tr>
-                        <th colspan="2" align="center">All Module Numbers</th>
+                        <th colspan="2" style="text-align:center">All Module Numbers</th>
                     </tr>
                     <tr>
-                        <td colspan="2"><div class="panel panel-default" id="allmods"></div></td>
+                        <td colspan="2"><div class="panel panel-default" id="allmods" style="margin: auto"></div></td>
                     </tr>
 		</table>
 		<div class="panel panel-default"  id="tabulation">
@@ -830,7 +830,7 @@
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
                 axes: { 
-                    y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
+                    y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y) { return y.toFixed(0) + '%' } },
                 },
 
                 highlightSeriesOpts: {
@@ -850,7 +850,7 @@
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
                 axes: { 
-                    y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
+                    y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y) { return y.toFixed(0) + '%' } },
                 },
 
                 highlightSeriesOpts: {
@@ -871,7 +871,7 @@
                 strokeBorderWidth: 1,
                 
                 axes: { 
-                    y: {valueFormatter: function(y) { return y.toFixed(0) }, axisLabelFormatter: function(y) { return y2.toFixed(0) }}
+                    y: {valueFormatter: function(y) { return y.toFixed(0) }, axisLabelFormatter: function(y) { return y.toFixed(0) }}
                 },
 
                 highlightSeriesOpts: {
@@ -880,7 +880,7 @@
                 highlightCircleSize: 5
             }}
             );
-        var sync = Dygraph.synchronize( g,h,i );
+        var sync = synchronize( g,h,i );
         </script>
 </body>
 </html>
