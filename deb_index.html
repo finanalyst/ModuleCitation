@@ -38,7 +38,10 @@
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
                 
-                series: { 'Total_Cited': { axis: 'y2' }, 'Total_Modules': { axis: 'y2' }},
+                series: { 
+                    'Total_Cited': { axis: 'y2', drawPoints: true }, 
+                    'Total_Modules': { axis: 'y2', drawPoints: true }
+                },
                 axes: { 
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
                     y2: {valueFormatter: function(y2) { return y2.toFixed(0) }, axisLabelFormatter: function(y2) { return y2.toFixed(0) }}
