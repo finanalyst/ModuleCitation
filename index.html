@@ -25,20 +25,18 @@
 			</div>
 			<div class="panel-body suckin-btm">
 				<img class="pull-right" alt="»ö«" id="logo" src="camelia-logo.png">
-				<p>A citation index is calculated for all the 625 modules in the 
-				<a href="http://modules.perl6.org">Perl6 Ecosystem</a> on 2016-05-01.</p>
-				<p>A total of 188 <i>Topline</i> Modules in the Ecosystem</a>
-					 were cited, or  30.08% of the Ecosystem Modules.</p>
-				<p>The Citation Index is defined as <code>100 * # times cited by any module / # cited modules</code></p>
-				<P>Data is gathered from Ecosystem projects file (used by panda). 
-					A module <I>simply cites</I> another
+				<p>A citation index is calculated for each module in the 
+				<a href="http://modules.perl6.org">Perl6 Ecosystem</a>, numbering 625 as of 2016-05-01.</p>
+				<p>188 <i>Topline</i> modules were cited, or  30.08% of the total.</p>
+				
+				<P>A module <I>simply cites</I> another
 					if it lists it in the <B>"depends"</B> list. A module <I>recursively cites</I> another if a cited 
 					module in turn cites another module.</P>
-                                <P>The simple and recursive data are graphed for the top TMPL_VAR GR_NUM modules over the last TMPL_VAR N_DATES.<P>
-				<P>The citation indices of the top 50 <i>topline</i> modules are given later.</P>
+                                <P>This page contains the data for the top 50 modules in <a hre="#graphs">graphical form</a> from the time data was collected to the present, 
+				<a href="#tabulation">tabulated</a> for the top 50 modules</P>. During processing, <a href="#errors">unexpectated situations</a> are listed, and then the <a href="#definitions">definitions and credits</a> are provided.<p>
 			</div>
 		</header>
-		<table class="table table-condensed">
+		<table class="table table-condensed" id="graphs">
                     <tr>
                         <th align="center">Simply Cited</th><th align="center">Recursively Cited</th>
                     </tr>
@@ -53,7 +51,7 @@
                         <td colspan="2"><div class="panel panel-default" id="allmods"></div></td>
                     </tr>
 		</table>
-		<div class="panel panel-default">
+		<div class="panel panel-default"  id="tabulation">
 			<div class="table-responsive">
 			  <table class="table table-condensed table-striped panel-body" id="dists">	
 			    <thead>
@@ -741,11 +739,11 @@
 			</div>
 		</div>
 		
-		<footer class="panel panel-primary">
+		<footer class="panel panel-primary" id="errorsprocessing">
 			<div class="panel-heading">
 				<h1 class="panel-title">Errors</h1>
 			</div>
-			<div class="panel-body suckin-btm">
+			<div class="panel-body panel-primary">
 				<P>The <B>depends</B> list of a <I>topline</I> ecosystem module sometimes contains a module name that is
 				not itself a topline ecosystem module, but may be in a sub-directory of another module 
 				that is normally included.
@@ -809,8 +807,14 @@
 			</div>
 		</footer>
 		
-		<footer class="panel panel-primary">
+		<footer class="panel suckin-btm">
+                        <div class="panel-heading">
+				<h1 class="panel-title" id="definitions">Definitions and Credits</h1>
+			</div>
+                    <p>The Citation Index is defined as <code>100 * # times cited by any module / # cited modules</code></p>
                     <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dynagraphs</A>. </P>
+                    <P>Data is gathered from Ecosystem projects file (used by panda). </p>
+                    <p>Analysis is the author's, no grant has been made, no aim is intended other than interest. Hopefully, no one is offended. </p>
                 </footer>
 	</div>
 	<script type="text/javascript">
@@ -824,14 +828,8 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
-                
-                series: { 
-                    'ModulesCited': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 3.5 }, 
-                    'AllModules': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 3.5 }
-                },
                 axes: { 
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
-                    y2: {valueFormatter: function(y2) { return y2.toFixed(0) }, axisLabelFormatter: function(y2) { return y2.toFixed(0) }}
                 },
 
                 highlightSeriesOpts: {
@@ -839,8 +837,8 @@
                 strokeBorderWidth: 1,
                 highlightCircleSize: 5
             }}
-            );
-        var h = new Dygraph(
+            ),
+           h = new Dygraph(
             document.getElementById("simple"),
             "GraphFile_simple.csv",
             {   width: 480,
@@ -850,14 +848,29 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
-                
-                series: { 
-                    'ModulesCited': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }, 
-                    'AllModules': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }
-                },
                 axes: { 
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
-                    y2: {valueFormatter: function(y2) { return y2.toFixed(0) }, axisLabelFormatter: function(y2) { return y2.toFixed(0) }}
+                },
+
+                highlightSeriesOpts: {
+                strokeWidth: 3,<p>The Citation Index is defined as <code>100 * # times cited by any module / # cited modules</code></p>
+                strokeBorderWidth: 1,
+                highlightCircleSize: 5
+            }}
+            ),
+           i = new Dygraph(
+            document.getElementById("allmods"),
+            "GraphFile_AllModules.csv",
+            {   width: 480,
+                height: 320,
+                stackedGraph: 0,
+
+                highlightCircleSize: 2,
+                strokeWidth: 1,
+                strokeBorderWidth: 1,
+                
+                axes: { 
+                    y: {valueFormatter: function(y) { return y.toFixed(0) }, axisLabelFormatter: function(y) { return y2.toFixed(0) }}
                 },
 
                 highlightSeriesOpts: {
@@ -866,7 +879,7 @@
                 highlightCircleSize: 5
             }}
             );
-        sync = Dygraph.synchronize( g,h, { selection: true, zoom: false } );
+        var sync = Dygraph.synchronize( g,h,i );
         </script>
 </body>
 </html>
