@@ -39,8 +39,34 @@
                 strokeBorderWidth: 1,
                 
                 series: { 
-                    'Total_Cited': { axis: 'y2', strokeWidth: 3 }, 
-                    'Total_Modules': { axis: 'y2', strokeWidth: 3 }
+                    'Total_Cited': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }, 
+                    'Total_Modules': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }
+                },
+                axes: { 
+                    y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
+                    y2: {valueFormatter: function(y2) { return y2.toFixed(0) }, axisLabelFormatter: function(y2) { return y2.toFixed(0) }}
+                },
+
+                highlightSeriesOpts: {
+                strokeWidth: 3,
+                strokeBorderWidth: 1,
+                highlightCircleSize: 5
+            }}
+            );
+            h = new Dygraph(
+            document.getElementById("simple"),
+            "GraphFile_simple.csv",
+            {   width: 480,
+                height: 320,
+                stackedGraph: 0,
+
+                highlightCircleSize: 2,
+                strokeWidth: 1,
+                strokeBorderWidth: 1,
+                
+                series: { 
+                    'Total_Cited': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }, 
+                    'Total_Modules': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }
                 },
                 axes: { 
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
