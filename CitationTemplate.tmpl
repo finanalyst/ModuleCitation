@@ -11,7 +11,7 @@
             src="dygraph-combined.js">
         </script>
         <script type="text/javascript"
-            src="extras/synchronizer.js">
+            src="synchronizer.js">
         </script>
         <style> 
             .dygraph-legend > span { display: none; }
@@ -202,7 +202,7 @@
                 highlightCircleSize: 5
             }}
             );
-        var sync = Dygraph.synchronize( g,h,i ,{zoom: true, selection: true});
+        var sync = Dygraph.synchronize( g,h,i ,{zoom: true, selection: true, bounds:true });
         </script>
 </body>
 </html>
