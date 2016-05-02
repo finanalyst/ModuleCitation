@@ -10,7 +10,7 @@
         <script type="text/javascript"
             src="dygraph-combined.js">
         <script type="text/javascript"
-            src="extra/synchronizer.js">
+            src="extras/synchronizer.js">
         </script>
         <style> 
             .dygraph-legend > span { display: none; }
@@ -880,7 +880,7 @@
                 highlightCircleSize: 5
             }}
             );
-        var sync = synchronize( g,h,i );
+        var sync = Dygraph.synchronize( g,h,i );
         </script>
 </body>
 </html>
