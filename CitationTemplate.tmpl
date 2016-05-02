@@ -7,6 +7,15 @@
 	<link href="favicon.ico".
 		rel="shortcut icon"
 		type="image/x-icon">
+        <script type="text/javascript"
+            src="dygraph-combined.js">
+        <script type="text/javascript"
+            src="extra/synchronizer.js">
+        </script>
+        <style> 
+            .dygraph-legend > span { display: none; }
+            .dygraph-legend > span.highlight { display: inline; }
+        </style>
 </head>
 <body>
 	<div class="container">
@@ -16,7 +25,7 @@
 			</div>
 			<div class="panel-body suckin-btm">
 				<img class="pull-right" alt="»ö«" id="logo" src="camelia-logo.png">
-				<p>Citation indices are tabulated based on the <TMPL_VAR N_MOD> modules in the 
+				<p>A citation index is calculated for all the <TMPL_VAR N_MOD> modules in the 
 				<a href="http://modules.perl6.org">Perl6 Ecosystem</a> on <TMPL_VAR DATE>.</p>
 				<p>A total of <TMPL_VAR N_CIT> <i>Topline</i> Modules in the Ecosystem</a>
 					 were cited, or <TMPL_VAR PC_CIT> of the Ecosystem Modules.</p>
@@ -25,9 +34,25 @@
 					A module <I>simply cites</I> another
 					if it lists it in the <B>"depends"</B> list. A module <I>recursively cites</I> another if a cited 
 					module in turn cites another module.</P>
-				<P>The citation indices of the top <TMPL_VAR N_ROWS> <i>topline</i> modules are:</P>
+                                <P>The simple and recursive data are graphed for the top TMPL_VAR GR_NUM modules over the last TMPL_VAR N_DATES.<P>
+				<P>The citation indices of the top <TMPL_VAR N_ROWS> <i>topline</i> modules are given later.</P>
 			</div>
 		</header>
+		<table class="table table-condensed">
+                    <tr>
+                        <th align="center">Simply Cited</th><th align="center">Recursively Cited</th>
+                    </tr>
+                    <tr>
+                        <td><div class="panel panel-default" id="simple"></div></td>
+                        <td><div class="panel panel-default" id="recursive"></div></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" align="center">All Module Numbers</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div class="panel panel-default" id="allmods"></div></td>
+                    </tr>
+		</table>
 		<div class="panel panel-default">
 			<div class="table-responsive">
 			  <table class="table table-condensed table-striped panel-body" id="dists">	
@@ -38,6 +63,7 @@
 			        <th></th>
 			        <th colspan="4" style="text-align: center">Sorted in recursive order</th>
 			      </tr>
+			      <tr>
 			        <th></th>
 			        <th colspan="2" style="text-align: center">Simple</th>
 			        <th colspan="2" style="text-align: center">Recursive</th>
@@ -104,6 +130,64 @@
 			</div>
 		</footer>
 		</TMPL_IF>
+		<footer class="panel panel-primary">
+                    <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dynagraphs</A>. </P>
+                </footer>
 	</div>
+	<script type="text/javascript">
+	var g = new Dygraph(
+            document.getElementById("recursive"),
+            "GraphFile_recursive.csv",
+            {   width: 480,
+                height: 320,
+                stackedGraph: 0,
+
+                highlightCircleSize: 2,
+                strokeWidth: 1,
+                strokeBorderWidth: 1,
+                
+                series: { 
+                    'ModulesCited': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 3.5 }, 
+                    'AllModules': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 3.5 }
+                },
+                axes: { 
+                    y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
+                    y2: {valueFormatter: function(y2) { return y2.toFixed(0) }, axisLabelFormatter: function(y2) { return y2.toFixed(0) }}
+                },
+
+                highlightSeriesOpts: {
+                strokeWidth: 3,
+                strokeBorderWidth: 1,
+                highlightCircleSize: 5
+            }}
+            );
+        var h = new Dygraph(
+            document.getElementById("simple"),
+            "GraphFile_simple.csv",
+            {   width: 480,
+                height: 320,
+                stackedGraph: 0,
+
+                highlightCircleSize: 2,
+                strokeWidth: 1,
+                strokeBorderWidth: 1,
+                
+                series: { 
+                    'ModulesCited': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }, 
+                    'AllModules': { axis: 'y2', strokeWidth: 3, drawPoints: true, pointSize: 2 }
+                },
+                axes: { 
+                    y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y2) { return y2.toFixed(0) + '%' } },
+                    y2: {valueFormatter: function(y2) { return y2.toFixed(0) }, axisLabelFormatter: function(y2) { return y2.toFixed(0) }}
+                },
+
+                highlightSeriesOpts: {
+                strokeWidth: 3,
+                strokeBorderWidth: 1,
+                highlightCircleSize: 5
+            }}
+            );
+        sync = Dygraph.synchronize( g,h, { selection: true, zoom: false } );
+        </script>
 </body>
 </html>
