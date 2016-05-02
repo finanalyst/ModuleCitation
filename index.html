@@ -39,8 +39,11 @@
 			</div>
 		</header>
 		<table class="table table-condensed panel-body"><tr>
-		<td><div class="panel panel-default" id="recursive"></div></td>
+		<th><td>Simply Cited</td><td>Recursively Cited</td></th>
 		<td><div class="panel panel-default" id="simple"></div></td>
+		<td><div class="panel panel-default" id="recursive"></div></td>
+		<th><td span="2">All Module Numbers</td></th>
+		<tr><td><div class="panel panel-default" id="allmods"></div></td>
 		</tr></table>
 		<div class="panel panel-default">
 			<div class="table-responsive">
@@ -803,12 +806,12 @@
                 </footer>
 	</div>
 	<script type="text/javascript">
-	g = new Dygraph(
+	var g = new Dygraph(
             document.getElementById("recursive"),
             "GraphFile_recursive.csv",
             {   width: 480,
                 height: 320,
-                stackedGraph: 1,
+                stackedGraph: 0,
 
                 highlightCircleSize: 2,
                 strokeWidth: 1,
@@ -829,7 +832,7 @@
                 highlightCircleSize: 5
             }}
             );
-        h = new Dygraph(
+        var h = new Dygraph(
             document.getElementById("simple"),
             "GraphFile_simple.csv",
             {   width: 480,
@@ -855,7 +858,7 @@
                 highlightCircleSize: 5
             }}
             );
-        sync = Dygraph.synchronise( g,h );
+        sync = Dygraph.synchronize( g,h, { selection: true, zoom: false } );
         </script>
 </body>
 </html>
