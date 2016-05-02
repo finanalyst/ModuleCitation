@@ -12,7 +12,8 @@ multi MAIN ( Int :$max-dates = -1, Int :$top = 50  ) {
     my $files = ($max-dates < 0 or @Citationfiles.elems < $max-dates) ?? @Citationfiles.elems !! $max-dates;
 
     my $mc;
-    
+    my @modules;
+    my @meta =  <Date ModulesCited AllModules> ;    
     my %citPlaces;
     my @citIndicies;
     my $pos;
@@ -22,6 +23,10 @@ multi MAIN ( Int :$max-dates = -1, Int :$top = 50  ) {
         $pos = $files - $d;
         say "Processing filename {$pos + 1}\: {@Citationfiles[* - $d]}";
         $mc = ModuleCitation.new( :in-string( @Citationfiles[* - $d].IO.slurp ) ); 
+        
+        %citPlaces<ModulesCited>[$pos] = $mc.tot-cited;
+        %citPlaces<AllModules>[$pos] = $mc.tot-modules;
+        %citPlaces<Date>[$pos] = $mc.date.Date;
 
         for $mc.ecosystem -> $mod {
                 @citIndicies.push: [ $mod, 
@@ -35,23 +40,24 @@ multi MAIN ( Int :$max-dates = -1, Int :$top = 50  ) {
                 for @citIndicies.sort(*.[$k + 1]).reverse.[0 ..^ $top] -> @v { 
                         %citPlaces{ $part }<data>{ @v[0] }[ $pos ] = @v[$k+1] ;
                 }
-                %citPlaces{$part}<ModulesCited>[$pos] = $mc.tot-cited;
-                %citPlaces{$part}<AllModules>[$pos] = $mc.tot-modules;
-                %citPlaces{$part}<Date>[$pos] = $mc.date.Date;
         }
     }
-    my @modules;
-    my @meta =  <Date ModulesCited AllModules> ;
+
     for $mc.parts -> $part { 
         @modules = %citPlaces{$part}<data>.keys.sort ;
-        my $fh = open "../git_html/GraphFile_$part\.csv", :w; # $mc is currently holding the last date
-        $fh.say( join( ',', @meta, @modules ) );
+        my $fh = open "../git_html/GraphFile_$part\.csv", :w;
+        $fh.say( 'Date,', @modules.join(',') );
         for 0..^ $files -> $d { 
-            $fh.say( @meta.map( { %citPlaces{$part}{$_}[$d] } ).join(',') , ',', 
-                     @modules.map( { %citPlaces{$part}<data>{$_}[$d]:exists ?? %citPlaces{$part}<data>{$_}[$d] !! 'NaN' } ).join(',')
-                    );
+            $fh.say( %citPlaces<Date>[$d], ',', @modules.map( { %citPlaces{$part}<data>{$_}[$d]:exists ?? %citPlaces{$part}<data>{$_}[$d] !! 'NaN' } ).join(',') );
         }
         $fh.close;
     }
+        my $fh = open "../git_html/GraphFile_AllModules\.csv", :w; # $mc is currently holding the last date
+        $fh.say( @meta.join( ',') );
+        for 0..^ $files -> $d { 
+            $fh.say( @meta.map( { %citPlaces{$_}[$d] } ).join(',') );
+        }
+        $fh.close;
+
     
 }
