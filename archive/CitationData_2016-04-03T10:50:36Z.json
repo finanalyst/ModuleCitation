@@ -1,7 +1,4 @@
 {
-  "Data::Section::Simple": {
-    
-  },
   "File::Directory::Tree": {
     
   },
@@ -14,25 +11,11 @@
   "XML::Canonical": {
     "XML": "1.0.0"
   },
-  "IO::String": {
-    
-  },
   "OO::Monitors": {
-    
-  },
-  "Font::AFM": {
-    
-  },
-  "flow": {
     
   },
   "RPi::Device::SMBus": {
     "NativeHelpers::Array": "0.0.1"
-  },
-  "TXN": {
-    "JSON::Tiny": "*",
-    "Config::TOML": "*",
-    "Digest::xxHash": "*"
   },
   "HTTP::Signature": {
     "Digest": "0.1.1",
@@ -43,64 +26,28 @@
     "DateTime::Format": "0.1.1",
     "Digest::HMAC": "0.1.1"
   },
-  "RPi": {
-    "POSIX": "0.1.1"
-  },
   "Encoding::Huffman::PP6": {
     
   },
-  "IO::Path::More": {
-    "Shell::Command": "*",
-    "File::Find": "*"
-  },
   "MIME::Base64": {
-    
-  },
-  "Native::LibC": {
     
   },
   "Audio::Playlist::JSPF": {
     "JSON::Class": "0.0.1"
   },
-  "Text::Spintax": {
-    "Test::META": "0.01"
-  },
-  "AWS::Pricing": {
-    "HTTP::Tinyish": "0.1.0"
-  },
   "DateTime::Format::LikeGo": {
     "DateTime::Format": "0.0.1"
-  },
-  "Log::Syslog::Native": {
-    
-  },
-  "Linux::Proc::Statm": {
-    
   },
   "Crust::Middleware::Session": {
     "Digest::SHA": "*",
     "Crust": "*",
     "Cookie::Baker": "*"
   },
-  "Slang::Roman": {
-    
-  },
   "JSON::Infer": {
     "JSON::Tiny": "0.0.9",
     "JSON::Class": "0.0.9",
     "JSON::Name": "0.0.9",
     "HTTP::UserAgent": "0.0.9"
-  },
-  "Web::App::MVC": {
-    "JSON::Tiny": "*",
-    "SCGI": "*",
-    "Web::Template": "*",
-    "HTTP::Easy": "*",
-    "DB::Model::Easy": "*",
-    "Web": "*"
-  },
-  "Num::HexFloat": {
-    
   },
   "Rototo": {
     
@@ -130,15 +77,8 @@
     "URI": "*",
     "HTTP::Easy": "*"
   },
-  "Config::TOML": {
-    "Crane": "*"
-  },
   "Growl::GNTP": {
     "IO::Socket::INET": "*"
-  },
-  "Audio::Encode::LameMP3": {
-    "NativeHelpers::Array": "0.0.9",
-    "AccessorFacade": "0.0.9"
   },
   "Web::App::Ballet": {
     "SCGI": "*",
@@ -147,12 +87,6 @@
     "Web": "*"
   },
   "Math::Symbolic": {
-    
-  },
-  "HTTP::Server::Logger": {
-    "DateTime::Format": "0.1"
-  },
-  "Build::Simple": {
     
   },
   "PKafka": {
@@ -164,21 +98,10 @@
   "Pod::To::Markdown": {
     
   },
-  "007": {
+  "Hash::MultiValue": {
     
   },
-  "Overwatch": {
-    "Shell::Command": "0.1.0"
-  },
-  "Data::Dump": {
-    
-  },
-  "Geo::Coder::OpenCage": {
-    "URI": "1.0",
-    "JSON::Unmarshal": "1.0",
-    "HTTP::UserAgent": "1.0"
-  },
-  "Getopt::Long": {
+  "mandelbrot": {
     
   },
   "Sitemap::XML::Parser": {
@@ -188,81 +111,32 @@
     "XML::Parser::Tiny": "*",
     "Test::Mock": "*"
   },
-  "mandelbrot": {
+  "Getopt::Long": {
     
   },
-  "Hash::MultiValue": {
-    
+  "Geo::Coder::OpenCage": {
+    "URI": "1.0",
+    "JSON::Unmarshal": "1.0",
+    "HTTP::UserAgent": "1.0"
   },
-  "Archive::SimpleZip": {
-    "CompUnit::Util": "0.1.1",
-    "Compress::Zlib": "0.1.1",
-    "IO::Blob": "0.1.1",
-    "Compress::Bzip2": "0.1.1",
-    "Compress::Zlib::Raw": "0.1.1"
-  },
-  "Pod::TreeWalker": {
-    
-  },
-  "Email::Simple": {
-    "DateTime::Format": "2.0.0"
-  },
-  "__date": "2016-04-03T10:50:36Z",
   "Template::Mustache": {
     
   },
-  "URI::Encode": {
-    
-  },
-  "RPi::Wiring::Pi": {
-    
-  },
-  "Algorithm::Trie::libdatrie": {
-    "LibraryMake": "0.2"
-  },
-  "GGE": {
-    
-  },
-  "Bench": {
-    "Text::Table::Simple": "0.1.1"
-  },
-  "C::Parser": {
+  "Pod::TreeWalker": {
     
   },
   "NQP::Eval": {
     
   },
-  "Lumberjack": {
-    "DateTime::Format": "0.0.3",
-    "Staticish": "0.0.3"
-  },
-  "DBIish": {
-    "NativeHelpers::Blob": "0.5.3"
+  "RPi::Wiring::Pi": {
+    
   },
   "Linux::Cpuinfo": {
     
   },
-  "Tinky": {
-    
-  },
-  "File::Zip": {
-    "Compress::Zlib": "*"
-  },
-  "Net::SMTP": {
-    "Digest": "1.1.0",
-    "IO::Socket::SSL": "1.1.0",
-    "MIME::Base64": "1.1.0",
-    "Email::Simple": "1.1.0",
-    "Digest::HMAC": "1.1.0"
-  },
-  "FastCGI": {
-    "PSGI": "*"
-  },
-  "Terminal::Print": {
-    "Terminal::ANSIColor": "0.04"
-  },
-  "App::p6tags": {
-    "File::Find": "0.6"
+  "Lumberjack": {
+    "DateTime::Format": "0.0.3",
+    "Staticish": "0.0.3"
   },
   "PriorityQueue": {
     
@@ -270,128 +144,65 @@
   "Dice::Roller": {
     
   },
-  "CompUnit::Repository::Panda": {
+  "Getopt::Tiny": {
     
   },
   "Number::Denominate": {
     "Lingua::Conjunction": "1.001001"
   },
-  "Getopt::Tiny": {
-    
-  },
-  "Net::XMPP": {
-    "MIME::Base64": "1.0.0",
-    "XML": "1.0.0",
-    "Net::DNS": "1.0.0"
-  },
-  "BioInfo": {
-    "Stats": "0.4.3"
-  },
   "Attribute::Lazy": {
     
   },
-  "Test::Class": {
-    
-  },
-  "JSON::Marshal": {
-    "JSON::Tiny": "0.0.7",
-    "JSON::Name": "0.0.7"
-  },
-  "IRC::Art": {
+  "Readline": {
     
   },
   "Rakudo::Perl6::Tracer": {
     "Rakudo::Perl6::Parsing": "0.1.1"
   },
-  "IO::Prompter": {
-    "Testing": "*"
-  },
-  "SVG": {
-    "XML::Writer": "*"
-  },
-  "Readline": {
+  "IRC::Art": {
     
-  },
-  "Marpa": {
-    
-  },
-  "Text::Indented": {
-    
-  },
-  "IUP": {
-    "NativeCall": "0.0.1"
   },
   "TestML": {
     
   },
-  "Test::Lab": {
-    
-  },
-  "Concurrent::Iterator": {
+  "LibraryCheck": {
     
   },
   "Kains": {
     "NativeCall": "v0.0.2"
   },
-  "LibraryCheck": {
+  "Concurrent::Iterator": {
+    
+  },
+  "Test::Lab": {
     
   },
   "JSON::Fast": {
     
   },
-  "Crust::Handler::SCGI": {
-    "SCGI": "1.0.0",
-    "IO::Blob": "1.0.0"
-  },
-  "HTTP::Server::Simple": {
-    
-  },
   "Debugger::UI::CommandLine": {
     "Terminal::ANSIColor": "*"
-  },
-  "JSON::Tiny": {
-    
-  },
-  "Template6": {
-    
-  },
-  "Event::Emitter": {
-    
   },
   "Sys::Lastlog": {
     "LibraryMake": "0.0.7",
     "System::Passwd": "0.0.7"
   },
+  "Event::Emitter": {
+    
+  },
   "OpenCV": {
-    
-  },
-  "Date::WorkdayCalendar": {
-    
-  },
-  "Module::Minter": {
-    "File::Directory::Tree": "0.04",
-    "Software::License": "0.04",
-    "File::Temp": "0.04"
-  },
-  "Concurrent::BoundedChannel": {
-    
-  },
-  "Backtrace::AsHTML": {
-    
-  },
-  "Router::Boost": {
-    
-  },
-  "IO::Glob": {
     
   },
   "Foo": {
     
   },
-  "Data::Pretty": {
+  "IO::Glob": {
     
   },
-  "Algorithm::MinMaxHeap": {
+  "Router::Boost": {
+    
+  },
+  "Data::Pretty": {
     
   },
   "MagickWand": {
@@ -400,48 +211,19 @@
   "DateTime::Format::W3CDTF": {
     
   },
-  "Pod::Parser": {
-    
-  },
   "JSON::RPC": {
     "JSON::Tiny": "0.17.1",
     "LWP::Simple": "0.17.1",
     "URI": "0.17.1",
     "HTTP::Easy": "0.17.1"
   },
-  "Software::License": {
-    
-  },
   "Text::Table::List": {
-    
-  },
-  "UNIX::Privileges": {
-    
-  },
-  "Data::Selector": {
-    
-  },
-  "JSON::Unmarshal": {
-    "JSON::Name": "0.05",
-    "JSON::Fast": "0.05"
-  },
-  "Druid": {
-    
-  },
-  "Text::T9": {
     
   },
   "Pluggable": {
     
   },
-  "Pod::PerlTricks": {
-    "JSON::Tiny": "0.01",
-    "Pod::Perl5": "0.01"
-  },
   "Grammar::BNF": {
-    
-  },
-  "Net::OSC": {
     
   },
   "Semantic::Versioning": {
@@ -460,22 +242,7 @@
     "Pastebin::Shadowcat": "1.001001",
     "Pastebin::Gist": "1.001001"
   },
-  "Game::Crypt": {
-    "Adventure::Engine": "0.2.2"
-  },
   "Test::Junkie": {
-    
-  },
-  "PerlStore": {
-    
-  },
-  "Term::termios": {
-    
-  },
-  "Pod::Perl5": {
-    
-  },
-  "HTTP::Server": {
     
   },
   "Audio-Liquidsoap": {
@@ -484,78 +251,22 @@
   "Net::HTTP": {
     
   },
-  "CSS::Module": {
-    "CSS::Module::CSS3::Selectors": "0.02.1",
-    "CSS::Specification": "0.02.1",
-    "CSS::Writer": "0.02.1",
-    "CSS::Grammar": "0.02.1",
-    "JSON::Fast": "0.02.1"
-  },
-  "Audio::Hydrogen": {
-    "XML::Class": "0.0.1"
-  },
-  "Crane": {
-    
-  },
   "Dependency::Sort": {
-    
-  },
-  "Acme::Meow": {
-    
-  },
-  "Stats": {
-    
-  },
-  "Lingua::EN::Stem::Porter": {
     
   },
   "WebService::GoogleDyDNS": {
     "WebService::HazIP": "1.0.0",
     "HTTP::UserAgent": "1.0.0"
   },
-  "Pod::Coverage": {
-    "JSON::Tiny": "v0.1.0"
-  },
-  "HexDump::Tiny": {
-    
-  },
-  "Digest::PSHA1": {
-    "Digest": "1.0.0",
-    "Digest::HMAC": "1.0.0"
-  },
-  "Method::Modifiers": {
-    
-  },
-  "Image::PNG::Inflated": {
-    
-  },
   "XHTML::Writer": {
     "XML": "0.1.0"
-  },
-  "Text::Homoglyph": {
-    
   },
   "Email::MIME": {
     "MIME::QuotedPrint": "2.0.0",
     "MIME::Base64": "2.0.0",
     "Email::Simple": "2.0.0"
   },
-  "XML::Query": {
-    "XML": "*"
-  },
-  "IO::MiddleMan": {
-    
-  },
-  "Email::Notmuch": {
-    
-  },
-  "Native::Resources": {
-    "LibraryMake": "0.1.0"
-  },
   "Template::Mojo": {
-    
-  },
-  "MessagePack": {
     
   },
   "Net::DNS": {
@@ -570,7 +281,7 @@
   "Pod::Strip": {
     
   },
-  "Text::Levenshtein::Damerau": {
+  "Graffiks": {
     
   },
   "Adventure::Engine": {
@@ -579,71 +290,39 @@
   "Typed::Subroutines": {
     
   },
-  "MIME::Types": {
-    
-  },
   "Math::RungeKutta": {
     
   },
-  "GTK::Simple": {
-    "LWP::Simple": "*"
-  },
-  "colomon::App::TagTools": {
-    "Audio::Taglib::Simple": "*"
-  },
-  "Graffiks": {
-    
-  },
-  "Algorithm::TernarySearchTree": {
-    
-  },
-  "URI::Template": {
-    
-  },
-  "JSON::Class": {
-    "JSON::Marshal": "0.0.6",
-    "JSON::Unmarshal": "0.0.6"
-  },
-  "XML::Writer": {
-    
-  },
-  "Term::Choose": {
-    "NCurses": "*",
-    "Terminal::WCWidth": "*"
-  },
-  "FastCGI::NativeCall::PSGI": {
-    "FastCGI::NativeCall": "0.0.1",
-    "PSGI": "0.0.1"
-  },
-  "Browser::Open": {
-    
+  "Term::ProgressBar": {
+    "IO::Capture::Simple": "*"
   },
   "SOAP::Client": {
     "LWP::Simple": "1.0.0",
     "XML": "1.0.0"
   },
-  "BreakDancer": {
-    "Shell::Command": "*"
-  },
-  "Term::ProgressBar": {
-    "IO::Capture::Simple": "*"
-  },
-  "Lingua::Conjunction": {
+  "Browser::Open": {
     
   },
-  "Text::Markov": {
-    
+  "FastCGI::NativeCall::PSGI": {
+    "FastCGI::NativeCall": "0.0.1",
+    "PSGI": "0.0.1"
   },
-  "Net::POP3": {
-    "Digest": "1.0.0",
-    "IO::Socket::SSL": "1.0.0"
+  "Term::Choose": {
+    "NCurses": "*",
+    "Terminal::WCWidth": "*"
+  },
+  "CSS::Specification": {
+    "CSS::Grammar": "0.01.1"
   },
   "Text::CSV": {
     "Slang::Tuxic": "0.002",
     "File::Temp": "0.002"
   },
-  "CSS::Specification": {
-    "CSS::Grammar": "0.01.1"
+  "Text::Markov": {
+    
+  },
+  "XML::Parser::Tiny": {
+    
   },
   "PDF": {
     "Digest::MD5": "0.0.6",
@@ -652,168 +331,67 @@
     "PDF::Grammar": "0.0.6",
     "JSON::Fast": "0.0.6"
   },
-  "Log::D": {
-    
-  },
-  "XML::Parser::Tiny": {
-    
-  },
-  "Linux::Process::SignalInfo": {
-    
-  },
-  "Email::Valid": {
-    "Net::DNS": "0.3.2"
-  },
-  "Ini::Storage": {
-    "Path::Util": "0.8"
-  },
-  "Slang::SQL": {
-    "DBIish": "0.1"
-  },
   "CSS::Writer": {
     "CSS::Grammar": "0.01.1",
     "JSON::Fast": "0.01.1"
   },
-  "TinyCC": {
-    
+  "Slang::SQL": {
+    "DBIish": "0.1"
   },
-  "RPi::Device::PiFace": {
-    
-  },
-  "Time::Duration": {
+  "Linux::Process::SignalInfo": {
     
   },
   "ClassX::StrictConstructor": {
     
   },
-  "WebService::AWS::Auth::V4": {
-    "Digest::SHA": "0.0.1",
-    "URI::Escape": "0.0.1",
-    "URI": "0.0.1",
-    "Digest::HMAC": "0.0.1"
-  },
-  "Audio::Convert::Samplerate": {
-    "NativeHelpers::Array": "0.0.6"
+  "PSpec": {
+    
   },
   "Web::RF": {
     "Crust": "1.0.0",
     "URI::Escape": "1.0.0",
     "Path::Router": "1.0.0"
   },
-  "Math::ContinuedFractions": {
+  "Image::RGBA::Text": {
     
   },
-  "PSpec": {
-    
-  },
-  "Algorithm::Elo": {
-    
-  },
-  "Web::Template": {
-    "Template6": "*",
-    "HTML::Template": "*",
-    "Template::Mojo": "*",
-    "Flower": "*"
-  },
-  "Sort::Naturally": {
-    
+  "HTTP::Server::Async::Plugins::Router::Simple": {
+    "HTTP::Server::Async": "0.1.0"
   },
   "panda": {
     "Shell::Command": "2016.02",
     "JSON::Fast": "2016.02",
     "File::Find": "2016.02"
   },
-  "HTTP::Server::Async::Plugins::Router::Simple": {
-    "HTTP::Server::Async": "0.1.0"
-  },
-  "Image::RGBA::Text": {
+  "Sort::Naturally": {
     
   },
-  "Lingua::EN::Stopwords": {
+  "Encode": {
     
   },
   "Search::Dict": {
     
   },
-  "Avro": {
-    "JSON::Tiny": "0.1.1",
-    "Compress::Zlib": "0.1.1"
-  },
-  "Bailador": {
-    "URI": "*",
-    "Template::Mustache": "*",
-    "HTTP::Easy": "*",
-    "Template::Mojo": "*"
-  },
-  "Encode": {
-    
-  },
-  "Uni63": {
-    
-  },
-  "Algorithm::BinaryIndexedTree": {
-    
-  },
-  "JavaScript::SpiderMonkey": {
-    
-  },
-  "Lingua::EN::Syllable": {
+  "Lingua::EN::Stopwords": {
     
   },
   "Imlib2": {
     "LibraryMake": "0.0.1",
     "NativeCall": "0.0.1"
   },
-  "Text::Diff": {
-    "Algorithm::Diff": "*"
-  },
-  "Image::PNG::Portable": {
-    "String::CRC32": "*",
-    "Compress::Zlib": "*"
-  },
-  "JSON::WebToken": {
-    "Digest::SHA": "0.0.1",
-    "MIME::Base64": "0.0.1",
-    "Digest::HMAC": "0.0.1",
-    "JSON::Fast": "0.0.1"
-  },
-  "Audio::PortMIDI": {
+  "Lingua::EN::Syllable": {
     
   },
-  "Util::Bitfield": {
-    
-  },
-  "Pod::EOD": {
+  "Net::IRC::Bot": {
     
   },
   "IO::Notification::Recursive": {
     "File::Find": "0.0.1"
   },
-  "CSV::Parser": {
+  "Pod::EOD": {
     
   },
-  "File::Find::Duplicates": {
-    "Digest": "*",
-    "File::Compare": "*",
-    "File::Find": "*"
-  },
-  "Net::IRC::Bot": {
-    
-  },
-  "Grammar::Profiler::Simple": {
-    
-  },
-  "DBDish::ODBC": {
-    "DBIish": "0.0.6",
-    "NativeHelpers::Blob": "0.0.6"
-  },
-  "AttrX::PrivateAccessor": {
-    
-  },
-  "Text::Table::Simple": {
-    
-  },
-  "Haikunator": {
+  "Lingua::EN::Conjugate": {
     
   },
   "WebService::Soundcloud": {
@@ -825,125 +403,74 @@
     "URI": "0.0.2",
     "HTTP::UserAgent": "0.0.2"
   },
-  "Lingua::EN::Conjugate": {
+  "AttrX::PrivateAccessor": {
     
   },
-  "IO::Blob": {
-    
+  "DBDish::ODBC": {
+    "DBIish": "0.0.6",
+    "NativeHelpers::Blob": "0.0.6"
   },
-  "WebService::Justcoin": {
-    "JSON::Tiny": "0.0.1"
-  },
-  "Slang::Tuxic": {
-    
-  },
-  "PackUnpack": {
+  "Path::Canonical": {
     
   },
   "Acme::WTF": {
     "Test::META": "*"
   },
-  "Path::Canonical": {
-    
-  },
-  "Lingua::Unihan": {
-    "Encode": "0.1.0",
-    "DBIish": "0.1.0"
-  },
-  "GD": {
-    
-  },
-  "JSON::Path": {
-    "JSON::Tiny": "*"
-  },
-  "Digest::xxHash": {
+  "GeoIP::City": {
     
   },
   "File::Which": {
     
   },
-  "Test::Mock": {
+  "Digest::xxHash": {
     
   },
-  "GeoIP::City": {
-    
-  },
-  "IRC::Utils": {
-    
-  },
-  "Unix::Groups": {
-    
+  "Linux::Fuser": {
+    "System::Passwd": "0.0.7"
   },
   "DateTime::Utils": {
     "DateTime::TimeZone": "*",
     "DateTime::Math": "*",
     "DateTime::Format": "*"
   },
-  "Math::Polynomial": {
-    
-  },
-  "Linux::Fuser": {
-    "System::Passwd": "0.0.7"
-  },
-  "Ident::Client": {
+  "Unix::Groups": {
     
   },
   "Shell::Command": {
     "File::Find": "*"
   },
-  "HTML::Template": {
+  "URI": {
     
-  },
-  "Algorithm::SetUnion": {
-    
-  },
-  "Base64": {
-    
-  },
-  "IO::Socket::SSL": {
-    "OpenSSL": "*"
-  },
-  "Apache::LogFormat": {
-    "DateTime::Format": "*"
   },
   "Redis": {
     
   },
-  "Syndication": {
-    "XML": "1.0.0"
-  },
-  "URI": {
-    
+  "Apache::LogFormat": {
+    "DateTime::Format": "*"
   },
   "HTML::Strip": {
+    
+  },
+  "Chess": {
     
   },
   "Lumberjack::Dispatcher::Syslog": {
     "Log::Syslog::Native": "0.0.2",
     "Lumberjack": "0.0.2"
   },
-  "Inline::Brainfuck": {
-    "Term::termios": "1.001001"
-  },
-  "IO::Path::Mode": {
-    
-  },
-  "Module::Does": {
-    
-  },
-  "Chess": {
-    
-  },
   "GD::Raw": {
     
   },
-  "Lingua::EN::Numbers::Cardinal": {
+  "TAP::Harness": {
     
   },
-  "SVG::Plot": {
-    "SVG": "*"
+  "Cairo": {
+    
   },
-  "IO::Prompt": {
+  "Memoize": {
+    
+  },
+  "File::HomeDir": {
     
   },
   "Perl6::Maven": {
@@ -951,157 +478,44 @@
     "Bailador": "*",
     "LWP::Simple": "*"
   },
-  "YAMLish": {
-    "MIME::Base64": "0.0.1"
-  },
-  "File::HomeDir": {
+  "IO::Prompt": {
     
   },
-  "Memoize": {
-    
-  },
-  "UUID": {
-    
-  },
-  "DateTime::Parse": {
-    
-  },
-  "Cairo": {
-    
-  },
-  "TAP::Harness": {
+  "SDL2::Raw": {
     
   },
   "Test::Util::ServerPort": {
     
   },
-  "Pekyll": {
-    "Template6": "*",
-    "Syndication": "*"
-  },
-  "BSON": {
-    "Digest::MD5": "0.9.23",
-    "UUID": "0.9.23"
-  },
-  "SDL2::Raw": {
+  "SSL": {
     
   },
   "XML::Class": {
     "XML": "0.0.2"
   },
-  "HTML::Restrict": {
-    "HTML::Parser::XML": "0.1"
-  },
-  "SSL": {
-    
-  },
-  "HTTP::Client": {
-    "HTTP::Status": "*",
-    "MIME::Base64": "*"
-  },
-  "Crypt::Libcrypt": {
-    
-  },
-  "Grammar::HTTP": {
-    
+  "YAML": {
+    "TestML": "*"
   },
   "Log::Minimal": {
     "Terminal::ANSIColor": "*"
   },
-  "sake": {
-    
-  },
-  "HTTP::Status": {
-    
-  },
-  "Tardis": {
-    "Yapsi": "*"
-  },
-  "Facter": {
-    
-  },
-  "YAML": {
-    "TestML": "*"
-  },
-  "Acme::DSON": {
-    "JSON::Tiny": "0.2.1"
-  },
-  "Inline::Perl5": {
-    "LibraryMake": "0.6"
-  },
-  "Gumbo": {
-    "XML": "*"
-  },
-  "Image::Resize": {
-    "GD::Raw": "0.01"
-  },
-  "File::Compare": {
+  "Text::Levenshtein": {
     
   },
   "Text::Emotion": {
     
   },
-  "Text::Levenshtein": {
-    
-  },
-  "LWP::Simple": {
-    "URI::Escape": "0.087",
-    "URI": "0.087",
-    "MIME::Base64": "0.087"
-  },
-  "Printing::Jdf": {
-    "XML": "0.1.0"
-  },
-  "Green": {
-    "Terminal::ANSIColor": "0.1.0"
-  },
-  "Farabi6": {
-    "Debugger::UI::CommandLine": "*",
-    "p6doc": "*",
-    "JSON::Tiny": "*",
-    "Browser::Open": "*",
-    "URI": "*",
-    "Pod::To::HTML": "*",
-    "HTTP::Easy": "*",
-    "File::Temp": "*"
+  "Image::Resize": {
+    "GD::Raw": "0.01"
   },
   "Text::Abbrev": {
     
   },
-  "Algorithm::Soundex": {
-    
-  },
-  "Pastebin::Shadowcat": {
-    "HTML::Entity": "2.001001",
-    "LWP::Simple": "2.001001",
-    "URI::Encode": "2.001001"
-  },
   "Text::TFIdf": {
     "Lingua::EN::Stem::Porter": "0.0.3"
   },
-  "Test::IO::Socket::Async": {
-    "OO::Monitors": "0.1"
-  },
-  "HTTP::ParseParams": {
-    "URI::Encode": "1.0.0"
-  },
-  "IO::Capture::Simple": {
-    
-  },
-  "Inline::Python": {
-    "LibraryMake": "0.1"
-  },
-  "Docker::File": {
-    
-  },
-  "Net::ZMQ": {
-    
-  },
-  "Net::AMQP": {
-    
-  },
-  "Compress::Zlib::Raw": {
-    "Find::Bundled": "1.0.0"
+  "Cache::Memcached": {
+    "String::CRC32": "0.0.6"
   },
   "HTTP::UserAgent": {
     "Encode": "1.1.18",
@@ -1111,186 +525,95 @@
     "DateTime::Parse": "1.1.18",
     "File::Temp": "1.1.18"
   },
-  "Cache::Memcached": {
-    "String::CRC32": "0.0.6"
+  "Compress::Zlib::Raw": {
+    "Find::Bundled": "1.0.0"
   },
-  "NativeHelpers::Blob": {
+  "Net::AMQP": {
     
   },
-  "Test::Base": {
-    
-  },
-  "Inline::Ruby": {
-    "LibraryMake": "0.3.0"
-  },
-  "ADT": {
+  "Net::ZMQ": {
     
   },
   "Games::BubbleBreaker": {
     "SDL": "*"
   },
-  "Text::VimColour": {
-    "File::Temp": "0.4"
+  "ADT": {
+    
   },
-  "Audio::PortAudio": {
+  "Test::Base": {
+    
+  },
+  "NativeHelpers::Blob": {
+    
+  },
+  "Auth::PAM::Simple": {
+    "LibraryMake": "1.0.0"
+  },
+  "Rakudo::Perl6::Format": {
+    "Rakudo::Perl6::Parsing": "0.1"
+  },
+  "NativeHelpers::Array": {
     
   },
   "WWW::Google::Time": {
     "URI::Escape": "1.001001",
     "HTTP::Tinyish": "1.001001"
   },
-  "App::Mi6": {
-    "Shell::Command": "*",
-    "Pod::To::Markdown": "*",
-    "File::Find": "*"
-  },
-  "NativeHelpers::Array": {
+  "Audio::PortAudio": {
     
   },
-  "Rakudo::Perl6::Format": {
-    "Rakudo::Perl6::Parsing": "0.1"
-  },
-  "Data::ICal": {
-    
-  },
-  "Auth::PAM::Simple": {
-    "LibraryMake": "1.0.0"
-  },
-  "MIME::QuotedPrint": {
-    
-  },
-  "Git::PurePerl": {
-    "Digest": "*",
-    "DateTime::TimeZone": "*",
-    "Compress::Zlib": "*",
-    "File::Find": "*"
-  },
-  "wig": {
-    
-  },
-  "Hydrate": {
-    
-  },
-  "Digest": {
-    
-  },
-  "Net::SOCKS": {
-    
-  },
-  "Acme::Scrub": {
+  "AccessorFacade": {
     
   },
   "App::Pray": {
     "JSON::Tiny": "*",
     "Image::PNG::Portable": "*"
   },
-  "AccessorFacade": {
+  "Acme::Scrub": {
     
   },
-  "Chronic": {
-    
-  },
-  "Color": {
+  "Hydrate": {
     
   },
   "Path::Iterator": {
     
   },
-  "DateTime::Math": {
+  "Color": {
     
   },
-  "Algorithm::LCS": {
+  "Chronic": {
     
-  },
-  "Grammar::Highlighter": {
-    "Terminal::ANSIColor": "0.1"
-  },
-  "DEBUG": {
-    
-  },
-  "Audio::Sndfile": {
-    
-  },
-  "Oyatul": {
-    "JSON::Tiny": "0.0.2"
-  },
-  "Sys::Utmp": {
-    "LibraryMake": "0.0.8"
-  },
-  "HTTP::Server::Threaded": {
-    "HTTP::Server": "0.1.0"
   },
   "Math::Trig": {
     
   },
-  "HTML::Parser": {
-    "XML": "0.1"
-  },
-  "Electron": {
-    "JSON::RPC": "*",
-    "File::Which": "*"
+  "HTTP::Server::Threaded": {
+    "HTTP::Server": "0.1.0"
   },
   "HTTP::Easy": {
     "PSGI": "*",
     "HTTP::Status": "*"
   },
-  "OpenSSL": {
-    "Digest": "0.0.2",
-    "Find::Bundled": "0.0.2"
-  },
-  "MQTT::Client": {
-    
-  },
-  "App::ecoreadme": {
-    "IO::Socket::SSL": "0.2",
-    "LWP::Simple": "0.2",
-    "IO::Capture::Simple": "0.2",
-    "Panda": "0.2"
-  },
-  "Slang::Piersing": {
-    
-  },
-  "Web": {
-    "MIME::Types": "*"
+  "HTML::Parser": {
+    "XML": "0.1"
   },
   "DB::Model::Easy": {
     "DBIish": "*"
   },
-  "Algorithm::ZobristHashing": {
-    
+  "Web": {
+    "MIME::Types": "*"
   },
-  "Compress::Bzip2": {
-    "Compress::Bzip2::Raw": "0.3.0"
+  "MQTT::Client": {
+    
   },
   "path-coverage": {
     "File::Find": "0.2"
   },
-  "META6": {
-    "JSON::Class": "0.0.7"
-  },
-  "v5": {
-    
-  },
-  "XML::Signature": {
-    "Digest": "1.0.0",
-    "XML::Canonical": "1.0.0",
-    "MIME::Base64": "1.0.0",
-    "XML": "1.0.0",
-    "OpenSSL": "1.0.0",
-    "UUID": "1.0.0"
-  },
-  "System::Passwd": {
+  "Algorithm::ZobristHashing": {
     
   },
   "HTTP::Headers": {
     
-  },
-  "Locale::Codes": {
-    
-  },
-  "WebService::Google::PageRank": {
-    "URI::Escape": "0.1.0",
-    "HTTP::Tinyish": "0.1.0"
   },
   "HTTP::Parser": {
     
@@ -1304,29 +627,14 @@
     "Term::ANSIColor": "0.0.1",
     "HTTP::UserAgent": "0.0.1"
   },
-  "Algorithm::AhoCorasick": {
-    
-  },
   "String::CamelCase": {
-    
-  },
-  "Math::ThreeD": {
     
   },
   "Plosurin": {
     
   },
-  "MPD": {
-    
-  },
   "P6TCI": {
     
-  },
-  "Text::Markdown": {
-    
-  },
-  "XXX": {
-    "YAML": "*"
   },
   "Algorithm::Manacher": {
     
@@ -1334,28 +642,7 @@
   "Finance::CompoundInterest": {
     
   },
-  "Cookie::Baker": {
-    "URI::Encode": "*"
-  },
   "Phaser::ATEXIT": {
-    
-  },
-  "PerlMongers::Hannover": {
-    "IO::Capture::Simple": "0.8.6"
-  },
-  "RPi::Device::PiGlow": {
-    "RPi::Device::SMBus": "0.0.1"
-  },
-  "Selenium::WebDriver": {
-    "JSON::Tiny": "*",
-    "MIME::Base64": "*",
-    "URI::Encode": "*",
-    "HTTP::UserAgent": "*",
-    "File::Zip": "*",
-    "File::Which": "*",
-    "File::Temp": "*"
-  },
-  "XML": {
     
   },
   "Linenoise": {
@@ -1378,20 +665,8 @@
   "Netstring": {
     
   },
-  "Crypt::Bcrypt": {
-    
-  },
-  "WebService::Lastfm": {
-    "Digest::MD5": "0.0.2",
-    "JSON::Tiny": "0.0.2",
-    "LWP::Simple": "0.0.2",
-    "URI::Encode": "0.0.2"
-  },
   "Build::Graph": {
     
-  },
-  "RPi::Device::DS18B20": {
-    "RPi": "0.2.0"
   },
   "P6SGI": {
     
@@ -1400,15 +675,9 @@
     "IO::Socket::SSL": "1.0.0",
     "Email::MIME": "1.0.0"
   },
-  "Terminal::ANSIColor": {
-    
-  },
   "Frinfon": {
     "Crust": "*",
     "Router::Boost": "*"
-  },
-  "Serialize::Tiny": {
-    
   },
   "Template::Anti": {
     "XML": "0.1"
@@ -1416,39 +685,7 @@
   "Astro::Sunrise": {
     
   },
-  "p6doc": {
-    "URI": "*",
-    "Panda": "*",
-    "File::Temp": "*"
-  },
-  "Crust::Middleware::Syslog": {
-    "Crust": "1.0.0",
-    "Log::Syslog::Native": "1.0.0"
-  },
-  "Algorithm::Diff": {
-    
-  },
   "Locale-Codes-Country": {
-    
-  },
-  "Config::Simple": {
-    "JSON::Pretty": "*",
-    "Data::Dump": "*",
-    "Config::INI": "*"
-  },
-  "CLDR::List": {
-    
-  },
-  "JSON::Name": {
-    
-  },
-  "Time::Crontab": {
-    "Test::META": "0.1.0"
-  },
-  "Crypt::RC4": {
-    
-  },
-  "XDG::BaseDirectory": {
     
   },
   "Modular": {
@@ -1457,21 +694,16 @@
   "Compress::Zlib": {
     "Compress::Zlib::Raw": "1.0.0"
   },
-  "Pod::To::HTML": {
-    "URI": "*"
+  "Time::Crontab": {
+    "Test::META": "0.1.0"
   },
-  "Algorithm::Kruskal": {
-    "Algorithm::MinMaxHeap::Comparable": "*",
-    "Algorithm::SetUnion": "*",
-    "Algorithm::MinMaxHeap": "*"
+  "XDG::BaseDirectory": {
+    
   },
   "StrictNamedArguments": {
     
   },
   "CGI::Application": {
-    
-  },
-  "Control::Bail": {
     
   },
   "Gravatar::URL": {
@@ -1484,21 +716,21 @@
   "Benchmark": {
     
   },
+  "Sprockets": {
+    
+  },
   "Acme::Mangle": {
     
   },
   "LCS::All": {
     
   },
-  "zef": {
-    
-  },
   "IRC::Client::Plugin::Factoid": {
-    "Lingua::Conjunction:ver<1.001001>": "1.001001",
-    "IRC::Client:ver<2.003001>": "1.001001",
-    "WWW::Google::Time:ver<1.001001>": "1.001001",
-    "DBIish:ver<0.1.0>": "1.001001",
-    "Number::Denominate:ver<1.001001>": "1.001001"
+    "WWW::Google::Time": "1.001001",
+    "Number::Denominate": "1.001001",
+    "IRC::Client": "1.001001",
+    "Lingua::Conjunction": "1.001001",
+    "DBIish": "1.001001"
   },
   "Discord": {
     "JSON::Tiny": "0.0.1",
@@ -1516,69 +748,40 @@
   "HTML::Parser::XML": {
     "XML": "0.1.0"
   },
-  "PDF::Grammar": {
-    "JSON::Fast": "0.0.6"
-  },
-  "Perl6-Math-Quaternion": {
-    
-  },
-  "Sprockets": {
-    
-  },
-  "Typesafe::HTML": {
-    "XML": "0.1.0"
-  },
-  "Terminal::WCWidth": {
-    
-  },
-  "Net::FTP": {
-    
-  },
-  "Coroutines": {
+  "Mortgage": {
     
   },
   "SP6": {
     
   },
-  "Mortgage": {
+  "Coroutines": {
     
   },
-  "Algorithm::Treap": {
+  "Net::FTP": {
     
   },
   "Math::ChebyshevPolynomial": {
     
   },
-  "Acme::Cow": {
-    
-  },
-  "Audio::Taglib::Simple": {
-    
-  },
-  "Masquerade": {
-    "JSON::Tiny": "*"
-  },
-  "Class::Utils": {
-    
-  },
-  "DateTime::TimeZone": {
-    
-  },
-  "Testing": {
+  "Algorithm::Treap": {
     
   },
   "Algorithm::Viterbi": {
     
   },
-  "AttrX::Lazy": {
+  "DateTime::TimeZone": {
     
   },
-  "Text::Markdown::Discount": {
+  "Class::Utils": {
     
   },
-  "WebSocket": {
-    "Digest": "*",
-    "MIME::Base64": "*"
+  "Audio::Taglib::Simple": {
+    
+  },
+  "HTTP::Server::Tiny": {
+    "HTTP::Status": "*",
+    "IO::Blob": "*",
+    "HTTP::Parser": "*"
   },
   "Crust": {
     "HTTP::MultiPartParser": "*",
@@ -1594,180 +797,105 @@
     "HTTP::UserAgent": "*",
     "File::Temp": "*"
   },
-  "HTTP::Server::Tiny": {
-    "HTTP::Status": "*",
-    "IO::Blob": "*",
-    "HTTP::Parser": "*"
+  "WebSocket": {
+    "Digest": "*",
+    "MIME::Base64": "*"
   },
-  "IoC": {
+  "Text::Markdown::Discount": {
     
   },
-  "Git::Wrapper": {
+  "AttrX::Lazy": {
     
   },
-  "DB::ORM::Quicky": {
-    "DBIish": "*"
+  "Math::PascalTriangle": {
+    
   },
   "App::P6Dx": {
     "JSON::Marshal": "v0.3.0",
     "File::Find": "v0.3.0"
   },
-  "Web::Scraper": {
-    "LWP::Simple": "0.1.0",
-    "XML::Query": "0.1.0",
-    "HTML::Parser::XML": "0.1.0"
-  },
-  "Math::PascalTriangle": {
-    
-  },
-  "List::Utils": {
-    
-  },
-  "Clifford": {
-    
-  },
-  "Inline::Scheme::Gambit": {
-    "LibraryMake": "0.01"
-  },
-  "Proc::Screen": {
-    "Test": "v0.0.1",
-    "File::Temp": "v0.0.1"
-  },
-  "Term::Form": {
-    "Term::Choose::LineFold": "*",
-    "Term::Choose::NCurses": "*"
-  },
-  "Data::Dump::Tree": {
+  "IDNA::Punycode": {
     
   },
   "HTTP::Router::Blind": {
     
   },
-  "Lingua::EN::Sentence": {
+  "Data::Dump::Tree": {
     
   },
-  "IDNA::Punycode": {
-    
-  },
-  "Term::Choose::Util": {
-    "Term::Choose": "*",
+  "Term::Form": {
     "Term::Choose::LineFold": "*",
     "Term::Choose::NCurses": "*"
   },
-  "Algorithm::KdTree": {
-    "NativeHelpers::Array": "0.02",
-    "LibraryMake": "0.02"
+  "Bamboo": {
+    "Panda": "0.0.3"
   },
-  "LendingClub": {
-    "JSON::Tiny": "0.1.0",
-    "Net::HTTP": "0.1.0"
+  "Net::Curl": {
+    
   },
-  "Serialize::Naive": {
+  "Staticish": {
     
   },
   "Test::META": {
     "META6": "0.0.4",
     "Test": "0.0.4"
   },
-  "Staticish": {
+  "Serialize::Naive": {
     
   },
-  "Net::Curl": {
-    
+  "LendingClub": {
+    "JSON::Tiny": "0.1.0",
+    "Net::HTTP": "0.1.0"
   },
-  "Bamboo": {
-    "Panda": "0.0.3"
-  },
-  "Unicode::UTF8-Parser": {
-    
-  },
-  "Automata::Cellular": {
-    
+  "Term::Choose::Util": {
+    "Term::Choose": "*",
+    "Term::Choose::LineFold": "*",
+    "Term::Choose::NCurses": "*"
   },
   "Net::Packet": {
-    
-  },
-  "HTTP::Server::Router": {
-    "HTTP::Server": "0.1.0"
-  },
-  "Test::Output": {
-    "Test": "1.001001"
-  },
-  "Stream::Buffered": {
-    "IO::Blob": "*",
-    "File::Temp": "*"
-  },
-  "FastCGI::NativeCall": {
-    
-  },
-  "Sum": {
-    
-  },
-  "SCGI": {
-    "PSGI": "*",
-    "HTTP::Status": "*",
-    "Netstring": "*"
-  },
-  "Benchmark::Plot": {
-    "SVG": "*",
-    "SVG::Plot": "*"
-  },
-  "SDL": {
     
   },
   "Inline::Scheme::Guile": {
     "LibraryMake": "0.1"
   },
-  "Compress::Brotli": {
-    "LibraryMake": "0.1.0",
-    "NativeCall": "0.1.0"
+  "Benchmark::Plot": {
+    "SVG": "*",
+    "SVG::Plot": "*"
   },
-  "Hiker": {
-    "Template::Mustache": "0.1",
-    "HTTP::Server::Async": "0.1",
-    "HTTP::Server::Router": "0.1"
-  },
-  "JSON5::Tiny": {
+  "Sum": {
     
   },
-  "LibraryMake": {
+  "FastCGI::NativeCall": {
     
+  },
+  "Stream::Buffered": {
+    "IO::Blob": "*",
+    "File::Temp": "*"
   },
   "ANTLR4": {
     
   },
-  "PathTools": {
+  "JSON5::Tiny": {
     
   },
   "Perl6::Literate": {
     
   },
+  "PathTools": {
+    
+  },
   "RPi::GpioDirect": {
     
   },
-  "Hash::Consistent": {
-    "String::CRC32": "0.0.1",
-    "Subsets::Common": "0.0.1"
+  "Text::Fortune": {
+    "File::Find": "*"
   },
-  "Cache::LRU": {
-    
+  "MongoDB": {
+    "Digest::MD5": "0.28.6",
+    "BSON": "0.28.6"
   },
-  "Object::Permission": {
-    
-  },
-  "ufo": {
-    
-  },
-  "Audio::Icecast": {
-    "URI::Template": "0.0.1",
-    "XML::Class": "0.0.1",
-    "HTTP::UserAgent": "0.0.1"
-  },
-  "Perl6 Snowball Binding": {
-    
-  },
-  "OO::Schema": {
-    "CompUnit::Util": "0.2.1"
+  "File::LibMagic": {
+    "File::Temp": "0.0.1"
   },
   "WebService::SOP": {
     "URI": "0.0.2",
@@ -1775,121 +903,48 @@
     "JSON::Fast": "0.0.2",
     "Digest::HMAC": "0.0.2"
   },
-  "File::LibMagic": {
-    "File::Temp": "0.0.1"
-  },
-  "CheckSocket": {
+  "Perl6 Snowball Binding": {
     
   },
-  "Prime::Factor": {
-    
-  },
-  "MongoDB": {
-    "Digest::MD5": "0.28.6",
-    "BSON": "0.28.6"
-  },
-  "November": {
-    "Digest": "*",
-    "HTML::Template": "*"
-  },
-  "Text::Fortune": {
-    "File::Find": "*"
-  },
-  "Audio::Libshout": {
-    "AccessorFacade": "0.0.8"
+  "Audio::Icecast": {
+    "URI::Template": "0.0.1",
+    "XML::Class": "0.0.1",
+    "HTTP::UserAgent": "0.0.1"
   },
   "App::jsonv": {
     "JSON::Tiny": "0.01"
   },
-  "NativeCall::TypeDiag": {
-    "File::Temp": "*"
-  },
-  "Auth::SAML2": {
-    "XML": "1.0.0",
-    "XML::Signature": "1.0.0",
-    "UUID": "1.0.0"
-  },
-  "Acme::Skynet": {
-    "Lingua::EN::Stem::Porter": "0.0.3"
+  "Form": {
+    
   },
   "HTTP::MultiPartParser": {
     
   },
-  "Digest::MD5": {
-    
-  },
-  "Form": {
-    
-  },
-  "Editsrc::Uggedit": {
-    "File::Temp": "*"
-  },
-  "LMDB": {
-    
-  },
-  "Path::Util": {
-    
-  },
-  "Lingua::Number": {
-    "JSON::Tiny": "*",
-    "XML": "*"
-  },
   "PSGI": {
     "HTTP::Status": "*"
-  },
-  "CSS::Module::CSS3::Selectors": {
-    "CSS::Grammar": "0.00.1",
-    "JSON::Fast": "0.00.1"
-  },
-  "Parse::Selenese": {
-    
   },
   "Locale::US": {
     
   },
-  "Find::Bundled": {
+  "Parse::Selenese": {
     
   },
-  "String::Koremutake": {
-    
-  },
-  "WebService::HazIP": {
-    "LWP::Simple": "1.0.0"
-  },
-  "HTML::Entity": {
+  "Coro::Simple": {
     
   },
   "ignore": {
     "File::Find": "*"
   },
-  "Coro::Simple": {
-    
+  "WebService::HazIP": {
+    "LWP::Simple": "1.0.0"
   },
   "Acme::Addslashes": {
-    
-  },
-  "Text::LTSV": {
-    
-  },
-  "Compress::Snappy": {
-    
-  },
-  "Term::ANSIColor": {
     
   },
   "Grammar::Debugger": {
     "Terminal::ANSIColor": "*"
   },
-  "Flower": {
-    "XML": "*"
-  },
-  "DateTime::Format": {
-    
-  },
-  "Config::INI": {
-    
-  },
-  "Test::Builder": {
+  "X::Protocol": {
     
   },
   "LacunaCookbuk::Client": {
@@ -1898,41 +953,34 @@
     "JSON::RPC": "v3.1.3",
     "Terminal::ANSIColor": "v3.1.3"
   },
-  "X::Protocol": {
+  "Test::Builder": {
     
+  },
+  "DateTime::Format": {
+    
+  },
+  "Flower": {
+    "XML": "*"
   },
   "HTTP::Tinyish": {
     "File::Temp": "*"
   },
-  "Digest::HMAC": {
-    "Digest": "1.0.0"
-  },
-  "LCS::BV": {
-    "LCS::All": "0.4.0"
+  "Inline": {
+    
   },
   "Math::Matrix": {
     "AttrX::Lazy": "0.1.0"
   },
-  "Object::Permission::Group": {
-    "Unix::Groups": "0.0.2",
-    "Object::Permission": "0.0.2"
-  },
-  "Inline": {
+  "Math::OddFunctions": {
     
   },
   "AttrX::InitArg": {
     
   },
-  "App::GPTrixie": {
-    "XML": "*"
-  },
-  "File::Spec::Case": {
+  "Template::Protone": {
     
   },
-  "Math::OddFunctions": {
-    
-  },
-  "String::CRC32": {
+  "String::Quotemeta": {
     
   },
   "Task::Galaxy": {
@@ -1978,26 +1026,999 @@
     "File::Find": "0.1",
     "BioPerl6": "0.1"
   },
-  "String::Quotemeta": {
-    
-  },
-  "Template::Protone": {
-    
-  },
-  "IRC::Client::Plugin::HNY": {
-    "Lingua::Conjunction:ver<1.001001>:auth<Zoffix Znet>": "1.001001",
-    "IRC::Client:ver<2.001001>:auth<Zoffix Znet>": "1.001001",
-    "WWW::Google::Time:ver<1.001001>:auth<Zoffix Znet>": "1.001001",
-    "Number::Denominate:ver<1.001001>:auth<Zoffix Znet>": "1.001001"
-  },
   "IRC::Client": {
     "Data::Dump": "2.003001"
   },
-  "String::Stream": {
+  "IRC::Client::Plugin::HNY": {
+    "WWW::Google::Time": "1.001001",
+    "Number::Denominate": "1.001001",
+    "IRC::Client": "1.001001",
+    "Lingua::Conjunction": "1.001001"
+  },
+  "Subsets::Common": {
     
   },
-  "NCurses": {
+  "Yapsi": {
     
+  },
+  "POSIX": {
+    
+  },
+  "Inline::Lua": {
+    
+  },
+  "Math::Vector": {
+    
+  },
+  "Scientist": {
+    
+  },
+  "TOML": {
+    "JSON::Tiny": "0.3.1alpha"
+  },
+  "Crypt::TweetNacl": {
+    "LibraryMake": "0.0.2"
+  },
+  "Data::Section::Simple": {
+    
+  },
+  "IO::String": {
+    
+  },
+  "Font::AFM": {
+    
+  },
+  "flow": {
+    
+  },
+  "TXN": {
+    "JSON::Tiny": "*",
+    "Config::TOML": "*",
+    "Digest::xxHash": "*"
+  },
+  "RPi": {
+    "POSIX": "0.1.1"
+  },
+  "IO::Path::More": {
+    "Shell::Command": "*",
+    "File::Find": "*"
+  },
+  "Native::LibC": {
+    
+  },
+  "Text::Spintax": {
+    "Test::META": "0.01"
+  },
+  "AWS::Pricing": {
+    "HTTP::Tinyish": "0.1.0"
+  },
+  "Log::Syslog::Native": {
+    
+  },
+  "Linux::Proc::Statm": {
+    
+  },
+  "Slang::Roman": {
+    
+  },
+  "Web::App::MVC": {
+    "JSON::Tiny": "*",
+    "SCGI": "*",
+    "Web::Template": "*",
+    "HTTP::Easy": "*",
+    "DB::Model::Easy": "*",
+    "Web": "*"
+  },
+  "Num::HexFloat": {
+    
+  },
+  "Config::TOML": {
+    "Crane": "*"
+  },
+  "Audio::Encode::LameMP3": {
+    "NativeHelpers::Array": "0.0.9",
+    "AccessorFacade": "0.0.9"
+  },
+  "HTTP::Server::Logger": {
+    "DateTime::Format": "0.1"
+  },
+  "Data::Dump": {
+    
+  },
+  "Overwatch": {
+    "Shell::Command": "0.1.0"
+  },
+  "Build::Simple": {
+    
+  },
+  "007": {
+    
+  },
+  "URI::Encode": {
+    
+  },
+  "__date": "2016-04-03T10:50:36Z",
+  "Email::Simple": {
+    "DateTime::Format": "2.0.0"
+  },
+  "Archive::SimpleZip": {
+    "CompUnit::Util": "0.1.1",
+    "Compress::Zlib": "0.1.1",
+    "IO::Blob": "0.1.1",
+    "Compress::Bzip2": "0.1.1",
+    "Compress::Zlib::Raw": "0.1.1"
+  },
+  "C::Parser": {
+    
+  },
+  "Bench": {
+    "Text::Table::Simple": "0.1.1"
+  },
+  "GGE": {
+    
+  },
+  "Algorithm::Trie::libdatrie": {
+    "LibraryMake": "0.2"
+  },
+  "DBIish": {
+    "NativeHelpers::Blob": "0.5.3"
+  },
+  "FastCGI": {
+    "PSGI": "*"
+  },
+  "Net::SMTP": {
+    "Digest": "1.1.0",
+    "IO::Socket::SSL": "1.1.0",
+    "MIME::Base64": "1.1.0",
+    "Email::Simple": "1.1.0",
+    "Digest::HMAC": "1.1.0"
+  },
+  "File::Zip": {
+    "Compress::Zlib": "*"
+  },
+  "Tinky": {
+    
+  },
+  "App::p6tags": {
+    "File::Find": "0.6"
+  },
+  "Terminal::Print": {
+    "Terminal::ANSIColor": "0.04"
+  },
+  "CompUnit::Repository::Panda": {
+    
+  },
+  "BioInfo": {
+    "Stats": "0.4.3"
+  },
+  "Net::XMPP": {
+    "MIME::Base64": "1.0.0",
+    "XML": "1.0.0",
+    "Net::DNS": "1.0.0"
+  },
+  "JSON::Marshal": {
+    "JSON::Tiny": "0.0.7",
+    "JSON::Name": "0.0.7"
+  },
+  "Test::Class": {
+    
+  },
+  "Marpa": {
+    
+  },
+  "SVG": {
+    "XML::Writer": "*"
+  },
+  "IO::Prompter": {
+    "Testing": "*"
+  },
+  "IUP": {
+    "NativeCall": "0.0.1"
+  },
+  "Text::Indented": {
+    
+  },
+  "HTTP::Server::Simple": {
+    
+  },
+  "Crust::Handler::SCGI": {
+    "SCGI": "1.0.0",
+    "IO::Blob": "1.0.0"
+  },
+  "Template6": {
+    
+  },
+  "JSON::Tiny": {
+    
+  },
+  "Module::Minter": {
+    "File::Directory::Tree": "0.04",
+    "Software::License": "0.04",
+    "File::Temp": "0.04"
+  },
+  "Date::WorkdayCalendar": {
+    
+  },
+  "Backtrace::AsHTML": {
+    
+  },
+  "Concurrent::BoundedChannel": {
+    
+  },
+  "Algorithm::MinMaxHeap": {
+    
+  },
+  "Pod::Parser": {
+    
+  },
+  "Software::License": {
+    
+  },
+  "UNIX::Privileges": {
+    
+  },
+  "Data::Selector": {
+    
+  },
+  "JSON::Unmarshal": {
+    "JSON::Name": "0.05",
+    "JSON::Fast": "0.05"
+  },
+  "Druid": {
+    
+  },
+  "Text::T9": {
+    
+  },
+  "Pod::PerlTricks": {
+    "JSON::Tiny": "0.01",
+    "Pod::Perl5": "0.01"
+  },
+  "Net::OSC": {
+    
+  },
+  "Game::Crypt": {
+    "Adventure::Engine": "0.2.2"
+  },
+  "PerlStore": {
+    
+  },
+  "Term::termios": {
+    
+  },
+  "Pod::Perl5": {
+    
+  },
+  "HTTP::Server": {
+    
+  },
+  "CSS::Module": {
+    "CSS::Module::CSS3::Selectors": "0.02.1",
+    "CSS::Specification": "0.02.1",
+    "CSS::Writer": "0.02.1",
+    "CSS::Grammar": "0.02.1",
+    "JSON::Fast": "0.02.1"
+  },
+  "Audio::Hydrogen": {
+    "XML::Class": "0.0.1"
+  },
+  "Crane": {
+    
+  },
+  "Acme::Meow": {
+    
+  },
+  "Stats": {
+    
+  },
+  "Lingua::EN::Stem::Porter": {
+    
+  },
+  "Pod::Coverage": {
+    "JSON::Tiny": "v0.1.0"
+  },
+  "HexDump::Tiny": {
+    
+  },
+  "Digest::PSHA1": {
+    "Digest": "1.0.0",
+    "Digest::HMAC": "1.0.0"
+  },
+  "Method::Modifiers": {
+    
+  },
+  "Image::PNG::Inflated": {
+    
+  },
+  "Text::Homoglyph": {
+    
+  },
+  "XML::Query": {
+    "XML": "*"
+  },
+  "IO::MiddleMan": {
+    
+  },
+  "Email::Notmuch": {
+    
+  },
+  "Native::Resources": {
+    "LibraryMake": "0.1.0"
+  },
+  "MessagePack": {
+    
+  },
+  "colomon::App::TagTools": {
+    "Audio::Taglib::Simple": "*"
+  },
+  "Text::Levenshtein::Damerau": {
+    
+  },
+  "MIME::Types": {
+    
+  },
+  "GTK::Simple": {
+    "LWP::Simple": "*"
+  },
+  "XML::Writer": {
+    
+  },
+  "JSON::Class": {
+    "JSON::Marshal": "0.0.6",
+    "JSON::Unmarshal": "0.0.6"
+  },
+  "URI::Template": {
+    
+  },
+  "Algorithm::TernarySearchTree": {
+    
+  },
+  "BreakDancer": {
+    "Shell::Command": "*"
+  },
+  "Net::POP3": {
+    "Digest": "1.0.0",
+    "IO::Socket::SSL": "1.0.0"
+  },
+  "Lingua::Conjunction": {
+    
+  },
+  "Log::D": {
+    
+  },
+  "TinyCC": {
+    
+  },
+  "Ini::Storage": {
+    "Path::Util": "0.8"
+  },
+  "Email::Valid": {
+    "Net::DNS": "0.3.2"
+  },
+  "Time::Duration": {
+    
+  },
+  "RPi::Device::PiFace": {
+    
+  },
+  "Math::ContinuedFractions": {
+    
+  },
+  "Audio::Convert::Samplerate": {
+    "NativeHelpers::Array": "0.0.6"
+  },
+  "WebService::AWS::Auth::V4": {
+    "Digest::SHA": "0.0.1",
+    "URI::Escape": "0.0.1",
+    "URI": "0.0.1",
+    "Digest::HMAC": "0.0.1"
+  },
+  "Web::Template": {
+    "Template6": "*",
+    "HTML::Template": "*",
+    "Template::Mojo": "*",
+    "Flower": "*"
+  },
+  "Algorithm::Elo": {
+    
+  },
+  "Uni63": {
+    
+  },
+  "Bailador": {
+    "URI": "*",
+    "Template::Mustache": "*",
+    "HTTP::Easy": "*",
+    "Template::Mojo": "*"
+  },
+  "Avro": {
+    "JSON::Tiny": "0.1.1",
+    "Compress::Zlib": "0.1.1"
+  },
+  "Image::PNG::Portable": {
+    "String::CRC32": "*",
+    "Compress::Zlib": "*"
+  },
+  "Text::Diff": {
+    "Algorithm::Diff": "*"
+  },
+  "JavaScript::SpiderMonkey": {
+    
+  },
+  "Algorithm::BinaryIndexedTree": {
+    
+  },
+  "Grammar::Profiler::Simple": {
+    
+  },
+  "File::Find::Duplicates": {
+    "Digest": "*",
+    "File::Compare": "*",
+    "File::Find": "*"
+  },
+  "CSV::Parser": {
+    
+  },
+  "Util::Bitfield": {
+    
+  },
+  "Audio::PortMIDI": {
+    
+  },
+  "JSON::WebToken": {
+    "Digest::SHA": "0.0.1",
+    "MIME::Base64": "0.0.1",
+    "Digest::HMAC": "0.0.1",
+    "JSON::Fast": "0.0.1"
+  },
+  "Slang::Tuxic": {
+    
+  },
+  "WebService::Justcoin": {
+    "JSON::Tiny": "0.0.1"
+  },
+  "IO::Blob": {
+    
+  },
+  "Haikunator": {
+    
+  },
+  "Text::Table::Simple": {
+    
+  },
+  "JSON::Path": {
+    "JSON::Tiny": "*"
+  },
+  "GD": {
+    
+  },
+  "Lingua::Unihan": {
+    "Encode": "0.1.0",
+    "DBIish": "0.1.0"
+  },
+  "PackUnpack": {
+    
+  },
+  "IRC::Utils": {
+    
+  },
+  "Test::Mock": {
+    
+  },
+  "Math::Polynomial": {
+    
+  },
+  "HTML::Template": {
+    
+  },
+  "Ident::Client": {
+    
+  },
+  "IO::Socket::SSL": {
+    "OpenSSL": "*"
+  },
+  "Base64": {
+    
+  },
+  "Algorithm::SetUnion": {
+    
+  },
+  "Syndication": {
+    "XML": "1.0.0"
+  },
+  "Module::Does": {
+    
+  },
+  "IO::Path::Mode": {
+    
+  },
+  "Inline::Brainfuck": {
+    "Term::termios": "1.001001"
+  },
+  "SVG::Plot": {
+    "SVG": "*"
+  },
+  "Lingua::EN::Numbers::Cardinal": {
+    
+  },
+  "DateTime::Parse": {
+    
+  },
+  "UUID": {
+    
+  },
+  "YAMLish": {
+    "MIME::Base64": "0.0.1"
+  },
+  "BSON": {
+    "Digest::MD5": "0.9.23",
+    "UUID": "0.9.23"
+  },
+  "Pekyll": {
+    "Template6": "*",
+    "Syndication": "*"
+  },
+  "Crypt::Libcrypt": {
+    
+  },
+  "HTTP::Client": {
+    "HTTP::Status": "*",
+    "MIME::Base64": "*"
+  },
+  "HTML::Restrict": {
+    "HTML::Parser::XML": "0.1"
+  },
+  "Inline::Perl5": {
+    "LibraryMake": "0.6"
+  },
+  "Acme::DSON": {
+    "JSON::Tiny": "0.2.1"
+  },
+  "Facter": {
+    
+  },
+  "Tardis": {
+    "Yapsi": "*"
+  },
+  "HTTP::Status": {
+    
+  },
+  "sake": {
+    
+  },
+  "Grammar::HTTP": {
+    
+  },
+  "Printing::Jdf": {
+    "XML": "0.1.0"
+  },
+  "LWP::Simple": {
+    "URI::Escape": "0.087",
+    "URI": "0.087",
+    "MIME::Base64": "0.087"
+  },
+  "File::Compare": {
+    
+  },
+  "Gumbo": {
+    "XML": "*"
+  },
+  "Pastebin::Shadowcat": {
+    "HTML::Entity": "2.001001",
+    "LWP::Simple": "2.001001",
+    "URI::Encode": "2.001001"
+  },
+  "Algorithm::Soundex": {
+    
+  },
+  "Farabi6": {
+    "Debugger::UI::CommandLine": "*",
+    "p6doc": "*",
+    "JSON::Tiny": "*",
+    "Browser::Open": "*",
+    "URI": "*",
+    "Pod::To::HTML": "*",
+    "HTTP::Easy": "*",
+    "File::Temp": "*"
+  },
+  "Green": {
+    "Terminal::ANSIColor": "0.1.0"
+  },
+  "Inline::Python": {
+    "LibraryMake": "0.1"
+  },
+  "IO::Capture::Simple": {
+    
+  },
+  "HTTP::ParseParams": {
+    "URI::Encode": "1.0.0"
+  },
+  "Test::IO::Socket::Async": {
+    "OO::Monitors": "0.1"
+  },
+  "Docker::File": {
+    
+  },
+  "Text::VimColour": {
+    "File::Temp": "0.4"
+  },
+  "Inline::Ruby": {
+    "LibraryMake": "0.3.0"
+  },
+  "Git::PurePerl": {
+    "Digest": "*",
+    "DateTime::TimeZone": "*",
+    "Compress::Zlib": "*",
+    "File::Find": "*"
+  },
+  "MIME::QuotedPrint": {
+    
+  },
+  "Data::ICal": {
+    
+  },
+  "App::Mi6": {
+    "Shell::Command": "*",
+    "Pod::To::Markdown": "*",
+    "File::Find": "*"
+  },
+  "Net::SOCKS": {
+    
+  },
+  "Digest": {
+    
+  },
+  "wig": {
+    
+  },
+  "Audio::Sndfile": {
+    
+  },
+  "DEBUG": {
+    
+  },
+  "Grammar::Highlighter": {
+    "Terminal::ANSIColor": "0.1"
+  },
+  "Algorithm::LCS": {
+    
+  },
+  "DateTime::Math": {
+    
+  },
+  "Sys::Utmp": {
+    "LibraryMake": "0.0.8"
+  },
+  "Oyatul": {
+    "JSON::Tiny": "0.0.2"
+  },
+  "OpenSSL": {
+    "Digest": "0.0.2",
+    "Find::Bundled": "0.0.2"
+  },
+  "Electron": {
+    "JSON::RPC": "*",
+    "File::Which": "*"
+  },
+  "Slang::Piersing": {
+    
+  },
+  "App::ecoreadme": {
+    "IO::Socket::SSL": "0.2",
+    "LWP::Simple": "0.2",
+    "IO::Capture::Simple": "0.2",
+    "Panda": "0.2"
+  },
+  "System::Passwd": {
+    
+  },
+  "XML::Signature": {
+    "Digest": "1.0.0",
+    "XML::Canonical": "1.0.0",
+    "MIME::Base64": "1.0.0",
+    "XML": "1.0.0",
+    "OpenSSL": "1.0.0",
+    "UUID": "1.0.0"
+  },
+  "v5": {
+    
+  },
+  "META6": {
+    "JSON::Class": "0.0.7"
+  },
+  "Compress::Bzip2": {
+    "Compress::Bzip2::Raw": "0.3.0"
+  },
+  "Locale::Codes": {
+    
+  },
+  "WebService::Google::PageRank": {
+    "URI::Escape": "0.1.0",
+    "HTTP::Tinyish": "0.1.0"
+  },
+  "Algorithm::AhoCorasick": {
+    
+  },
+  "Math::ThreeD": {
+    
+  },
+  "MPD": {
+    
+  },
+  "Text::Markdown": {
+    
+  },
+  "XXX": {
+    "YAML": "*"
+  },
+  "Cookie::Baker": {
+    "URI::Encode": "*"
+  },
+  "PerlMongers::Hannover": {
+    "IO::Capture::Simple": "0.8.6"
+  },
+  "RPi::Device::PiGlow": {
+    "RPi::Device::SMBus": "0.0.1"
+  },
+  "Selenium::WebDriver": {
+    "JSON::Tiny": "*",
+    "MIME::Base64": "*",
+    "URI::Encode": "*",
+    "HTTP::UserAgent": "*",
+    "File::Zip": "*",
+    "File::Which": "*",
+    "File::Temp": "*"
+  },
+  "XML": {
+    
+  },
+  "Crypt::Bcrypt": {
+    
+  },
+  "WebService::Lastfm": {
+    "Digest::MD5": "0.0.2",
+    "JSON::Tiny": "0.0.2",
+    "LWP::Simple": "0.0.2",
+    "URI::Encode": "0.0.2"
+  },
+  "RPi::Device::DS18B20": {
+    "RPi": "0.2.0"
+  },
+  "Terminal::ANSIColor": {
+    
+  },
+  "Serialize::Tiny": {
+    
+  },
+  "p6doc": {
+    "URI": "*",
+    "Panda": "*",
+    "File::Temp": "*"
+  },
+  "Crust::Middleware::Syslog": {
+    "Crust": "1.0.0",
+    "Log::Syslog::Native": "1.0.0"
+  },
+  "Algorithm::Diff": {
+    
+  },
+  "Config::Simple": {
+    "JSON::Pretty": "*",
+    "Data::Dump": "*",
+    "Config::INI": "*"
+  },
+  "CLDR::List": {
+    
+  },
+  "JSON::Name": {
+    
+  },
+  "Crypt::RC4": {
+    
+  },
+  "Pod::To::HTML": {
+    "URI": "*"
+  },
+  "Algorithm::Kruskal": {
+    "Algorithm::MinMaxHeap::Comparable": "*",
+    "Algorithm::SetUnion": "*",
+    "Algorithm::MinMaxHeap": "*"
+  },
+  "Control::Bail": {
+    
+  },
+  "zef": {
+    
+  },
+  "PDF::Grammar": {
+    "JSON::Fast": "0.0.6"
+  },
+  "Perl6-Math-Quaternion": {
+    
+  },
+  "Terminal::WCWidth": {
+    
+  },
+  "Typesafe::HTML": {
+    "XML": "0.1.0"
+  },
+  "Testing": {
+    
+  },
+  "Masquerade": {
+    "JSON::Tiny": "*"
+  },
+  "Acme::Cow": {
+    
+  },
+  "DB::ORM::Quicky": {
+    "DBIish": "*"
+  },
+  "Git::Wrapper": {
+    
+  },
+  "IoC": {
+    
+  },
+  "Clifford": {
+    
+  },
+  "List::Utils": {
+    
+  },
+  "Web::Scraper": {
+    "LWP::Simple": "0.1.0",
+    "XML::Query": "0.1.0",
+    "HTML::Parser::XML": "0.1.0"
+  },
+  "Proc::Screen": {
+    "Test": "v0.0.1",
+    "File::Temp": "v0.0.1"
+  },
+  "Inline::Scheme::Gambit": {
+    "LibraryMake": "0.01"
+  },
+  "Lingua::EN::Sentence": {
+    
+  },
+  "Unicode::UTF8-Parser": {
+    
+  },
+  "Algorithm::KdTree": {
+    "NativeHelpers::Array": "0.02",
+    "LibraryMake": "0.02"
+  },
+  "HTTP::Server::Router": {
+    "HTTP::Server": "0.1.0"
+  },
+  "Automata::Cellular": {
+    
+  },
+  "SDL": {
+    
+  },
+  "SCGI": {
+    "PSGI": "*",
+    "HTTP::Status": "*",
+    "Netstring": "*"
+  },
+  "Test::Output": {
+    "Test": "1.001001"
+  },
+  "LibraryMake": {
+    
+  },
+  "Hiker": {
+    "Template::Mustache": "0.1",
+    "HTTP::Server::Async": "0.1",
+    "HTTP::Server::Router": "0.1"
+  },
+  "Compress::Brotli": {
+    "LibraryMake": "0.1.0",
+    "NativeCall": "0.1.0"
+  },
+  "Cache::LRU": {
+    
+  },
+  "Hash::Consistent": {
+    "String::CRC32": "0.0.1",
+    "Subsets::Common": "0.0.1"
+  },
+  "ufo": {
+    
+  },
+  "Object::Permission": {
+    
+  },
+  "November": {
+    "Digest": "*",
+    "HTML::Template": "*"
+  },
+  "Prime::Factor": {
+    
+  },
+  "CheckSocket": {
+    
+  },
+  "OO::Schema": {
+    "CompUnit::Util": "0.2.1"
+  },
+  "Audio::Libshout": {
+    "AccessorFacade": "0.0.8"
+  },
+  "Auth::SAML2": {
+    "XML": "1.0.0",
+    "XML::Signature": "1.0.0",
+    "UUID": "1.0.0"
+  },
+  "NativeCall::TypeDiag": {
+    "File::Temp": "*"
+  },
+  "Editsrc::Uggedit": {
+    "File::Temp": "*"
+  },
+  "Digest::MD5": {
+    
+  },
+  "Acme::Skynet": {
+    "Lingua::EN::Stem::Porter": "0.0.3"
+  },
+  "CSS::Module::CSS3::Selectors": {
+    "CSS::Grammar": "0.00.1",
+    "JSON::Fast": "0.00.1"
+  },
+  "Lingua::Number": {
+    "JSON::Tiny": "*",
+    "XML": "*"
+  },
+  "Path::Util": {
+    
+  },
+  "LMDB": {
+    
+  },
+  "String::Koremutake": {
+    
+  },
+  "Find::Bundled": {
+    
+  },
+  "HTML::Entity": {
+    
+  },
+  "Term::ANSIColor": {
+    
+  },
+  "Compress::Snappy": {
+    
+  },
+  "Text::LTSV": {
+    
+  },
+  "Config::INI": {
+    
+  },
+  "Digest::HMAC": {
+    "Digest": "1.0.0"
+  },
+  "Object::Permission::Group": {
+    "Unix::Groups": "0.0.2",
+    "Object::Permission": "0.0.2"
+  },
+  "LCS::BV": {
+    "LCS::All": "0.4.0"
+  },
+  "String::CRC32": {
+    
+  },
+  "File::Spec::Case": {
+    
+  },
+  "App::GPTrixie": {
+    "XML": "*"
+  },
+  "Operator::feq": {
+    "Text::Levenshtein::Damerau": "0.1"
   },
   "Task::Star": {
     "p6doc": "*",
@@ -2027,73 +2048,52 @@
     "File::Find": "*",
     "Test::Mock": "*"
   },
-  "Operator::feq": {
-    "Text::Levenshtein::Damerau": "0.1"
+  "NCurses": {
+    
   },
-  "Subsets::Common": {
+  "String::Stream": {
+    
+  },
+  "ArrayHash": {
     
   },
   "Pastebin::Gist": {
     "HTTP::Tinyish": "1.001001"
   },
-  "ArrayHash": {
-    
+  "HTTP::Server::Async": {
+    "HTTP::Server": "0.1.1"
   },
-  "Typesafe::XHTML::Writer": {
-    "XML": "0.1.0",
-    "Typesafe::HTML": "0.1.0"
-  },
-  "Audio::Silan": {
-    "JSON::Fast": "0.0.3",
-    "File::Which": "0.0.3"
-  },
-  "POSIX": {
+  "overload::constant": {
     
   },
   "CSS::Grammar": {
     "JSON::Fast": "0.02.3"
   },
-  "overload::constant": {
-    
+  "Audio::Silan": {
+    "JSON::Fast": "0.0.3",
+    "File::Which": "0.0.3"
   },
-  "Yapsi": {
-    
-  },
-  "HTTP::Server::Async": {
-    "HTTP::Server": "0.1.1"
-  },
-  "Scientist": {
-    
+  "Typesafe::XHTML::Writer": {
+    "XML": "0.1.0",
+    "Typesafe::HTML": "0.1.0"
   },
   "Rakudo::Perl6::Parsing": {
     
   },
-  "Math::Vector": {
-    
+  "Path::Router": {
+    "IO::String": "0.1",
+    "Linenoise": "0.1"
   },
-  "Inline::Lua": {
-    
+  "BioPerl6": {
+    "File::Temp": "0.0.1"
   },
-  "Crypt::TweetNacl": {
-    "LibraryMake": "0.0.2"
-  },
-  "Compress::Bzip2::Raw": {
+  "Acme::Flutterby": {
     
   },
   "Math::Random": {
     
   },
-  "Acme::Flutterby": {
+  "Compress::Bzip2::Raw": {
     
-  },
-  "BioPerl6": {
-    "File::Temp": "0.0.1"
-  },
-  "TOML": {
-    "JSON::Tiny": "0.3.1alpha"
-  },
-  "Path::Router": {
-    "IO::String": "0.1",
-    "Linenoise": "0.1"
   }
 }
