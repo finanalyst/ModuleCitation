@@ -4,6 +4,8 @@ use JSON::Fast;
 
 my $projectsfile = 'projects.txt';
 my %citing;
+my $name;
+
 %citing<__date> = DateTime.new(now).Str;
 say "Downloading projects file";
 
@@ -16,10 +18,11 @@ if $! {
 my $c = 0;
 
 for $list.list -> $mod {
-	unless %citing{$mod<name>}:exists and %citing{$mod<name>} gt $mod<version> {
-		%citing{$mod<name>} = {};
+	unless $mod<name> ~~ / ^ [ <-[:]> || '::' ] * / and %citing{$/}:exists and %citing{$/} gt $mod<version>  {
+                $name = $/;
+		%citing{$name} = {};
 		with $mod<depends> {
-			for $mod<depends>.flat { %citing{$mod<name>}{$_} = $mod<version> }
+			for $mod<depends>.flat { %citing{$name}{$/} = $mod<version> if / ^ [ <-[:]> || '::' ] * /  }
 		}
 	}
 }

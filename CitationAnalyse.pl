@@ -159,7 +159,7 @@ multi MAIN ( Int :$top = 50, Int :$col = 2, Bool :$textfile = True, Bool :$html 
 			%params<ErrorsExist> = Bool::False ;
 		}
 		$template.with_params( %params );
-		"index.html".IO.spurt: $template.output;
+		"../git_html/index.html".IO.spurt: $template.output;
 	}
 };
 
