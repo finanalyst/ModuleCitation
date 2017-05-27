@@ -13,7 +13,7 @@
         <script type="text/javascript"
             src="synchronizer.js">
         </script>
-        <style> 
+        <style>
             .dygraph-legend > span { display: none; }
             .dygraph-legend > span.highlight { display: inline; }
         </style>
@@ -21,719 +21,570 @@
 <body>
 	<div class="container">
 		<header class="panel panel-primary lead">
-			<div class="panel-heading">
+			<div class="panel-heading"Mod>
 				<h1 class="panel-title">Ecosystem Citation Index</h1>
 			</div>
 			<div class="panel-body suckin-btm">
 				<img class="pull-right" alt="»ö«" id="logo" src="camelia-logo.png">
-				<p>A citation index is calculated for each module in the 
+				<p>A citation index is calculated for each module in the
 				<a href="http://modules.perl6.org">Perl6 Ecosystem</a>, numbering 840 as of 2017-05-27.</p>
-				<p>246 <i>Topline</i> modules were cited, or  29.29% of the total.</p>
-				
+				<p>261 <i>Topline</i> modules were cited, or  31.07% of the total.</p>
+
 				<P>A module <I>simply cites</I> another
-					if it lists it in the <B>"depends"</B> list. A module <I>recursively cites</I> another if a cited 
+					if it lists it in the <B>"depends"</B> list. A module <I>recursively cites</I> another if a cited
 					module in turn cites another module.</P>
-                                <P>This page contains the data for the top 50 modules in <a href="#graphs">graphical form</a> from the time data was collected to the present, 
-				<a href="#tabulation">tabulated</a> for the top 50 modules. During processing, 
-				<a href="#errorsprocessing">unexpectated situations</a> are listed, and then the <a href="#definitions">definitions and credits</a> are provided.<p>
+					<P>The following modules are considered to exist in all installations and so excluded from this analysis:
+						<B>Test, NativeCall, zef</B>.
+					</P>
+					<P>This page contains the data for the top 50 modules in
+					<a href="#graphs">graphical form</a> from the time data was collected to the present,
+					<a href="#tabulation">tabulated</a> for the top 50 modules. Modules
+					<a href="#xecosystem">not in the Ecosystem</a> (possibly module meta data errors) are listed,
+					followed by <a href="#definitions">definitions and credits</a>.<p>
 			</div>
 		</header>
 		<table class="table table-condensed" id="graphs">
-                    <tr>
-                        <th style="text-align:center">Simply Cited</th><th style="text-align:center">Recursively Cited</th>
-                    </tr>
-                    <tr>
-                        <td><div class="panel panel-default" id="simple" style="margin: auto"></div></td>
-                        <td><div class="panel panel-default" id="recursive" style="margin: auto"></div></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2" style="text-align:center">All Module Numbers</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><div class="panel panel-default" id="allmods" style="margin: auto"></div></td>
-                    </tr>
+      <tr>
+          <th style="text-align:center">Simply Cited</th><th style="text-align:center">Recursively Cited</th>
+      </tr>
+      <tr>
+          <td><div class="panel panel-default" id="simple" style="margin: auto"></div></td>
+          <td><div class="panel panel-default" id="recursive" style="margin: auto"></div></td>
+      </tr>
+      <tr>
+          <th colspan="2" style="text-align:center">All Module Numbers</th>
+      </tr>
+      <tr>
+          <td colspan="2"><div class="panel panel-default" id="allmods" style="margin: auto"></div></td>
+      </tr>
 		</table>
 		<div class="panel panel-default"  id="tabulation">
 			<div class="table-responsive">
-			  <table class="table table-condensed table-striped panel-body" id="dists">	
+			  <table class="table table-condensed table-striped panel-body" id="dists">
 			    <thead>
 			      <tr>
 			        <th></th>
-			        <th colspan="4" style="text-align: center">Sorted in simple order</th>
-			        <th></th>
-			        <th colspan="4" style="text-align: center">Sorted in recursive order</th>
+			        <th colspan="3" style="text-align: center">Sorted in simple order</th>
+			        <th colspan="3" style="text-align: center">Sorted in recursive order</th>
 			      </tr>
 			      <tr>
 			        <th></th>
-			        <th colspan="2" style="text-align: center">Simple</th>
-			        <th colspan="2" style="text-align: center">Recursive</th>
+			        <th style="text-align: center">Simple</th>
+			        <th style="text-align: center">Recursive</th>
 			        <th></th>
-			        <th colspan="2" style="text-align: center">Simple</th>
-			        <th colspan="2" style="text-align: center">Recursive</th>
+			        <th style="text-align: center">Simple</th>
+			        <th style="text-align: center">Recursive</th>
 			      </tr>
 			      <tr>
+							<th>Order</th>
 			        <th>Module Name</th>
-			        <th>Order</th>
 			        <th>Index</td>
-			        <th>Order</th>
 			        <th>Index</td>
 			        <th>Module Name</th>
-			        <th>Order</th>
 			        <th>Index</th>
-			        <th>Order</th>
 			        <th>Index</th>
 			      </tr>
 			    </thead>
 			    <tbody>
 			      
 			      <tr>
+			        <td class="name">  1</td>
 			        <td class="name">JSON::Fast</td>
-			        <td>  1</td>
-			        <td> 15.45</td>
-			        <td>  1</td>
-			        <td> 35.77</td>
+			        <td> 14.56</td>
+			        <td> 33.72</td>
 			        <td>JSON::Fast</td>
-			        <td>  1</td>
-			        <td> 15.45</td>
-			        <td>  1</td>
-			        <td> 35.77</td>
+			        <td> 14.56</td>
+			        <td> 33.72</td>
 			      </tr>
 			      
 			      <tr>
+			        <td class="name">  2</td>
 			        <td class="name">JSON::Tiny</td>
-			        <td>  2</td>
-			        <td> 13.01</td>
-			        <td>  7</td>
-			        <td> 19.11</td>
-			        <td>MIME::Base64</td>
-			        <td> 10</td>
-			        <td>  6.50</td>
-			        <td>  2</td>
-			        <td> 26.42</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">HTTP::UserAgent</td>
-			        <td>  3</td>
-			        <td> 10.57</td>
-			        <td> 12</td>
-			        <td> 13.41</td>
-			        <td>File::Directory::Tree</td>
-			        <td> 99</td>
-			        <td>  0.81</td>
-			        <td>  3</td>
-			        <td> 24.80</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">XML</td>
-			        <td>  4</td>
-			        <td>  8.94</td>
-			        <td> 14</td>
-			        <td> 12.20</td>
-			        <td>File::Temp</td>
-			        <td>  8</td>
-			        <td>  6.91</td>
-			        <td>  4</td>
-			        <td> 24.39</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Test::META</td>
-			        <td>  5</td>
-			        <td>  8.54</td>
-			        <td> 21</td>
-			        <td>  8.54</td>
-			        <td>URI</td>
-			        <td>  6</td>
-			        <td>  7.32</td>
-			        <td>  5</td>
-			        <td> 23.98</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">URI</td>
-			        <td>  6</td>
-			        <td>  7.32</td>
-			        <td>  5</td>
-			        <td> 23.98</td>
-			        <td>HTTP::Status</td>
-			        <td> 24</td>
-			        <td>  2.85</td>
-			        <td>  6</td>
-			        <td> 22.76</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">LibraryMake</td>
-			        <td>  7</td>
-			        <td>  6.91</td>
-			        <td> 25</td>
-			        <td>  7.72</td>
+			        <td> 12.26</td>
+			        <td> 18.01</td>
 			        <td>JSON::Tiny</td>
-			        <td>  2</td>
-			        <td> 13.01</td>
-			        <td>  7</td>
-			        <td> 19.11</td>
+			        <td>  6.13</td>
+			        <td> 24.90</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">File::Temp</td>
-			        <td>  8</td>
-			        <td>  6.91</td>
-			        <td>  4</td>
-			        <td> 24.39</td>
-			        <td>JSON::Name</td>
-			        <td> 29</td>
-			        <td>  2.44</td>
-			        <td>  8</td>
-			        <td> 14.63</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">File::Find</td>
-			        <td>  9</td>
-			        <td>  6.91</td>
-			        <td> 22</td>
-			        <td>  8.54</td>
-			        <td>Encode</td>
-			        <td> 100</td>
-			        <td>  0.81</td>
-			        <td>  9</td>
-			        <td> 14.23</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">MIME::Base64</td>
-			        <td> 10</td>
-			        <td>  6.50</td>
-			        <td>  2</td>
-			        <td> 26.42</td>
-			        <td>DateTime::Parse</td>
-			        <td> 199</td>
-			        <td>  0.41</td>
-			        <td> 10</td>
-			        <td> 13.82</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Terminal::ANSIColor</td>
-			        <td> 11</td>
-			        <td>  6.10</td>
-			        <td> 16</td>
-			        <td> 11.79</td>
-			        <td>JSON::Unmarshal</td>
-			        <td> 42</td>
-			        <td>  1.63</td>
-			        <td> 11</td>
-			        <td> 13.41</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">IO::Socket::SSL</td>
-			        <td> 12</td>
-			        <td>  6.10</td>
-			        <td> 23</td>
-			        <td>  8.13</td>
+			        <td class="name">  3</td>
+			        <td class="name">HTTP::UserAgent</td>
+			        <td>  9.96</td>
+			        <td> 12.64</td>
 			        <td>HTTP::UserAgent</td>
-			        <td>  3</td>
-			        <td> 10.57</td>
-			        <td> 12</td>
-			        <td> 13.41</td>
+			        <td>  0.77</td>
+			        <td> 23.37</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">Sparrowdo</td>
-			        <td> 13</td>
-			        <td>  4.88</td>
-			        <td> 38</td>
-			        <td>  4.88</td>
-			        <td>JSON::Marshal</td>
-			        <td> 91</td>
-			        <td>  0.81</td>
-			        <td> 13</td>
-			        <td> 13.01</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">LWP::Simple</td>
-			        <td> 14</td>
-			        <td>  4.47</td>
-			        <td> 30</td>
-			        <td>  6.50</td>
+			        <td class="name">  4</td>
+			        <td class="name">XML</td>
+			        <td>  8.43</td>
+			        <td> 11.49</td>
 			        <td>XML</td>
-			        <td>  4</td>
-			        <td>  8.94</td>
-			        <td> 14</td>
-			        <td> 12.20</td>
+			        <td>  6.51</td>
+			        <td> 22.99</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">Digest::HMAC</td>
-			        <td> 15</td>
-			        <td>  4.47</td>
-			        <td> 27</td>
-			        <td>  7.72</td>
-			        <td>JSON::Class</td>
-			        <td> 30</td>
-			        <td>  2.44</td>
-			        <td> 15</td>
-			        <td> 12.20</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Digest</td>
-			        <td> 16</td>
-			        <td>  4.47</td>
-			        <td> 18</td>
-			        <td> 11.38</td>
-			        <td>Terminal::ANSIColor</td>
-			        <td> 11</td>
-			        <td>  6.10</td>
-			        <td> 16</td>
-			        <td> 11.79</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Shell::Command</td>
-			        <td> 17</td>
-			        <td>  4.07</td>
-			        <td> 42</td>
-			        <td>  4.07</td>
-			        <td>OpenSSL</td>
-			        <td> 20</td>
-			        <td>  3.25</td>
-			        <td> 17</td>
-			        <td> 11.79</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">HTTP::Tinyish</td>
-			        <td> 18</td>
-			        <td>  4.07</td>
-			        <td> 36</td>
-			        <td>  5.28</td>
-			        <td>Digest</td>
-			        <td> 16</td>
-			        <td>  4.47</td>
-			        <td> 18</td>
-			        <td> 11.38</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">DBIish</td>
-			        <td> 19</td>
-			        <td>  3.66</td>
-			        <td> 43</td>
-			        <td>  4.07</td>
-			        <td>PSGI</td>
-			        <td> 28</td>
-			        <td>  2.44</td>
-			        <td> 19</td>
-			        <td> 10.57</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">OpenSSL</td>
-			        <td> 20</td>
-			        <td>  3.25</td>
-			        <td> 17</td>
-			        <td> 11.79</td>
-			        <td>META6</td>
-			        <td> 41</td>
-			        <td>  1.63</td>
-			        <td> 20</td>
-			        <td>  9.35</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">File::Which</td>
-			        <td> 21</td>
-			        <td>  3.25</td>
-			        <td> 26</td>
-			        <td>  7.72</td>
+			        <td class="name">  5</td>
+			        <td class="name">Test::META</td>
+			        <td>  8.05</td>
+			        <td>  8.05</td>
 			        <td>Test::META</td>
-			        <td>  5</td>
-			        <td>  8.54</td>
-			        <td> 21</td>
-			        <td>  8.54</td>
+			        <td>  6.90</td>
+			        <td> 22.61</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">URI::Encode</td>
-			        <td> 22</td>
-			        <td>  2.85</td>
-			        <td> 29</td>
-			        <td>  6.50</td>
+			        <td class="name">  6</td>
+			        <td class="name">URI</td>
+			        <td>  6.90</td>
+			        <td> 22.61</td>
+			        <td>URI</td>
+			        <td>  2.68</td>
+			        <td> 21.46</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name">  7</td>
+			        <td class="name">File::Find</td>
+			        <td>  6.51</td>
+			        <td>  8.05</td>
 			        <td>File::Find</td>
-			        <td>  9</td>
-			        <td>  6.91</td>
-			        <td> 22</td>
-			        <td>  8.54</td>
+			        <td> 12.26</td>
+			        <td> 18.01</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">NativeHelpers::Array</td>
-			        <td> 23</td>
-			        <td>  2.85</td>
-			        <td> 45</td>
-			        <td>  3.66</td>
-			        <td>IO::Socket::SSL</td>
-			        <td> 12</td>
-			        <td>  6.10</td>
-			        <td> 23</td>
-			        <td>  8.13</td>
+			        <td class="name">  8</td>
+			        <td class="name">File::Temp</td>
+			        <td>  6.51</td>
+			        <td> 22.99</td>
+			        <td>File::Temp</td>
+			        <td>  2.30</td>
+			        <td> 13.79</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">HTTP::Status</td>
-			        <td> 24</td>
-			        <td>  2.85</td>
-			        <td>  6</td>
-			        <td> 22.76</td>
-			        <td>HTTP::Easy</td>
-			        <td> 25</td>
-			        <td>  2.85</td>
-			        <td> 24</td>
-			        <td>  8.13</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">HTTP::Easy</td>
-			        <td> 25</td>
-			        <td>  2.85</td>
-			        <td> 24</td>
-			        <td>  8.13</td>
+			        <td class="name">  9</td>
+			        <td class="name">LibraryMake</td>
+			        <td>  6.51</td>
+			        <td>  7.28</td>
 			        <td>LibraryMake</td>
-			        <td>  7</td>
-			        <td>  6.91</td>
-			        <td> 25</td>
-			        <td>  7.72</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">DateTime::Format</td>
-			        <td> 26</td>
-			        <td>  2.85</td>
-			        <td> 28</td>
-			        <td>  7.72</td>
-			        <td>File::Which</td>
-			        <td> 21</td>
-			        <td>  3.25</td>
-			        <td> 26</td>
-			        <td>  7.72</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Bailador</td>
-			        <td> 27</td>
-			        <td>  2.85</td>
-			        <td> 58</td>
-			        <td>  2.85</td>
-			        <td>Digest::HMAC</td>
-			        <td> 15</td>
-			        <td>  4.47</td>
-			        <td> 27</td>
-			        <td>  7.72</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">PSGI</td>
-			        <td> 28</td>
-			        <td>  2.44</td>
-			        <td> 19</td>
-			        <td> 10.57</td>
-			        <td>DateTime::Format</td>
-			        <td> 26</td>
-			        <td>  2.85</td>
-			        <td> 28</td>
-			        <td>  7.72</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">JSON::Name</td>
-			        <td> 29</td>
-			        <td>  2.44</td>
-			        <td>  8</td>
-			        <td> 14.63</td>
-			        <td>URI::Encode</td>
-			        <td> 22</td>
-			        <td>  2.85</td>
-			        <td> 29</td>
-			        <td>  6.50</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">JSON::Class</td>
-			        <td> 30</td>
-			        <td>  2.44</td>
-			        <td> 15</td>
-			        <td> 12.20</td>
-			        <td>LWP::Simple</td>
-			        <td> 14</td>
-			        <td>  4.47</td>
-			        <td> 30</td>
-			        <td>  6.50</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Crust</td>
-			        <td> 31</td>
-			        <td>  2.44</td>
-			        <td> 57</td>
-			        <td>  2.85</td>
-			        <td>JSON::Pretty</td>
-			        <td> 56</td>
-			        <td>  1.22</td>
-			        <td> 31</td>
-			        <td>  6.50</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Compress::Zlib</td>
-			        <td> 32</td>
-			        <td>  2.44</td>
-			        <td> 52</td>
-			        <td>  3.25</td>
-			        <td>HTTP::MultiPartParser</td>
-			        <td> 94</td>
-			        <td>  0.81</td>
-			        <td> 32</td>
-			        <td>  6.10</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Template6</td>
-			        <td> 33</td>
-			        <td>  2.03</td>
-			        <td> 55</td>
-			        <td>  2.85</td>
-			        <td>Data::Dump</td>
-			        <td> 203</td>
-			        <td>  0.41</td>
-			        <td> 33</td>
-			        <td>  5.69</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">YAMLish</td>
-			        <td> 34</td>
-			        <td>  1.63</td>
-			        <td> 66</td>
-			        <td>  1.63</td>
-			        <td>Config::INI</td>
-			        <td> 209</td>
-			        <td>  0.41</td>
-			        <td> 34</td>
-			        <td>  5.69</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Template::Mojo</td>
-			        <td> 35</td>
-			        <td>  1.63</td>
-			        <td> 40</td>
-			        <td>  4.47</td>
-			        <td>NativeHelpers::Blob</td>
-			        <td> 40</td>
-			        <td>  1.63</td>
-			        <td> 35</td>
-			        <td>  5.28</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">SVG</td>
-			        <td> 36</td>
-			        <td>  1.63</td>
-			        <td> 73</td>
-			        <td>  1.63</td>
-			        <td>HTTP::Tinyish</td>
-			        <td> 18</td>
-			        <td>  4.07</td>
-			        <td> 36</td>
-			        <td>  5.28</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Pod::To::Markdown</td>
-			        <td> 37</td>
-			        <td>  1.63</td>
-			        <td> 74</td>
-			        <td>  1.63</td>
-			        <td>Config::Simple</td>
-			        <td> 208</td>
-			        <td>  0.41</td>
-			        <td> 37</td>
-			        <td>  5.28</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">Pod::To::HTML</td>
-			        <td> 38</td>
-			        <td>  1.63</td>
-			        <td> 75</td>
-			        <td>  1.63</td>
-			        <td>Sparrowdo</td>
-			        <td> 13</td>
-			        <td>  4.88</td>
-			        <td> 38</td>
-			        <td>  4.88</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">OO::Monitors</td>
-			        <td> 39</td>
-			        <td>  1.63</td>
-			        <td> 56</td>
-			        <td>  2.85</td>
-			        <td>IO::Blob</td>
-			        <td> 43</td>
-			        <td>  1.63</td>
-			        <td> 39</td>
-			        <td>  4.88</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">NativeHelpers::Blob</td>
-			        <td> 40</td>
-			        <td>  1.63</td>
-			        <td> 35</td>
-			        <td>  5.28</td>
-			        <td>Template::Mojo</td>
-			        <td> 35</td>
-			        <td>  1.63</td>
-			        <td> 40</td>
-			        <td>  4.47</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">META6</td>
-			        <td> 41</td>
-			        <td>  1.63</td>
-			        <td> 20</td>
-			        <td>  9.35</td>
-			        <td>Base64</td>
-			        <td> 46</td>
-			        <td>  1.63</td>
-			        <td> 41</td>
-			        <td>  4.47</td>
-			      </tr>
-			      
-			      <tr>
-			        <td class="name">JSON::Unmarshal</td>
-			        <td> 42</td>
-			        <td>  1.63</td>
-			        <td> 11</td>
+			        <td>  0.77</td>
 			        <td> 13.41</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 10</td>
+			        <td class="name">MIME::Base64</td>
+			        <td>  6.13</td>
+			        <td> 24.90</td>
+			        <td>MIME::Base64</td>
+			        <td>  0.38</td>
+			        <td> 13.03</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 11</td>
+			        <td class="name">IO::Socket::SSL</td>
+			        <td>  5.75</td>
+			        <td>  7.66</td>
+			        <td>IO::Socket::SSL</td>
+			        <td>  9.96</td>
+			        <td> 12.64</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 12</td>
+			        <td class="name">Terminal::ANSIColor</td>
+			        <td>  5.75</td>
+			        <td> 11.11</td>
+			        <td>Terminal::ANSIColor</td>
+			        <td>  1.53</td>
+			        <td> 12.64</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 13</td>
+			        <td class="name">Sparrowdo</td>
+			        <td>  4.60</td>
+			        <td>  4.60</td>
+			        <td>Sparrowdo</td>
+			        <td>  0.77</td>
+			        <td> 12.26</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 14</td>
+			        <td class="name">Digest</td>
+			        <td>  4.21</td>
+			        <td> 10.73</td>
+			        <td>Digest</td>
+			        <td>  2.30</td>
+			        <td> 11.49</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 15</td>
+			        <td class="name">Digest::HMAC</td>
+			        <td>  4.21</td>
+			        <td>  7.28</td>
+			        <td>Digest::HMAC</td>
+			        <td>  8.43</td>
+			        <td> 11.49</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 16</td>
+			        <td class="name">LWP::Simple</td>
+			        <td>  4.21</td>
+			        <td>  6.13</td>
+			        <td>LWP::Simple</td>
+			        <td>  3.07</td>
+			        <td> 11.11</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 17</td>
+			        <td class="name">HTTP::Tinyish</td>
+			        <td>  3.83</td>
+			        <td>  4.98</td>
+			        <td>HTTP::Tinyish</td>
+			        <td>  5.75</td>
+			        <td> 11.11</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 18</td>
+			        <td class="name">Shell::Command</td>
+			        <td>  3.83</td>
+			        <td>  3.83</td>
 			        <td>Shell::Command</td>
-			        <td> 17</td>
-			        <td>  4.07</td>
-			        <td> 42</td>
-			        <td>  4.07</td>
+			        <td>  4.21</td>
+			        <td> 10.73</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">IO::Blob</td>
-			        <td> 43</td>
-			        <td>  1.63</td>
-			        <td> 39</td>
-			        <td>  4.88</td>
+			        <td class="name"> 19</td>
+			        <td class="name">DBIish</td>
+			        <td>  3.45</td>
+			        <td>  3.83</td>
 			        <td>DBIish</td>
-			        <td> 19</td>
-			        <td>  3.66</td>
-			        <td> 43</td>
-			        <td>  4.07</td>
+			        <td>  2.30</td>
+			        <td>  9.96</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">Digest::MD5</td>
-			        <td> 44</td>
-			        <td>  1.63</td>
-			        <td> 63</td>
-			        <td>  2.03</td>
-			        <td>Template::Mustache</td>
-			        <td> 77</td>
-			        <td>  0.81</td>
-			        <td> 44</td>
-			        <td>  3.66</td>
+			        <td class="name"> 20</td>
+			        <td class="name">File::Which</td>
+			        <td>  3.07</td>
+			        <td>  7.28</td>
+			        <td>File::Which</td>
+			        <td>  1.53</td>
+			        <td>  8.81</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">CSS::Grammar</td>
-			        <td> 45</td>
-			        <td>  1.63</td>
-			        <td> 65</td>
-			        <td>  2.03</td>
+			        <td class="name"> 21</td>
+			        <td class="name">OpenSSL</td>
+			        <td>  3.07</td>
+			        <td> 11.11</td>
+			        <td>OpenSSL</td>
+			        <td>  6.51</td>
+			        <td>  8.05</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 22</td>
+			        <td class="name">Bailador</td>
+			        <td>  2.68</td>
+			        <td>  2.68</td>
+			        <td>Bailador</td>
+			        <td>  8.05</td>
+			        <td>  8.05</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 23</td>
+			        <td class="name">DateTime::Format</td>
+			        <td>  2.68</td>
+			        <td>  7.28</td>
+			        <td>DateTime::Format</td>
+			        <td>  2.68</td>
+			        <td>  7.66</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 24</td>
+			        <td class="name">HTTP::Easy</td>
+			        <td>  2.68</td>
+			        <td>  7.66</td>
+			        <td>HTTP::Easy</td>
+			        <td>  5.75</td>
+			        <td>  7.66</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 25</td>
+			        <td class="name">HTTP::Status</td>
+			        <td>  2.68</td>
+			        <td> 21.46</td>
+			        <td>HTTP::Status</td>
+			        <td>  2.68</td>
+			        <td>  7.28</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 26</td>
+			        <td class="name">NativeHelpers::Array</td>
+			        <td>  2.68</td>
+			        <td>  3.45</td>
 			        <td>NativeHelpers::Array</td>
-			        <td> 23</td>
-			        <td>  2.85</td>
-			        <td> 45</td>
-			        <td>  3.66</td>
+			        <td>  4.21</td>
+			        <td>  7.28</td>
 			      </tr>
 			      
 			      <tr>
+			        <td class="name"> 27</td>
+			        <td class="name">URI::Encode</td>
+			        <td>  2.68</td>
+			        <td>  6.13</td>
+			        <td>URI::Encode</td>
+			        <td>  3.07</td>
+			        <td>  7.28</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 28</td>
+			        <td class="name">Compress::Zlib</td>
+			        <td>  2.30</td>
+			        <td>  3.07</td>
+			        <td>Compress::Zlib</td>
+			        <td>  6.51</td>
+			        <td>  7.28</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 29</td>
+			        <td class="name">Crust</td>
+			        <td>  2.30</td>
+			        <td>  2.68</td>
+			        <td>Crust</td>
+			        <td>  1.15</td>
+			        <td>  6.13</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 30</td>
+			        <td class="name">JSON::Class</td>
+			        <td>  2.30</td>
+			        <td> 11.49</td>
+			        <td>JSON::Class</td>
+			        <td>  4.21</td>
+			        <td>  6.13</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 31</td>
+			        <td class="name">JSON::Name</td>
+			        <td>  2.30</td>
+			        <td> 13.79</td>
+			        <td>JSON::Name</td>
+			        <td>  2.68</td>
+			        <td>  6.13</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 32</td>
+			        <td class="name">PSGI</td>
+			        <td>  2.30</td>
+			        <td>  9.96</td>
+			        <td>PSGI</td>
+			        <td>  0.77</td>
+			        <td>  5.75</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 33</td>
+			        <td class="name">Template6</td>
+			        <td>  1.92</td>
+			        <td>  2.68</td>
+			        <td>Template6</td>
+			        <td>  0.38</td>
+			        <td>  5.36</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 34</td>
 			        <td class="name">Base64</td>
-			        <td> 46</td>
-			        <td>  1.63</td>
-			        <td> 41</td>
-			        <td>  4.47</td>
-			        <td>HTTP::Parser</td>
-			        <td> 179</td>
-			        <td>  0.41</td>
-			        <td> 46</td>
-			        <td>  3.66</td>
+			        <td>  1.53</td>
+			        <td>  4.21</td>
+			        <td>Base64</td>
+			        <td>  0.38</td>
+			        <td>  5.36</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">XML::Class</td>
-			        <td> 47</td>
-			        <td>  1.22</td>
-			        <td> 67</td>
-			        <td>  1.63</td>
-			        <td>Compress::Zlib::Raw</td>
-			        <td> 106</td>
-			        <td>  0.81</td>
-			        <td> 47</td>
-			        <td>  3.66</td>
+			        <td class="name"> 35</td>
+			        <td class="name">CSS::Grammar</td>
+			        <td>  1.53</td>
+			        <td>  1.92</td>
+			        <td>CSS::Grammar</td>
+			        <td>  0.38</td>
+			        <td>  4.98</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">UUID</td>
-			        <td> 48</td>
-			        <td>  1.22</td>
-			        <td> 69</td>
-			        <td>  1.63</td>
-			        <td>Hash::MultiValue</td>
-			        <td> 176</td>
-			        <td>  0.41</td>
-			        <td> 48</td>
-			        <td>  3.25</td>
+			        <td class="name"> 36</td>
+			        <td class="name">Digest::MD5</td>
+			        <td>  1.53</td>
+			        <td>  1.92</td>
+			        <td>Digest::MD5</td>
+			        <td>  3.83</td>
+			        <td>  4.98</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">URI::Template</td>
-			        <td> 49</td>
-			        <td>  1.22</td>
-			        <td> 70</td>
-			        <td>  1.63</td>
-			        <td>HTTP::Server::Tiny</td>
-			        <td> 92</td>
-			        <td>  0.81</td>
-			        <td> 49</td>
-			        <td>  3.25</td>
+			        <td class="name"> 37</td>
+			        <td class="name">IO::Blob</td>
+			        <td>  1.53</td>
+			        <td>  4.60</td>
+			        <td>IO::Blob</td>
+			        <td>  1.53</td>
+			        <td>  4.98</td>
 			      </tr>
 			      
 			      <tr>
-			        <td class="name">Subset::Helper</td>
-			        <td> 50</td>
-			        <td>  1.22</td>
-			        <td> 71</td>
-			        <td>  1.63</td>
-			        <td>Getopt::Tiny</td>
-			        <td> 188</td>
-			        <td>  0.41</td>
-			        <td> 50</td>
-			        <td>  3.25</td>
+			        <td class="name"> 38</td>
+			        <td class="name">JSON::Unmarshal</td>
+			        <td>  1.53</td>
+			        <td> 12.64</td>
+			        <td>JSON::Unmarshal</td>
+			        <td>  1.53</td>
+			        <td>  4.60</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 39</td>
+			        <td class="name">META6</td>
+			        <td>  1.53</td>
+			        <td>  8.81</td>
+			        <td>META6</td>
+			        <td>  4.60</td>
+			        <td>  4.60</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 40</td>
+			        <td class="name">NativeHelpers::Blob</td>
+			        <td>  1.53</td>
+			        <td>  4.98</td>
+			        <td>NativeHelpers::Blob</td>
+			        <td>  1.53</td>
+			        <td>  4.21</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 41</td>
+			        <td class="name">OO::Monitors</td>
+			        <td>  1.53</td>
+			        <td>  2.68</td>
+			        <td>OO::Monitors</td>
+			        <td>  1.53</td>
+			        <td>  4.21</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 42</td>
+			        <td class="name">Pod::To::HTML</td>
+			        <td>  1.53</td>
+			        <td>  1.53</td>
+			        <td>Pod::To::HTML</td>
+			        <td>  3.45</td>
+			        <td>  3.83</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 43</td>
+			        <td class="name">Pod::To::Markdown</td>
+			        <td>  1.53</td>
+			        <td>  1.53</td>
+			        <td>Pod::To::Markdown</td>
+			        <td>  3.83</td>
+			        <td>  3.83</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 44</td>
+			        <td class="name">SVG</td>
+			        <td>  1.53</td>
+			        <td>  1.53</td>
+			        <td>SVG</td>
+			        <td>  0.77</td>
+			        <td>  3.45</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 45</td>
+			        <td class="name">Template::Mojo</td>
+			        <td>  1.53</td>
+			        <td>  4.21</td>
+			        <td>Template::Mojo</td>
+			        <td>  0.38</td>
+			        <td>  3.45</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 46</td>
+			        <td class="name">YAMLish</td>
+			        <td>  1.53</td>
+			        <td>  1.53</td>
+			        <td>YAMLish</td>
+			        <td>  2.68</td>
+			        <td>  3.45</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 47</td>
+			        <td class="name">Audio::PortMIDI</td>
+			        <td>  1.15</td>
+			        <td>  1.15</td>
+			        <td>Audio::PortMIDI</td>
+			        <td>  0.77</td>
+			        <td>  3.45</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 48</td>
+			        <td class="name">CompUnit::Util</td>
+			        <td>  1.15</td>
+			        <td>  1.15</td>
+			        <td>CompUnit::Util</td>
+			        <td>  0.38</td>
+			        <td>  3.07</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 49</td>
+			        <td class="name">Config::TOML</td>
+			        <td>  1.15</td>
+			        <td>  1.53</td>
+			        <td>Config::TOML</td>
+			        <td>  0.38</td>
+			        <td>  3.07</td>
+			      </tr>
+			      
+			      <tr>
+			        <td class="name"> 50</td>
+			        <td class="name">Email::Simple</td>
+			        <td>  1.15</td>
+			        <td>  1.53</td>
+			        <td>Email::Simple</td>
+			        <td>  2.30</td>
+			        <td>  3.07</td>
 			      </tr>
 			      
 			    </tbody>
@@ -741,54 +592,55 @@
 			</div>
 		</div>
 		
-		<footer class="panel panel-primary" id="errorsprocessing">
+		<footer class="panel panel-primary" id="xecosystem">
 			<div class="panel-heading">
-				<h1 class="panel-title">Errors</h1>
+				<h1 class="panel-title">Modules Not in Ecosystem</h1>
 			</div>
 			<div class="panel-body panel-primary">
 				<P>The <B>depends</B> list of a <I>topline</I> ecosystem module sometimes contains a module name that is
-				not itself a topline ecosystem module, but may be in a sub-directory of another module 
-				that is normally included.
-				It is possible that such a reference could
-				cause an installation failure if the module cannot be directly found. </p>
-				<P>The <I>Test</I> module is explicitly excluded from this list.</p>
-				<P>Naturally, the errors listed here may be an artifact of the algorithm.</p>
-				<P>These cited non-topline modules are:</p>
+				not itself a topline ecosystem module. The module may be:
+				<ul><li>in a sub-directory of another topline module</li>
+					<li>incorrectly referenced (eg., upper/lower case spelling error)
+				</ul>
+			</p>
+				<P>Naturally, the modules listed here are an artifact of the algorithm. If they should be included in the Ecosystem analysis,
+				let me know how the selection might be modified.</p>
+				<P>Non-topline modules that are cited are:</p>
 				<table class="table table-condensed table-striped panel-body">
 					<thead>
-						<tr><th>Module Name</th><th>Cited by</th></tr>
+						<tr><th>Module Name</th></tr>
 					</thead>
 					<tbody>
 						
-						<tr><td>Net::HTTP::POST</td><td>WebService::Slack::Webhook</td></tr>
+						<tr><td>Digest::SHA</td></tr>
 						
-						<tr><td>NativeHelpers::CStruct</td><td>Pg::Notify</td></tr>
+						<tr><td>Net::HTTP::GET</td></tr>
 						
-						<tr><td>OpenSSL::RSATools</td><td>HTTP::Signature</td></tr>
+						<tr><td>Algorithm::MinMaxHeap::Comparable</td></tr>
 						
-						<tr><td>Digest::SHA</td><td>WebService::AWS::Auth::V4,JSON::WebToken,Twitter,HTTP::Signature,Crust::Middleware::Session</td></tr>
+						<tr><td>NativeLibs</td></tr>
 						
-						<tr><td>Algorithm::MinMaxHeap::Comparable</td><td>Algorithm::Kruskal</td></tr>
+						<tr><td>IO::Socket::INET</td></tr>
 						
-						<tr><td>Zef</td><td>Zef::CPANReporter,Task::Galaxy</td></tr>
+						<tr><td>Panda</td></tr>
 						
-						<tr><td>Net::HTTP::GET</td><td>Weather,Movieinfo</td></tr>
+						<tr><td>Bailador::Template</td></tr>
 						
-						<tr><td>Panda</td><td>App::ecoreadme,bamboo</td></tr>
+						<tr><td>Zef</td></tr>
 						
-						<tr><td>NativeLibs</td><td>JsonC</td></tr>
+						<tr><td>PerlStore::FileStore</td></tr>
 						
-						<tr><td>Bailador::Template</td><td>Bailador::Template::Mojo::Extended</td></tr>
+						<tr><td>NativeCall</td></tr>
 						
-						<tr><td>NativeCall</td><td>UNIX::Daemonize,Numeric::Pack,Math::Primesieve,LibUUID,Compress::Brotli,Term::Choose,Kains,Imlib2,LibCurl,Geo::IP2Location::Lite,IUP,Digest::MurmurHash3,Archive::Libarchive::Raw,Redis::Async,LibYAML</td></tr>
+						<tr><td>NativeHelpers::CStruct</td></tr>
 						
-						<tr><td>Grammar::Tracer</td><td>Log::Minimal</td></tr>
+						<tr><td>OpenSSL::RSATools</td></tr>
 						
-						<tr><td>PerlStore::FileStore</td><td>IRC::Client::Plugin::UserPoints</td></tr>
+						<tr><td>URI::Escape</td></tr>
 						
-						<tr><td>IO::Socket::INET</td><td>Growl::GNTP</td></tr>
+						<tr><td>Net::HTTP::POST</td></tr>
 						
-						<tr><td>URI::Escape</td><td>WebService::AWS::Auth::V4,Web::RF,WWW::Google::Time,Crust,Twitter,GlotIO,WebService::FootballData,NASA,MongoDB,Gravatar::URL,RT::REST::Client,WebService::Google::PageRank</td></tr>
+						<tr><td>Grammar::Tracer</td></tr>
 						
 					</tbody>
 				</table>
@@ -799,19 +651,19 @@
                         <div class="panel-heading">
 				<h1 class="panel-title">Definitions and Credits</h1>
 			</div>
-                    <div class="panel-body panel-primary">
-                    <a href="https://github.com/finanalyst/ModuleCitation">
-                    <img class="pull-right" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
-                        alt="Fork me on GitHub"
-                        data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
-                    <p>The Citation Index is defined as <code>100 * # times cited by any module / # cited modules</code></p>
-                    <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dynagraphs</A>. </P>
-                    <P>Data is gathered from Ecosystem projects file (used by panda). Adverbs are stripped from Module names.</p>
-                    <p>Thanks to Zoffix and Moritz Lentz for suggestions.</p>
-                    <p>Analysis is the author's, no grant has been made, no aim is intended other than interest. Hopefully, no one is offended.  
-                    Kind suggestions always welcome at rnhainsworth at the main gmail domain.</p>
-                    </div>
-                </footer>
+        <div class="panel-body panel-primary">
+        <a href="https://github.com/finanalyst/ModuleCitation">
+        <img class="pull-right" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
+            alt="Fork me on GitHub"
+            data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+        <p>The Citation Index is defined as <code>100 * # times cited by any module / # cited modules</code></p>
+        <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dynagraphs</A>. </P>
+        <P>Data is gathered from Ecosystem projects file (used by panda). Adverbs are stripped from Module names.</p>
+        <p>Thanks to Zoffix and Moritz Lentz for suggestions.</p>
+        <p>Analysis is the author's, no grant has been made, no aim is intended other than interest. Hopefully, no one is offended.
+        Kind suggestions always welcome at rnhainsworth at the main gmail domain.</p>
+        </div>
+    </footer>
 	</div>
 	<script type="text/javascript">
 	var g = new Dygraph(
@@ -824,7 +676,7 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
-                axes: { 
+                axes: {
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y) { return y.toFixed(0) + '%' } },
                 },
 
@@ -844,7 +696,7 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
-                axes: { 
+                axes: {
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y) { return y.toFixed(0) + '%' } },
                 },
 
@@ -864,8 +716,8 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
-                
-                axes: { 
+
+                axes: {
                     y: {valueFormatter: function(y) { return y.toFixed(0) }, axisLabelFormatter: function(y) { return y.toFixed(0) }}
                 },
 
