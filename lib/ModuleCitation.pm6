@@ -1,82 +1,323 @@
+# Class for module citations
+use JSON::Fast;
+use HTTP::UserAgent;
+use Algorithm::Tarjan; # to test for cycles
+use DBIish;
+use HTML::Template;
+
 class ModuleCitation {
-#The citation number of a module is the number of citing modules for which it is a cited module
-#The citation index of a module is the fraction as a percentage of the citation number of the 
-#  number of cited modules. The total number of modules in the ecosystem will rise faster than cited modules
-#The citation placing of a module is the position of the module when the citation indices are listed in descending order
-#
-#Cited modules that are not in the ecosystem are counted into the citations but are added to an non-ecosystem list
+  has %.configuration = ();
+  has $.max-name is rw; # the length of the longest module name
+  has Str $.raw is rw = ''; # the raw data from the project file
+  has $.dbh; # the database handle
+  has @!parts = <Simple Recursive>;
+  has @!core-modules = <Test NativeCall zef>; #core modules that are installed
+  has Bool $!verbose;
 
-       	use JSON::Fast;
+  method log( $msg ) {
+    spurt "$*CWD/%.configuration<logfile>",
+      "{ DateTime.new(now).truncated-to('second') }: $msg\n", :append;
+    say $msg if $!verbose;
+  }
 
-	has Int $.limit is rw;
-	has %.citing;
-	has %.citations;
-	has DateTime $.date;
-	has @.ecosystem;
-	has %.non-ecosystem;
-	has %.cited;
-	has @.parts;
-	has $.tot-modules;
-	has $.tot-cited;
-	# a simple minded avoidance of recursion abyss. Should check for citing loops.
-	# eg. mod1 'requires' mod2 'requires' .... 'requires' mod1.
-	# also no need to check that multiple calls to the same module in a recursive call as this dealt with later.
-	# we just want a simple flat list of module names
+  submethod BUILD( :$verbose=False ) { # should be called in a directory with a config file
+    my Str $config = 'config.json';
+    die "No configuration file in current directory ($*CWD)"
+      unless "$*CWD/$config".IO.f;
+    %!configuration = from-json( "$*CWD/$config".IO.slurp );
+    if $! {
+            die "Cannot parse data for $*CWD/$config as JSON: $!";
+    }
+    $!verbose = $verbose;
+    #create the database if it does not exist
+    my $db = "$*CWD/{%!configuration<target-directory>}/{%!configuration<database-name>}.sqlite3";
+    my $db-preconnection-exists = $db.IO.f.so; # has to come before the connection to check the db does not exist
+    $!dbh = DBIish.connect( "SQLite", :database( $db ), :RaiseError );
+    unless $db-preconnection-exists {    # db does not exist, so it needs to be created
+      my $sth = $!dbh.do(q:to/STATEMENT/);
+        CREATE TABLE projectfiles (
+          filename varchar(50),
+          date varchar(50),
+          valid text
+        )
+        STATEMENT
+      $sth = $!dbh.do(q:to/STATEMENT/);
+        CREATE TABLE cited (
+          date varchar(50),
+          module varchar(100),
+          system integer,
+          simple integer,
+          recursive integer
+          )
+        STATEMENT
+    }
+  }
 
-	method citations-from ( Str $citer, Str :$mode = 'simple', Int :$lev is copy = $.limit ) {
-                return Empty if $citer ~~ m/^ Test $/; # This is a core module and not counted
-		unless %.citing{$citer}:exists { # recursively a cited module may be a citer.
-			%.non-ecosystem{$citer} = 'Error';
-			%.citing{$citer} = (); # fake entry with zero keys in case this happens again, or for recursive calls
-		}
-		my @cited-candidates = grep { !m/^ Test $/ }, %.citing{$citer}.keys;
+  method get-latest-project-file () {
+    my $ua = HTTP::UserAgent.new;
+    my $response = $ua.get($.configuration<ecosystem-url>);
+    "%.configuration<archive-directory>/projects_{ DateTime.new(now).truncated-to('second') }".IO.spurt: $response.decoded-content;
+    CATCH {
+        self.log("Could not download module metadata: {$_.message}")
+    }
+  }
 
-		#handle simple citations, which is the default
-		return |@cited-candidates unless $mode ~~ / recursive /;
-		# check for recursive abyss Looping shouldn't occur. 150 levels of modules unlikely.
-		if --$lev < 1 {
-			note "Recursion limit of { $!limit } passed. TODO: Better loop algorithm than checking for limit.";
-			return @cited-candidates; # soft fail
-		}
-		# we need to check whether 
-		return gather for @cited-candidates -> $target { 
-			my @tmp = $.citations-from( $target, :lev($lev) , :mode<recursive> ).flat ;
-			take @tmp.elems ?? ( $target , @tmp.list, ) !! $target ;
-		}
-	}
-	method make-cited-matrix {
-            for @!ecosystem -> $citer {
-                next unless %!citing{$citer}.keys;
-                for @!parts -> $part {
-                    for self.citations-from( $citer, :mode( $part ) ).flat -> $cited { 
-                    next unless $cited;
-                        %!cited{ $cited }{ $part }{ $citer } = 1
-                    }
-                }
+  method add-filename( $filename ) {
+    self.log("Processing $filename");
+    my $error-msg = '';
+    my $date = '2000-01-01'; #in case date cannot be determined
+    my %citing;
+    my $sth;
+    my $list;
+    my Algorithm::Tarjan $trj .= new;
+    my %trj-matrix;
+    # update projectfiles table
+    if $filename ~~ / 'projects_' $<date>=(.*?) 'T' / {
+      $date = $<date>.Str;
+      $sth = $.dbh.prepare( qq:to/STATEMENT/);
+        SELECT count(date) AS 'Number' FROM projectfiles WHERE date='$date'
+        STATEMENT
+      $sth.execute;
+      my %similar = $sth.row(:hash);
+      $error-msg = 'Duplicate' if %similar<Number> > 0;
+    } else {
+      $error-msg = "Filename doesnt match pattern";
+      self.log($error-msg)
+    }
+    # update
+    unless $error-msg {
+      %trj-matrix = Empty;
+      $list = try from-json( "$*CWD/$.configuration<archive-directory>/$filename".IO.slurp );
+      if $! {
+        $error-msg = "Not valid JSON";
+        self.log("$!")
+      }
+    }
+    unless $error-msg {
+      self.log("Adding $filename to cited table");
+      for $list.list -> $mod {
+        unless $mod<name> ~~ / ^ [ <-[:]> || '::' ] * / and %citing{$/}:exists and %citing{$/} gt $mod<version>  {
+          my $name = ~$/;
+          unless $name eq 'Test' {
+            %citing{$name} = {};
+            with $mod<depends> {
+              for $mod<depends>.flat {
+                %citing{$name}{$/} = $mod<version> if / ^ [ <-[:]> || '::' ] * /  ;
+                %trj-matrix{$name}.push: ~$/;
+              }
             }
+          }
         }
-        method get-citations {
-            for @!ecosystem -> $mod {
-                %!citations{$mod} = hash( @!parts X=> 0 );
-                for @!parts -> $part {
-                    %!citations{$mod}{$part} = +%!cited{$mod}{$part}.keys;
-                }
+      }
+      # check for cycles
+      $trj.init( %trj-matrix );
+      if $trj.find-cycles() > 0 {
+         $error-msg = "Cycles in data likely";
+         self.log("Tarjan strongly connected components found")
+      }
+    }
+    $sth = $.dbh.do( qq:to/STATEMENT/  );
+      INSERT INTO projectfiles ( filename, date, valid )
+      VALUES ( "$filename", "$date", "{ $error-msg ?? $error-msg !! 'OK' }" );
+      STATEMENT
+    #now add filename to the citing table if no error
+    if $error-msg {
+      self.log("No change to citing/index tables") }
+    else {
+      #create citations matrix
+      my @ecosystem  = %citing.keys.map( { .trim } ).sort;
+      my %cited = ();
+      for @ecosystem -> $citer {
+          next unless %citing{$citer}.keys; # skip if citer hasnt dependencies
+          for @!parts -> $part {
+            for self.citations-from( %citing, $citer, $part ).flat -> $cited {
+              next unless $cited; # skip blank elements
+              %cited{ $cited }{ $part }{ $citer } = 1 # same as creating a set
             }
-        }
-        method is-cited-by ( Str $mod ) { # currently only needed for simple
-            join ',', %!cited{$mod}<simple>.keys;
-        }
-            
+         }
+      }
+      $sth = $!dbh.prepare( q:to/STATEMENT/ );
+        INSERT INTO cited (date, module, simple, recursive, system) VALUES ( ?, ?, ?, ?, ?)
+        STATEMENT
+      my $cited-total = 0;
+      my @x-ecosystem = %citing.keys.grep( { $_ !~~ any(@ecosystem) } );
+      for @ecosystem -> $mod {
+        my $num = +%cited{$mod}<Simple>.keys;
+        $sth.execute( $date, $mod, $num, +%cited{$mod}<Recursive>.keys, 0);
+        $cited-total++ if $num;
+      }
+      for @x-ecosystem -> $mod {
+        my $num = +%cited{$mod}<Simple>.keys;
+        $sth.execute( $date, $mod, $num, +%cited{$mod}<Recursive>.keys, 1);
+        $cited-total++ if $num;
+      }
+      $sth.execute( $date, 'TotalEcosystem', +@ecosystem, 0, 2);
+      $sth.execute( $date, 'TotalCited', $cited-total, 0 , 2);
+      $sth.execute( $date, 'TotalXEcosystem', +@x-ecosystem, 0, 2);
+      self.log("Added seems successful")
+    }
+  }
 
-	submethod BUILD (:$in-string, :@!ecosystem, :%!cited) {
-            @!parts = <simple recursive>;
-            $!limit = 150;
-            %!citing = from-json($in-string);
-            @!ecosystem  = %!citing.keys.grep({ ! m/^ __ | ^ Test $ /  }).map( { .trim } ).sort;
-            $!tot-modules = +@!ecosystem;
-            $!date .= new(%!citing<__date>:delete);
-            self.make-cited-matrix;
-            self.get-citations;
-            $!tot-cited = +grep { %!citations{$_}<simple> > 0 }, %!citations.keys;
+  method citations-from( %citing, Str $citer, Str $mode ) {
+    return Empty if $citer ~~ m/^ Test $/; # This is a core module and not counted
+    unless %citing{$citer}:exists { # recursively a cited module may be a citer.
+      #if it does not exist in the ecosystem, then it is in a depends list, but not at a top-level
+      %citing{$citer} = (); # fake entry with zero keys in case this happens again
+    }
+    my @cited-candidates = grep { !m/^ Test $/ }, %citing{$citer}.keys;
+    #handle simple citations, which is the default
+    return |@cited-candidates unless $mode ~~ / Recursive /;
+    return gather for @cited-candidates -> $target {
+      my @tmp = $.citations-from( %citing, $target, $mode ).flat ;
+      take @tmp.elems ?? ( $target , @tmp.list, ) !! $target ;
+    }
+  }
+
+  method update() {
+    #find files in the archive that have not been included in the database
+    #this will fill the database on the first time through, but only the latest file on a normal return
+    my $sth = $!dbh.prepare( q:to/STATEMENT/ );
+      SELECT filename FROM projectfiles
+      STATEMENT
+    $sth.execute;
+    my @existing-files = $sth.allrows.flat;
+    for "$*CWD/{$.configuration<archive-directory>}".IO.dir.map( { .subst(/^ .* '/' /,'') } )
+      -> $filename {
+      next if $filename ~~ any( @existing-files );
+      self.add-filename($filename);
+    }
+  }
+
+  method generate-html() {
+    # generate the table of values
+    my $sth = $!dbh.prepare( q:to/STATEMENT/ );
+      SELECT distinct(date) from cited order by date asc
+      STATEMENT
+    $sth.execute;
+    my $date = $sth.allrows.flat.tail;
+    $sth = $!dbh.prepare( qq:to/STATEMENT/ );
+      SELECT t1.simple, t2.simple, t3.simple
+      from
+        (select simple from cited where date="$date" and module="TotalEcosystem") as t1,
+          (select simple from cited where date="$date" and module="TotalCited") as t2,
+            (select simple from cited where date="$date" and module="TotalXEcosystem") as t3
+      STATEMENT
+    $sth.execute;
+    my @totals = $sth.allrows.flat;
+    my $template = HTML::Template.from_file( %!configuration<html-template> );
+    my %params = N_MOD => @totals[0],
+        N_CIT => @totals[1],
+        PC_CIT => sprintf("%6.2f%%",100 * @totals[1] / @totals[0]),
+        DATE => $date,
+        N_ROWS => %.configuration<top-limit>,
+        CORES => @!core-modules.join(', ')
+        ;
+    my %orders;
+    for <Simple Recursive> -> $part {
+      $sth = $!dbh.prepare( qq:to/STATEMENT/ );
+        select distinct(cited.module) as Name , t1.cit as Simple, t2.cit as Recursive
+          from
+          	cited,
+          	(select module, round( 100.0 * cited.simple / t3.simple , 2) as cit
+          		from cited,
+          			(select simple from cited where date="$date" and module="TotalCited") as t3
+          		where date="$date" and system=0
+          	) as t1,
+          	(select module, round( 100.0 * cited.recursive / t3.simple , 2) as cit
+          		from cited,
+          			(select simple from cited where date="$date" and module="TotalCited") as t3
+          		where date="$date" and system=0
+          	) as t2
+          where t1.module=cited.module and t2.module=cited.module
+          order by $part desc
+          limit {%!configuration<top-limit>}
+        STATEMENT
+      $sth.execute;
+      %orders{$part} = $sth.allrows(:array-of-hash);
+    }
+
+    for 0 ..^ %!configuration<top-limit> -> $n {
+        %params<modules>.push( %(
+          :order( sprintf("% 3d", $n+1 ) ),
+          :s_name(  sprintf("%s",%orders<Simple>[$n]<Name> ) ),
+          :s_s_sim( sprintf("%6.2f",%orders<Simple>[$n]<Simple> ) ),
+          :s_r_rec( sprintf("%6.2f",%orders<Simple>[$n]<Recursive> ) ),
+          :r_name(  sprintf("%s", %orders<Simple>[$n]<Name> ) ),
+          :r_s_sim( sprintf("%6.2f",%orders<Recursive>[$n]<Simple> ) ),
+          :r_r_rec( sprintf("%6.2f",%orders<Recursive>[$n]<Recursive> ) )
+        ));
+    }
+    $sth = $!dbh.prepare( qq:to/STATEMENT/ );
+      select module from cited where system=1 and date="$date"
+      STATEMENT
+    $sth.execute;
+    if @totals[2] > 0 {
+      %params<XEcosystem> = Bool::True;
+      for $sth.allrows -> $mod {
+              %params<XEcoLoop>.push: %( :ModName( sprintf("%s",$mod ) ), );
+      }
+    } else {
+      %params<XEcosystem> = Bool::False ;
+    }
+    $template.with_params( %params );
+    "{%!configuration<html-directory>}/index.html".IO.spurt: $template.output;
+    self.log("Html index file created.")
+  }
+
+  method update-csv-files {
+    my %filenames = <simple recursive all> Z=> ('GraphFile_simple.csv','GraphFile_recursive.csv','GraphFile_AllModules.csv');
+    my @headings = <Date ModulesCited AllModules>;
+    my $sth = $.dbh.prepare( q:to/STATEMENT/ );
+      select distinct(cited.date) as Date,t1.simple as AllModules, t2.simple as ModulesCited
+      from cited,
+      (select date, module, simple from cited  where module="TotalEcosystem") as t1,
+      (select date, module, simple from cited where module="TotalCited") as t2
+      where cited.date=t1.date and cited.date=t2.date
+      order by date asc
+    STATEMENT
+    $sth.execute;
+    "{%!configuration<html-directory>}/{%filenames<all>}".IO.spurt:
+      ( @headings.join(','),
+        |$sth.allrows(:array-of-hash).map( { $_{@headings}.join(',') } )
+      ).join("\n") ;
+    self.log: "{%!configuration<html-directory>}/{%filenames<all>} created.";
+    # get dates
+    $sth = $.dbh.prepare( q:to/STATEMENT/ );
+        select distinct(date) from cited
+      STATEMENT
+    $sth.execute;
+    my @dates = $sth.allrows.flat;
+    my %data;
+    my %mods;
+
+    for <simple recursive> -> $part {
+      my $fh = open "{%!configuration<html-directory>}/{ %filenames{$part} }", :w;
+      %data{$part} = {};
+      %mods{$part} = {};
+      for @dates -> $dd {
+        %data{$part}{$dd} = {};
+        $sth = $.dbh.prepare( qq:to/STATEMENT/ );
+          select cited.module as name,
+            round( 100.0*cited.$part/t1.simple, 2) as cit
+          from cited,
+            (select simple from cited where module="TotalCited" and date="$dd") as t1
+          where cited.system=0 and cited.date="$dd"
+          order by cit desc
+          limit {%!configuration<top-limit>}
+          STATEMENT
+        $sth.execute;
+        for $sth.allrows -> @row {
+          %data{$part}{$dd}{@row[0]} = @row[1];
+          %mods{$part}{@row[0]} = 1 unless %mods{$part}{@row[0]}:exists;
         }
+      }
+      my @modules = %mods{$part}.keys.sort;
+      $fh.say: "Date," ~ @modules.join(',');
+      for @dates -> $d {
+            $fh.say( $d, ',', @modules.map( { %data{$part}{$d}{$_}:exists ?? %data{$part}{$d}{$_} !! 'NaN' } ).join(',') );
+        }
+      $fh.close;
+      self.log: "{%!configuration<html-directory>}/{%filenames{$part}} created.";
+    }
+  }
 }

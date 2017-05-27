@@ -13,7 +13,7 @@
         <script type="text/javascript"
             src="synchronizer.js">
         </script>
-        <style> 
+        <style>
             .dygraph-legend > span { display: none; }
             .dygraph-legend > span.highlight { display: inline; }
         </style>
@@ -21,81 +21,79 @@
 <body>
 	<div class="container">
 		<header class="panel panel-primary lead">
-			<div class="panel-heading">
+			<div class="panel-heading"Mod>
 				<h1 class="panel-title">Ecosystem Citation Index</h1>
 			</div>
 			<div class="panel-body suckin-btm">
 				<img class="pull-right" alt="»ö«" id="logo" src="camelia-logo.png">
-				<p>A citation index is calculated for each module in the 
+				<p>A citation index is calculated for each module in the
 				<a href="http://modules.perl6.org">Perl6 Ecosystem</a>, numbering <TMPL_VAR N_MOD> as of <TMPL_VAR DATE>.</p>
 				<p><TMPL_VAR N_CIT> <i>Topline</i> modules were cited, or <TMPL_VAR PC_CIT> of the total.</p>
-				
+
 				<P>A module <I>simply cites</I> another
-					if it lists it in the <B>"depends"</B> list. A module <I>recursively cites</I> another if a cited 
+					if it lists it in the <B>"depends"</B> list. A module <I>recursively cites</I> another if a cited
 					module in turn cites another module.</P>
-                                <P>This page contains the data for the top 50 modules in <a href="#graphs">graphical form</a> from the time data was collected to the present, 
-				<a href="#tabulation">tabulated</a> for the top <TMPL_VAR N_ROWS> modules. During processing, 
-				<a href="#errorsprocessing">unexpectated situations</a> are listed, and then the <a href="#definitions">definitions and credits</a> are provided.<p>
+					<P>The following modules are considered to exist in all installations and so excluded from this analysis:
+						<B><TMPL_VAR CORES></B>.
+					</P>
+					<P>This page contains the data for the top <TMPL_VAR N_ROWS> modules in
+					<a href="#graphs">graphical form</a> from the time data was collected to the present,
+					<a href="#tabulation">tabulated</a> for the top <TMPL_VAR N_ROWS> modules. Modules
+					<a href="#xecosystem">not in the Ecosystem</a> (possibly module meta data errors) are listed,
+					followed by <a href="#definitions">definitions and credits</a>.<p>
 			</div>
 		</header>
 		<table class="table table-condensed" id="graphs">
-                    <tr>
-                        <th style="text-align:center">Simply Cited</th><th style="text-align:center">Recursively Cited</th>
-                    </tr>
-                    <tr>
-                        <td><div class="panel panel-default" id="simple" style="margin: auto"></div></td>
-                        <td><div class="panel panel-default" id="recursive" style="margin: auto"></div></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2" style="text-align:center">All Module Numbers</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><div class="panel panel-default" id="allmods" style="margin: auto"></div></td>
-                    </tr>
+      <tr>
+          <th style="text-align:center">Simply Cited</th><th style="text-align:center">Recursively Cited</th>
+      </tr>
+      <tr>
+          <td><div class="panel panel-default" id="simple" style="margin: auto"></div></td>
+          <td><div class="panel panel-default" id="recursive" style="margin: auto"></div></td>
+      </tr>
+      <tr>
+          <th colspan="2" style="text-align:center">All Module Numbers</th>
+      </tr>
+      <tr>
+          <td colspan="2"><div class="panel panel-default" id="allmods" style="margin: auto"></div></td>
+      </tr>
 		</table>
 		<div class="panel panel-default"  id="tabulation">
 			<div class="table-responsive">
-			  <table class="table table-condensed table-striped panel-body" id="dists">	
+			  <table class="table table-condensed table-striped panel-body" id="dists">
 			    <thead>
 			      <tr>
 			        <th></th>
-			        <th colspan="4" style="text-align: center">Sorted in simple order</th>
-			        <th></th>
-			        <th colspan="4" style="text-align: center">Sorted in recursive order</th>
+			        <th colspan="3" style="text-align: center">Sorted in simple order</th>
+			        <th colspan="3" style="text-align: center">Sorted in recursive order</th>
 			      </tr>
 			      <tr>
 			        <th></th>
-			        <th colspan="2" style="text-align: center">Simple</th>
-			        <th colspan="2" style="text-align: center">Recursive</th>
+			        <th style="text-align: center">Simple</th>
+			        <th style="text-align: center">Recursive</th>
 			        <th></th>
-			        <th colspan="2" style="text-align: center">Simple</th>
-			        <th colspan="2" style="text-align: center">Recursive</th>
+			        <th style="text-align: center">Simple</th>
+			        <th style="text-align: center">Recursive</th>
 			      </tr>
 			      <tr>
+							<th>Order</th>
 			        <th>Module Name</th>
-			        <th>Order</th>
 			        <th>Index</td>
-			        <th>Order</th>
 			        <th>Index</td>
 			        <th>Module Name</th>
-			        <th>Order</th>
 			        <th>Index</th>
-			        <th>Order</th>
 			        <th>Index</th>
 			      </tr>
 			    </thead>
 			    <tbody>
 			      <TMPL_LOOP modules>
 			      <tr>
+			        <td class="name"><TMPL_VAR order></td>
 			        <td class="name"><TMPL_VAR s_name></td>
-			        <td><TMPL_VAR s_s_ord></td>
 			        <td><TMPL_VAR s_s_sim></td>
-			        <td><TMPL_VAR s_r_ord></td>
 			        <td><TMPL_VAR s_r_rec></td>
 			        <td><TMPL_VAR r_name></td>
-			        <td><TMPL_VAR r_s_ord></td>
 			        <td><TMPL_VAR r_s_sim></td>
-			        <td><TMPL_VAR r_r_ord></td>
 			        <td><TMPL_VAR r_r_rec></td>
 			      </tr>
 			      </TMPL_LOOP>
@@ -103,27 +101,28 @@
 			  </table>
 			</div>
 		</div>
-		<TMPL_IF ErrorsExist>
-		<footer class="panel panel-primary" id="errorsprocessing">
+		<TMPL_IF XEcosystem>
+		<footer class="panel panel-primary" id="xecosystem">
 			<div class="panel-heading">
-				<h1 class="panel-title">Errors</h1>
+				<h1 class="panel-title">Modules Not in Ecosystem</h1>
 			</div>
 			<div class="panel-body panel-primary">
 				<P>The <B>depends</B> list of a <I>topline</I> ecosystem module sometimes contains a module name that is
-				not itself a topline ecosystem module, but may be in a sub-directory of another module 
-				that is normally included.
-				It is possible that such a reference could
-				cause an installation failure if the module cannot be directly found. </p>
-				<P>The <I>Test</I> module is explicitly excluded from this list.</p>
-				<P>Naturally, the errors listed here may be an artifact of the algorithm.</p>
-				<P>These cited non-topline modules are:</p>
+				not itself a topline ecosystem module. The module may be:
+				<ul><li>in a sub-directory of another topline module</li>
+					<li>incorrectly referenced (eg., upper/lower case spelling error)
+				</ul>
+			</p>
+				<P>Naturally, the modules listed here are an artifact of the algorithm. If they should be included in the Ecosystem analysis,
+				let me know how the selection might be modified.</p>
+				<P>Non-topline modules that are cited are:</p>
 				<table class="table table-condensed table-striped panel-body">
 					<thead>
-						<tr><th>Module Name</th><th>Cited by</th></tr>
+						<tr><th>Module Name</th></tr>
 					</thead>
 					<tbody>
-						<TMPL_LOOP ErrorLoop>
-						<tr><td><TMPL_VAR ModName></td><td><TMPL_VAR CitedBy></td></tr>
+						<TMPL_LOOP XEcoLoop>
+						<tr><td><TMPL_VAR ModName></td></tr>
 						</TMPL_LOOP>
 					</tbody>
 				</table>
@@ -134,19 +133,19 @@
                         <div class="panel-heading">
 				<h1 class="panel-title">Definitions and Credits</h1>
 			</div>
-                    <div class="panel-body panel-primary">
-                    <a href="https://github.com/finanalyst/ModuleCitation">
-                    <img class="pull-right" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
-                        alt="Fork me on GitHub"
-                        data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
-                    <p>The Citation Index is defined as <code>100 * # times cited by any module / # cited modules</code></p>
-                    <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dynagraphs</A>. </P>
-                    <P>Data is gathered from Ecosystem projects file (used by panda). Adverbs are stripped from Module names.</p>
-                    <p>Thanks to Zoffix and Moritz Lentz for suggestions.</p>
-                    <p>Analysis is the author's, no grant has been made, no aim is intended other than interest. Hopefully, no one is offended.  
-                    Kind suggestions always welcome at rnhainsworth at the main gmail domain.</p>
-                    </div>
-                </footer>
+        <div class="panel-body panel-primary">
+        <a href="https://github.com/finanalyst/ModuleCitation">
+        <img class="pull-right" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67"
+            alt="Fork me on GitHub"
+            data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+        <p>The Citation Index is defined as <code>100 * # times cited by any module / # cited modules</code></p>
+        <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dynagraphs</A>. </P>
+        <P>Data is gathered from Ecosystem projects file (used by panda). Adverbs are stripped from Module names.</p>
+        <p>Thanks to Zoffix and Moritz Lentz for suggestions.</p>
+        <p>Analysis is the author's, no grant has been made, no aim is intended other than interest. Hopefully, no one is offended.
+        Kind suggestions always welcome at rnhainsworth at the main gmail domain.</p>
+        </div>
+    </footer>
 	</div>
 	<script type="text/javascript">
 	var g = new Dygraph(
@@ -159,7 +158,7 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
-                axes: { 
+                axes: {
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y) { return y.toFixed(0) + '%' } },
                 },
 
@@ -179,7 +178,7 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
-                axes: { 
+                axes: {
                     y: {valueFormatter: function(y) { return y.toFixed(2) + '%' }, axisLabelFormatter: function(y) { return y.toFixed(0) + '%' } },
                 },
 
@@ -199,8 +198,8 @@
                 highlightCircleSize: 2,
                 strokeWidth: 1,
                 strokeBorderWidth: 1,
-                
-                axes: { 
+
+                axes: {
                     y: {valueFormatter: function(y) { return y.toFixed(0) }, axisLabelFormatter: function(y) { return y.toFixed(0) }}
                 },
 

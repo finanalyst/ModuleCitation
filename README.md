@@ -2,51 +2,68 @@
 Scripts and module for generating a citation index for modules in the Perl6 ecosystem
 
 ##General
-The Perl6 Ecosystem has a large number of modules and it is interesting to see which are used the most, 
+
+The Perl6 Ecosystem has a large number of modules and it is interesting to see which are used the most frquently,
 and it will be interesting to see how this profile changes over time.
 
 The Ecosystem has a file with meta information about each _top line_ module (other modules in the ecosystem
 are contained in sub-directories of the _top line_ modules.
 
-Each module lists the modules it `"depends"` on. We call this a 
+Each module lists the modules it `"depends"` on. We call this a
 *citation* of another module, which is then called *cited* module. By gathering information over the whole
 ecosystem, it is possible to generate a *citation index* for each _top line_ Ecosystem module. The citation index is
-defined as the percentage fraction 
-of the number of times that module is cited compared to the total number of citations. Each module is only 
+defined as the percentage fraction
+of the number of times that module is cited compared to the total number of citations. Each module is only
 allowed to *cite* another module once.
 
-A *simple* search collects only citations in the `"depends"` list. A *recursive*<sup>1</sup> search collects citations in modules
-that are *cited* by the modules in the `"depends"` list, and the citations in those modules. 
+A *simple* search collects only citations in the `"depends"` list. A *recursive* search collects citations in modules
+that are *cited* by the modules in the `"depends"` list, and the citations in those modules. The Tarjan algorithm is used to detect where
+possible loops may occur to prevent a recursive abyss.
 
-<sup>1</sup> To prevent a 
-citation loop, eg. Module1 -> module2 -> ... -> Module1, the recursion level is clamped at 150. 
+##Process
+The Perl6 Ecosystem is defined by a file called projects at http://ecosystem-api.p6c.org/projects.json
+
+The file is downloaded, and stored in an archive.
+The json is processed to the names and the children, and the results are stored in an SQLite3 database.
+The ecosystem struture is created and analysed to create the citation indices.
+A static html file is created, together with the data files needed by the graphical engines used in the html.
+The html components are stored to a git repository that is then pushed to github (in a bash script), where github makes it public.
+
 
 ##Scripts
 
-* **GatherCitations.pl**
-    The script collects the Ecosystem `projects.txt` file and gathers the citation results. The projects file and the data are stored
-    in ./archive/ with a date (from `DateTime(now)` ).
+A single ModuleCitation object is created, and on creation looks for a mandatory configuration file (config.json). A single BUILD parameter is possible, eg.
+my ModuleCitation $mc .= new(:verbose);
 
+  **:verbose** is False by default. If passed as True, then log messages are printed to STDOUT.
 
-* **CitationAnalyse.pl** [--top=nn] [--col=nn] [--textfile] [--screen] [--html] [--rowtotal=nn]
+The following are the main public methods.
 
-  The script finds the latest CitationData file in archive, calculates the simple and recursive indices, then outputs the results
-depending on the inputs.
+* **get-latest-project-file**
+    The script collects the current Ecosystem `projects.txt` file and stores it with a datestamp in the archive directory.
 
-  **textfile**=True puts the **top** results into **col** columns and creates a local text file.
+* **update**
+    Compares the files in the archive with the files listed in the database. The project file is added to the archive. If the date of the file is already present in the database, it is marked as a duplicate. If it is data for a new date, then it is added to the citation table of the database.
 
-  **screen**=True puts the results onto the screen
+* **update-csv-files**
+    Generates the csv files for the html graphical modules.
 
-  **html**=True outputs results for **top** modules uses CitationTemplate.tmpl (HTML::Template) to create the local 
-	file `index.html`. This is the file used for the github gh-pages build.
+* **generate-html**
+    Generates the html file based on a template.
 
-  No options assumes the defaults: top=50, col=2, textfile=false, screen=true, html=false.
+##Configuration
 
-  Other parameter(s) or invalid input trigger the useage string.
-
-##TODO 
-* use a cycle detection algorithm to break a recursive loop. Currently, 50 levels of recursion seems sufficient to gather 
-all citations.
-* implement date options to show the change in CI for a module(s) using data in the ./archive/ directory.
-
-
+  The following is a typical configuration file
+``` JSON
+  {
+      "database-name": "citations",
+      "ecosystem-url":"http://ecosystem-api.p6c.org/projects.json",
+      "archive-directory": "arc",
+      "target-directory": "db",
+      "html-template": "CitationTemplate.tmpl",
+      "html-directory": "html",
+      "logfile": "citation.logs",
+      "top-limit": "50"
+  }
+```
+__top-limit__ is the the number of modules to be listed.
