@@ -320,4 +320,65 @@ class ModuleCitation {
       self.log: "{%!configuration<html-directory>}/{%filenames{$part}} created.";
     }
   }
+
+  method compile-popular-task {
+    my $metajson = "{%!configuration<task-popular-directory>}/META6.json";
+    # copy head into new README
+    my $readme = "{%!configuration<task-popular-directory>}/README.md";
+    "{%!configuration<task-popular-directory>}/readme.start.md".IO.copy: $readme;
+
+    my %json = try from-json( $metajson.IO.slurp );
+    if $! {
+      self.log("Task Compilation ended. $!");
+      return
+    }
+    %json<depends> = (); #remove existing depends value
+    # Get the last date
+    my $sth = $!dbh.prepare( q:to/STATEMENT/ );
+          SELECT distinct(date) from cited order by date asc
+          STATEMENT
+    $sth.execute;
+    my $date = $sth.allrows.flat.tail;
+
+    # Get the valid project file for this date to extract description data
+    $sth = $!dbh.prepare( qq:to/STATEMENT/ );
+          SELECT filename from projectfiles where date="$date" and valid="OK"
+          STATEMENT
+    $sth.execute;
+    my $projectfile = $sth.allrows.flat.tail;
+    my $modules = try from-json( "{%!configuration<archive-directory>}/$projectfile".IO.slurp) ;
+    if $! {
+      self.log("Task Compilation ended. $!");
+      return
+    }
+
+    # Get the top N modules in recusive order
+    $sth = $!dbh.prepare( qq:to/STATEMENT/);
+      select cited.module as "Name",
+        round( 100.0*cited.recursive/t1.simple, 2) as "Index"
+      from cited,
+        (select simple from cited where module="TotalCited" and date="$date") as t1
+      where cited.system=0 and cited.date="$date"
+      order by "Index" desc
+      limit {%!configuration<task-popular-number>}
+      STATEMENT
+    $sth.execute;
+    my @data = $sth.allrows(:array-of-hash);
+
+    # update the README and META6 files
+    $readme.IO.spurt( @data.map( { "| {$_<Name>} | {$_<Index>} | { self.get-description( $_<Name>, $modules ) } |" } ).join("\n"),:append);
+    %json<depends> = @data>><Name>;
+    $metajson.IO.spurt: to-json(%json);
+    self.log("Task::Popular list compiled");
+  }
+
+  method get-description( $name, $mods ) {
+    my $desc = 'OOps description not found, please file issue at github repository of p6-task-popular';
+    for $mods.list -> %mod {
+      next unless %mod<name> eq $name;
+      $desc = %mod<description>;
+      last;
+    }
+    return $desc;
+  }
 }

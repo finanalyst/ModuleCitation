@@ -5,6 +5,8 @@
     "target-directory": "db",
     "html-template": "CitationTemplate.tmpl",
     "html-directory": "../git_html",
-    "logfile": "citation.logs",
-    "top-limit": "50"
+    "logfile": "citation.log",
+    "top-limit": "50",
+    "task-popular-directory": "../git_task_popular",
+    "task-popular-number": "30"
 }

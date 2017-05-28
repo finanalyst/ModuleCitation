@@ -37,7 +37,9 @@ dies-ok { $mc .= new() }, "dies with bad config file";
   "html-template": "../CitationTemplate.tmpl",
   "html-directory": "html",
   "logfile": "citations.log",
-  "top-limit": "10"
+  "top-limit": "10",
+  "task-popular-directory": "popular",
+  "task-popular-number": "30"
 }
 CONF
 
@@ -62,7 +64,7 @@ ok @list[0].f, "file downloaded";
 
 lives-ok { $mc.update }, "adds one file to database";
 # transfer some files to archive-directory
-for "$*CWD/../t-data".IO.dir { .copy: "$*CWD/{$mc.configuration<archive-directory>}/{ .subst(/^ .* '/' /,'') }" };
+for "$*CWD/../t-data".IO.dir( test => /'projects'/ ) { .copy: "$*CWD/{$mc.configuration<archive-directory>}/{ .subst(/^ .* '/' /,'') }" };
 lives-ok { $mc.update}, "adds several files to database";
 
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);

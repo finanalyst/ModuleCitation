@@ -1,0 +1,16 @@
+{
+  "authors" : [
+    "Richard Hainsworth aka finanalyst"
+  ],
+  "build-depends" : [],
+  "depends" : [],
+  "description" : "Popular modules with high recursive citation indices",
+  "name" : "Task::Popular",
+  "perl" : "6.c",
+  "provides" : [],
+  "resources" : [],
+  "source-url" : "git://github.com/finanalyst/p6-task-popular.git",
+  "test-depends" : [],
+  "version" : "1.0",
+  "license": "MIT"
+}

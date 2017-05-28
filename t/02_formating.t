@@ -5,8 +5,13 @@ use Test::Output;
 use lib 'lib';
 use File::Directory::Tree;
 
-mktree 'tmp/html' unless 'tmp/html'.IO.d;
-empty-directory 'tmp/html';
+for <tmp/html tmp/popular > {
+  mktree $_ unless $_.IO.d;
+  empty-directory $_;
+}
+
+# transfer some files to popular-directory
+for <readme.start.md META6.json> { copy( "t-data/$_", "tmp/popular/$_" )  };
 
 temp $*CWD ~= '/tmp';
 
@@ -21,11 +26,14 @@ ok 'html/GraphFile_recursive.csv'.IO.f, "Recursive mods file created";
 lives-ok { $mc.generate-html }, "Html generate method lives";
 ok 'html/index.html'.IO.f, "Index file is created in html directory";
 
-# my ModuleCitation $newmc .= new(:verbose);
-# $newmc.dbh.do(q:to/STATEMENT/);
-#   DELETE FROM projectfiles
-#   WHERE date='2015-11-20'
-#   STATEMENT
-# stdout-like { $newmc.update }, / 'Adding' .*? 'to cited table' /, "Logging message goes to Stdout when verbose is on";
+lives-ok { $mc.compile-popular-task }, "Method compile-popular-task lives";
+ok 'popular/README.md'.IO.f, "Readme is created";
+
+my ModuleCitation $newmc .= new(:verbose);
+$newmc.dbh.do(q:to/STATEMENT/);
+  DELETE FROM projectfiles
+  WHERE date='2015-11-20'
+  STATEMENT
+stdout-like { $newmc.update }, / 'Adding' .*? 'to cited table' /, "Logging message goes to Stdout when verbose is on";
 
 done-testing;
