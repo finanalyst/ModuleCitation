@@ -1,7 +1,12 @@
 # ModuleCitation
 Scripts and module for generating a citation index for modules in the Perl6 ecosystem
 
-##General
+[General](#general)
+[Process](#process)
+[Scripts](#scripts)
+[Configuration](#configuration)
+
+## General
 
 The Perl6 Ecosystem has a large number of modules and it is interesting to see which are used the most frquently,
 and it will be interesting to see how this profile changes over time.
@@ -20,7 +25,7 @@ A *simple* search collects only citations in the `"depends"` list. A *recursive*
 that are *cited* by the modules in the `"depends"` list, and the citations in those modules. The Tarjan algorithm is used to detect where
 possible loops may occur to prevent a recursive abyss.
 
-##Process
+## Process
 The Perl6 Ecosystem is defined by a file called projects at http://ecosystem-api.p6c.org/projects.json
 
 The file is downloaded, and stored in an archive.
@@ -30,7 +35,7 @@ A static html file is created, together with the data files needed by the graphi
 The html components are stored to a git repository that is then pushed to github (in a bash script), where github makes it public.
 
 
-##Scripts
+## Scripts
 
 A single ModuleCitation object is created, and on creation looks for a mandatory configuration file (config.json). A single BUILD parameter is possible, eg.
 my ModuleCitation $mc .= new(:verbose);
@@ -50,8 +55,11 @@ The following are the main public methods.
 
 * **generate-html**
     Generates the html file based on a template.
+    
+* **compile-task-popular**
+    Creates the META6.json and README.md files for the Task::Popular distribution. An existing META6.json needs to be in the directory for the file, and the top of the README file, called readme.start.md. The method assumes the existence of a database.
 
-##Configuration
+## Configuration
 
   The following is a typical configuration file
 ``` JSON
@@ -62,8 +70,11 @@ The following are the main public methods.
       "target-directory": "db",
       "html-template": "CitationTemplate.tmpl",
       "html-directory": "html",
-      "logfile": "citation.logs",
-      "top-limit": "50"
+      "logfile": "citation.log",
+      "top-limit": "50",
+      "task-popular-directory": "popular",
+      "task-popular-number": 30
   }
 ```
-__top-limit__ is the the number of modules to be listed.
+* **top-limit** is the the number of modules to be listed.
+* **task-popular-number** is the number of modules to be included in the distribution list
