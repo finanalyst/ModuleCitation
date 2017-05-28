@@ -1,10 +1,10 @@
 # ModuleCitation
 Scripts and module for generating a citation index for modules in the Perl6 ecosystem
 
-[General](#general)
-[Process](#process)
-[Scripts](#scripts)
-[Configuration](#configuration)
+[General](#general)  
+[Process](#process)  
+[Scripts](#scripts)  
+[Configuration](#configuration)  
 
 ## General
 
