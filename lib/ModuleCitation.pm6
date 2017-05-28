@@ -56,10 +56,12 @@ class ModuleCitation {
   method get-latest-project-file () {
     my $ua = HTTP::UserAgent.new;
     my $response = $ua.get($.configuration<ecosystem-url>);
-    "%.configuration<archive-directory>/projects_{ DateTime.new(now).truncated-to('second') }".IO.spurt: $response.decoded-content;
+    my $fn="%.configuration<archive-directory>/projects_{ DateTime.new(now).truncated-to('second') }";
+    $fn.IO.spurt: $response.decoded-content;
     CATCH {
         self.log("Could not download module metadata: {$_.message}")
     }
+    self.log("Downloaded data to $fn");
   }
 
   method add-filename( $filename ) {
