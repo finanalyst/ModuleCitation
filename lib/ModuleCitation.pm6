@@ -55,13 +55,16 @@ class ModuleCitation {
 
   method get-latest-project-file () {
     my $ua = HTTP::UserAgent.new;
-    my $response = $ua.get($.configuration<ecosystem-url>);
-    my $fn="%.configuration<archive-directory>/projects_{ DateTime.new(now).truncated-to('second') }";
-    $fn.IO.spurt: $response.decoded-content;
-    CATCH {
-        self.log("Could not download module metadata: {$_.message}")
+    my $k = 0;
+    for %.configuration<ecosystem-urls>.list -> $url {
+      my $response = $ua.get($url);
+      my $fn="%.configuration<archive-directory>/projects{$k++}_{ DateTime.new(now).truncated-to('second') }";
+      $fn.IO.spurt: $response.decoded-content;
+      CATCH {
+          self.log("Could not download module metadata: {$_.message}")
+      }
+      self.log("Downloaded data to $fn");
     }
-    self.log("Downloaded data to $fn");
   }
 
   method add-filename( $filename ) {
@@ -74,7 +77,7 @@ class ModuleCitation {
     my Algorithm::Tarjan $trj .= new;
     my %trj-matrix;
     # update projectfiles table
-    if $filename ~~ / 'projects_' $<date>=(.*?) 'T' / {
+    if $filename ~~ / 'projects' \d* '_' $<date>=(.*?) 'T' / {
       $date = $<date>.Str;
       $sth = $.dbh.prepare( qq:to/STATEMENT/);
         SELECT count(date) AS 'Number' FROM projectfiles WHERE date='$date'
@@ -327,7 +330,7 @@ class ModuleCitation {
     my $metajson = "{%!configuration<task-popular-directory>}/META6.json";
     # copy head into new README
     my $readme = "{%!configuration<task-popular-directory>}/README.md";
-    "{%!configuration<task-popular-directory>}/readme.start.md".IO.copy: $readme;
+    "readme.start.md".IO.copy: $readme;
 
     my %json = try from-json( $metajson.IO.slurp );
     if $! {
@@ -369,6 +372,16 @@ class ModuleCitation {
 
     # update the README and META6 files
     $readme.IO.spurt( @data.map( { "| {$_<Name>} | {$_<Index>} | { self.get-description( $_<Name>, $modules ) } |" } ).join("\n"),:append);
+    #add date
+    $readme.IO.spurt( qq:to/DATE/ ,:append );
+
+
+      ## Date of Compilation
+
+      This list was compiled on { Date.today }.
+
+      DATE
+    $readme.IO.spurt( "readme.end.md".IO.slurp,:append);
     %json<depends> = @data>><Name>;
     $metajson.IO.spurt: to-json(%json);
     self.log("Task::Popular list compiled");

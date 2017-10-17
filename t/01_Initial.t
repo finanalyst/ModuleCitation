@@ -21,7 +21,7 @@ dies-ok { $mc .= new() }, "dies without config file";
 'config.json'.IO.spurt: q:to/CONF/;
 {
     "database-name": "ndb",
-     "ecosystem-url-file":"www.domain.org"
+     "ecosystem-urls":["www.domain.org",],
      ""
 }
 CONF
@@ -31,7 +31,10 @@ dies-ok { $mc .= new() }, "dies with bad config file";
 'config.json'.IO.spurt: q:to/CONF/;
 {
   "database-name": "citations",
-  "ecosystem-url":"http://ecosystem-api.p6c.org/projects.json",
+  "ecosystem-urls": [
+    "http://ecosystem-api.p6c.org/projects.json",
+    "https://raw.githubusercontent.com/ugexe/Perl6-ecosystems/master/cpan.json"
+  ],
   "archive-directory": "arc",
   "target-directory": "db",
   "html-template": "../CitationTemplate.tmpl",
