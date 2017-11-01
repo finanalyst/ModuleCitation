@@ -14,6 +14,14 @@ class ModuleCitation {
   has @!core-modules = <Test NativeCall zef>; #core modules that are installed
   has Bool $!verbose;
 
+  my regex base-name { \w [<-[:]>|| '::' ] * }; # a module contains at least one word character or :: but not a single :
+  my regex adverb {
+    ':' $<a-name>=(\w+)
+      [ \( ~ \) $<a-val>= (.+?)
+      |  \< ~ \> $<a-val>= (.+?)
+      ]  }; # an adverb starts with ':', contains at least one word char and has a value delimited  by brackets
+  my regex module { <base-name> <adverb>* }; # full spec is a base-name and [no] adverbs
+
   method log( $msg ) {
     spurt "$*CWD/%.configuration<logfile>",
       "{ DateTime.new(now).truncated-to('second') }: $msg\n", :append;
@@ -37,14 +45,15 @@ class ModuleCitation {
       my $sth = $!dbh.do(q:to/STATEMENT/);
         CREATE TABLE projectfiles (
           filename varchar(50),
-          date varchar(50),
+          location varchar(4),
+          date varchar(12),
           valid text
         )
         STATEMENT
       $sth = $!dbh.do(q:to/STATEMENT/);
         CREATE TABLE cited (
-          date varchar(50),
-          module varchar(100),
+          date varchar(12),
+          module varchar(50),
           system integer,
           simple integer,
           recursive integer
@@ -58,7 +67,7 @@ class ModuleCitation {
     my $k = 0;
     for %.configuration<ecosystem-urls>.list -> $url {
       my $response = $ua.get($url);
-      my $fn="%.configuration<archive-directory>/projects{$k++}_{ DateTime.new(now).truncated-to('second') }";
+      my $fn="%.configuration<archive-directory>/projects_{$k++}_{ DateTime.new(now).truncated-to('second') }";
       $fn.IO.spurt: $response.decoded-content;
       CATCH {
           self.log("Could not download module metadata: {$_.message}")
@@ -71,25 +80,29 @@ class ModuleCitation {
     self.log("Processing $filename");
     my $error-msg = '';
     my $date = '2000-01-01'; #in case date cannot be determined
+    my $loc = 0;
     my %citing;
     my $sth;
     my $list;
     my Algorithm::Tarjan $trj .= new;
     my %trj-matrix;
-    # update projectfiles table
-    if $filename ~~ / 'projects' \d* '_' $<date>=(.*?) 'T' / {
+    # get the file from archive and parse it for location and time information
+    if $filename ~~ / 'projects_' $<loc>=(\d+) '_' $<date>=(.*?) 'T' / {
       $date = $<date>.Str;
+      $loc = $<loc>.Str;
       $sth = $.dbh.prepare( qq:to/STATEMENT/);
-        SELECT count(date) AS 'Number' FROM projectfiles WHERE date='$date'
+        SELECT count(date) AS 'Number' FROM projectfiles WHERE date='$date' and location='$loc'
         STATEMENT
       $sth.execute;
       my %similar = $sth.row(:hash);
+      # any files with the same location and date as one already in the directory are set as Duplicate
+      # this is because multiple project files may be downloaded and the default is to keep information
       $error-msg = 'Duplicate' if %similar<Number> > 0;
     } else {
       $error-msg = "Filename doesnt match pattern";
       self.log($error-msg)
     }
-    # update
+    # the json data is now tested.
     unless $error-msg {
       %trj-matrix = Empty;
       $list = try from-json( "$*CWD/$.configuration<archive-directory>/$filename".IO.slurp );
@@ -99,22 +112,34 @@ class ModuleCitation {
       }
     }
     unless $error-msg {
+      # the json is valid
       self.log("Adding $filename to cited table");
       for $list.list -> $mod {
+        # first criterion is that only the latest version is used
         unless $mod<name> ~~ / ^ [ <-[:]> || '::' ] * / and %citing{$/}:exists and %citing{$/} gt $mod<version>  {
           my $name = ~$/;
-          unless $name eq 'Test' {
+          # exclude core-modules
+          unless $name ~~ any @!core-modules {
             %citing{$name} = {};
+            # only consider the 'depends' field
             with $mod<depends> {
-              for $mod<depends>.flat {
-                %citing{$name}{$/} = $mod<version> if / ^ [ <-[:]> || '::' ] * /  ;
-                %trj-matrix{$name}.push: ~$/;
+              my ($err, %mods) = self.analyse-dep($_);
+              if $err eq '' {
+                for %mods.kv -> $ref-name, %adverbs {
+                  # second criterion is that the module is not from another source
+                  without %adverbs<from> {
+                    %citing{$name}{$ref-name} = $mod<version>   ;
+                    %trj-matrix{$name}.push: $ref-name;
+                  }
+                }
+              } else {
+                $error-msg = "Depends field error: $err";
               }
             }
           }
         }
       }
-      # check for cycles
+      # check for cycles in the citation matrix
       $trj.init( %trj-matrix );
       if $trj.find-cycles() > 0 {
          $error-msg = "Cycles in data likely";
@@ -122,12 +147,12 @@ class ModuleCitation {
       }
     }
     $sth = $.dbh.do( qq:to/STATEMENT/  );
-      INSERT INTO projectfiles ( filename, date, valid )
-      VALUES ( "$filename", "$date", "{ $error-msg ?? $error-msg !! 'OK' }" );
+      INSERT INTO projectfiles ( filename, location, date, valid )
+      VALUES ( "$filename", "$loc","$date", "{ $error-msg ?? $error-msg !! 'OK' }" );
       STATEMENT
     #now add filename to the citing table if no error
     if $error-msg {
-      self.log("No change to citing/index tables") }
+      self.log("No change to citing/index tables because of an error: $error-msg") }
     else {
       #create citations matrix
       my @ecosystem  = %citing.keys.map( { .trim } ).sort;
@@ -161,6 +186,87 @@ class ModuleCitation {
       $sth.execute( $date, 'TotalXEcosystem', +@x-ecosystem, 0, 2);
       self.log("Added seems successful")
     }
+  }
+
+  method analyse-dep( $dep-str --> List ) {
+    my %mods = ();
+    my $err = '';
+    given $dep-str.WHAT.^name {
+      when 'Array' {
+        for $dep-str.list -> $spec {
+          given $spec.WHAT.^name {
+            when 'Str' { # a simple module name
+              if $spec ~~ /<module>/ {
+                my %v = ();
+                for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
+                %mods{ $<module><base-name> } = %v;
+              } else { $err ~= "Wrong module pattern: $spec\n"}
+            }
+            when 'Array' { # a list of module names, which are alternatives
+              for $spec.list -> $elem {
+                if $elem ~~ /<module>/ {
+                  my %v = ();
+                  for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
+                  %mods{ $<module><base-name> } = %v;
+                } else { $err ~= "Wrong module pattern: $elem\n"}
+              }
+            }
+            when 'Hash' { # an element contains hints as well as the Module name
+              with $spec<name> { # ignore any hash element not containing an module name
+                if $spec<name> ~~ /<module>/ { # only need the information in the name field
+                    my %v = ();
+                    for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
+                    %mods{ $<module><base-name> } = %v;
+                  } else { $err ~= 'Wrong module pattern: ' ~ $spec<name> ~ "\n" }
+                }
+              }
+            default {
+              $err ~= 'Unknown module pattern: ' ~ $spec ~ "\n";
+            }
+          }
+        }
+      }
+      when 'Hash' {
+        for $dep-str.kv -> $phase, $phase-spec {
+          for <requires recommends> -> $act { #ignore other fields
+            next without $phase-spec{$act};
+            for $phase-spec{$act}.list -> $spec {
+              given $spec.WHAT.^name {
+                when 'Str' { # a simple module name
+                  if $spec ~~ /<module>/ {
+                    my %v = ();
+                    for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
+                    %mods{ $<module><base-name> } = %v;
+                  } else {  $err ~= "Wrong module pattern: $spec\n"}
+                }
+                when 'Array' { # a list of module names, which are alternatives
+                  for $spec.list -> $elem {
+                    if $elem ~~ /<module>/ {
+                      my %v = ();
+                      for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
+                      %mods{ $<module><base-name> } = %v;
+                    } else { $err ~= "Wrong module pattern: $elem\n" }
+                  }
+                }
+                when 'Hash' { # an element contains hints as well as the Module name
+                  with $spec<name> { # ignore any hash element not containing an module name
+                    if $spec<name> ~~ /<module>/ { # only need the information in the name field
+                        my %v = ();
+                        for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
+                        %mods{ $<module><base-name> } = %v;
+                      } else { $err ~= 'Wrong module pattern: ' ~ $spec<name> ~ "\n"}
+                    }
+                  }
+                default {
+                  $err ~= 'Unknown module pattern: ' ~ $spec ~ "\n";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return ($err, %mods);
   }
 
   method citations-from( %citing, Str $citer, Str $mode ) {
