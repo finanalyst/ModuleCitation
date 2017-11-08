@@ -170,6 +170,6 @@ is $err,'','hash with info ok';
 
 }
 
-#empty-directory 'tmp';
-#shell('rmdir tmp');
+empty-directory 'tmp';
+shell('rmdir tmp');
 done-testing;

@@ -104,7 +104,7 @@ class ModuleCitation {
                 next if $sub-mod eq any @!core-modules; # do not allow any core-module name into alias value
                 with %!alias{$sub-mod} -> @pointed-to {
                   # criterion 4, add to list unles another Top-line module already provides itself as dependency
-                  %!alias{$sub-mod}.append( $name ) unless $sub-mod eq any @pointed-to;
+                  %!alias{$sub-mod} = ( %!alias{$sub-mod}, $name ) unless $sub-mod eq any @pointed-to;
                 } else {
                   %!alias{$sub-mod} = $name , ; #creates a list
                 }
@@ -313,7 +313,7 @@ class ModuleCitation {
         %dates{%file<date>}{%file<loc>} = %file<name>;
       }
       # add file to database
-      self.log("Adding data for %file<name> to projectsfile table");
+      self.log("Adding data for {%file<name>} to projectsfile table");
       $sth = $.dbh.do( qq:to/STATEMENT/  );
         INSERT INTO projectfiles ( filename, location, date, valid, errors )
         VALUES ( "%file<name>", "%file<loc>","%file<date>", "{%file<duplicate> ?? 'Dup' !! 'OK'}", "{ %file<error> ?? 'Y' !! 'N' }" )

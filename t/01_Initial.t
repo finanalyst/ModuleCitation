@@ -185,5 +185,4 @@ $mc.verbose=True;
 #--MARKER-- Test 20
 output-like { $mc.update } , /'Data for' .+ 'added to cited table'/, 'Two modules providing same sub-module are allowed';
 
-
 done-testing;
