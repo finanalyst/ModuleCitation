@@ -164,7 +164,7 @@ class ModuleCitation {
       $sth.execute( $date, 'TotalEcosystem', +@ecosystem, 0, 2);
       $sth.execute( $date, 'TotalCited', $cited-total, 0 , 2);
       $sth.execute( $date, 'TotalXEcosystem', +@x-ecosystem, 0, 2);
-      self.log("Data for $date added to cited table")
+      self.log("Data for $date added to cited table");
     }
     self.log("Module errors: $module-err-msg") if $module-err-msg;
   }
@@ -281,77 +281,81 @@ class ModuleCitation {
         - cited data is only added if there are files for each source
         - this requires we know when a new source became available
 
-    # discover which files are not in database
+    # discover which files are already in database
     my $sth = $!dbh.prepare( q:to/STATEMENT/ );
       SELECT filename FROM projectfiles
       STATEMENT
     $sth.execute;
     my @existing-files = $sth.allrows.flat;
-    my @new-files;
+    # discover which dates are already in database
+    $sth = $!dbh.prepare( q:to/STATEMENT/);
+      SELECT distinct date FROM cited ORDER BY date ASC
+      STATEMENT
+    my @existing-dates = $sth.allrows.flat;
+    my %dates;
     for "$*CWD/{$.configuration<archive-directory>}".IO.dir.map( { .subst(/^ .* '/' /,'') } )
       -> $filename {
-      next if $filename ~~ any( @existing-files );
+      next if $filename ~~ any( @existing-files ); # filter out files already there
       if $filename ~~ / 'projects_' $<loc>=(\w+) '_' $<date>=(.*?) 'T' / {
-        @new-files.push: %( :name( ~$filename), :loc( ~$<loc>), :date( ~$<date> ), :error(False) );
+        my $date = ~$<date>;
+         # define file(s) as duplicates if date is in cited.
+         if $date eq any @existing-dates {
+           self.add-file( $filename, $date, ~$<loc>, :dup);
+         } else {
+           %dates{$date} = {} without %dates{$date};
+           %dates{$date}{~$<loc>} = $filename;
+         }
       } else {
-        @new-files.push: %( :name(~$filename), :loc<NA>, :date<1999-01-01>, :dup(False), :error(True) );
         self.log("Filename \<$filename> doesn't match pattern");
+        self.add-file( $filename, '1999-01-01', 'NA', :err);
       }
     }
-    # obtain duplicate information for each file
-    my $results;
-    my %dates;
-    for @new-files -> %file {
-      unless %file<error> {
-        $sth = $.dbh.prepare( qq:to/STATEMENT/);
-          SELECT count(date) > 0 AS 'dups' FROM projectfiles WHERE date='%file<date>' and location='%file<loc>'
-          STATEMENT
-        $sth.execute;
-        $results = $sth.row(:hash);
-        %file<duplicate> = $results<dups>.so;
-        %dates{%file<date>} = {} without %dates{%file<date>};
-        %dates{%file<date>}{%file<loc>} = %file<name>;
-      }
-      # add file to database
-      self.log("Adding data for {%file<name>} to projectsfile table");
-      $sth = $.dbh.do( qq:to/STATEMENT/  );
-        INSERT INTO projectfiles ( filename, location, date, valid, errors )
-        VALUES ( "%file<name>", "%file<loc>","%file<date>", "{%file<duplicate> ?? 'Dup' !! 'OK'}", "{ %file<error> ?? 'Y' !! 'N' }" )
-        STATEMENT
-    }
+
     # collect information where ecosystem is complete
     # only update cited files if all sources are downloaded.
     for %dates.kv -> $date, %locations {
-      my Bool $err = False;
+      # all locations must be present if loc-date < data-date
       if  %!configuration<ecosystem-urls>.map({
         .value<date> gt $date or ( .value<date> le $date and %locations{.key}:exists )
       }).all {
         my @json-list = ();
-        for %locations.values -> $fn {
+        my Bool $err = False; # we need a taint flag in case one of the files has a JSON error
+        for %locations.kv -> $loc, $fn {
           try {
             @json-list.append(from-json("$*CWD/{$.configuration<archive-directory>}/$fn".IO.slurp).list)
           }
           if $! {
+            #TODO trigger another call to get-latest-project-files
             $err = True;
             self.log( "JSON error reading  $fn: " ~ $! );
-            $sth = $.dbh.do( qq:to/STATEMENT/  );
-              UPDATE projectfiles
-              SET errors="Y"
-              WHERE filename="$fn"
-              STATEMENT
-            last # out of the loop for this date
           }
         } # locations loop
         self.add-date($date, @json-list) unless $err;
+        # add both files to projectfiles
+        for %locations.kv -> $loc, $fn {
+          self.add-file($fn, $date, $loc, :err($err) )
+        }
       } else {
+        #TODO trigger more downloads
         self.log(
           "Incomplete ecosystem:\n\t" ~
             %.configuration<ecosystem-urls>.keys.map({ "$_ : " ~ ( %locations{$_} // 'N/a' ) }).join(",\n\t")
-          )
+          );
+          for %locations.kv -> $loc, $fn {
+            self.add-file($fn, $date, $loc, :err )
+          }
       }
     }
   }
 
+  method add-file(Str $fn, Str $date, Str $loc, Bool :$dup = False, Bool :$err = False ) {
+    # add file to database
+    self.log("Adding data for $fn to projectsfile table");
+    my $sth = $.dbh.do( qq:to/STATEMENT/  );
+      INSERT INTO projectfiles ( filename, location, date, valid, errors )
+      VALUES ( "$fn", "$loc","$date", "{$dup ?? 'Dup' !! 'OK'}", "{ $err ?? 'Y' !! 'N' }" )
+      STATEMENT
+  }
 
   method generate-html() {
     # generate the table of values
