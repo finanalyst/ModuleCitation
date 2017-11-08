@@ -5,8 +5,8 @@ use ModuleCitation;
 
 sub MAIN( Bool :$v=False ) {
   my ModuleCitation $mc .= new( :verbose($v));
-  $mc.get-latest-project-file;
-  $mc.update;
-  $mc.update-csv-files;
-  $mc.generate-html;
+  $mc.get-latest-project-files;
+#  $mc.update;
+#  $mc.update-csv-files;
+#  $mc.generate-html;
 }

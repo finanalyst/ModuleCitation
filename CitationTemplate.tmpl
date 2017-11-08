@@ -139,8 +139,18 @@
             alt="Fork me on GitHub"
             data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
         <p>The Citation Index is defined as <code>100 * # times cited by any module / # cited modules</code></p>
-        <P>Graphs drawn with package from <A href="http://dygraphs.com/">Dynagraphs</A>. </P>
-        <P>Data is gathered from Ecosystem projects file (used by panda). Adverbs are stripped from Module names.</p>
+			<p>The structure of the 'depends' field as specified in S22 allows for source diversity that complicates analysis. The 'provides' list allows
+				for situations in which multiple modules can 'provide' the same dependency.<br>
+				The following criteria are applied:
+				<ol type="1">
+					<li>Where alternative dependencies are permitted, each of the alternatives is counted equally since this is a citation index.</li>
+					<li>Where a dependency is from another language, as defined by the <code>:from</code> adverb, the module is excluded because we are interested in Perl6 modules.</li>
+					<li>If a dependency being cited is 'provided' by a Top-Line module, but is also the name of a Top-Line module, then only the top-line module is cited.</li>
+					<li>If a dependency being cited is 'provided' by more than one Top-Line module (and is not itself Top-Line), then EACH Top-Line is cited (as per Criterion 1).</li>
+				</ol>
+			</p>
+        <p>Graphs drawn with package from <a href="http://dygraphs.com/">Dynagraphs</a>. </p>
+        <p>Data is gathered from Ecosystem projects file (used by panda). Adverbs are stripped from Module names.</p>
         <p>Thanks to Zoffix and Moritz Lentz for suggestions.</p>
         <p>Analysis is the author's, no grant has been made, no aim is intended other than interest. Hopefully, no one is offended.
         Kind suggestions always welcome at rnhainsworth at the main gmail domain.</p>

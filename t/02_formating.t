@@ -39,15 +39,16 @@ do {
 #--MARKER-- Test 8
   ok 'popular/README.md'.IO.f, "Readme is created";
 
-  my ModuleCitation $newmc .= new(:verbose);
-  $newmc.dbh.do(q:to/STATEMENT/);
+$mc.verbose=True;
+  $mc.dbh.do(q:to/STATEMENT/);
     DELETE FROM projectfiles
     WHERE date='2015-11-20'
     STATEMENT
 #--MARKER-- Test 9
-  stdout-like { $newmc.update }, / 'Adding' .*? 'to cited table' /, "Logging message goes to Stdout when verbose is on";
+stdout-like { $mc.update }, / 'Adding data for' .* 'to projectsfile table' /, "Logging message goes to Stdout when verbose is on";
 
 diag "testing the depends structure";
+$mc.verbose=False;
 my $err;
 my %mods;
 #--MARKER-- Test 10
@@ -155,10 +156,20 @@ is $err,'','hash with info ok';
   }
   END
 #--MARKER-- Test 16
-is $err, '', 'real test works';
+  is $err, '', 'real test works';
+
+  diag "Downloading from internet";
+  my @list = dir $mc.configuration<archive-directory>;
+  my $old-num = @list.elems;
+  $mc.verbose = False;
+#--MARKER-- Test 17
+  lives-ok { $mc.get-latest-project-files }, "getting new project files";
+  @list = dir $mc.configuration<archive-directory>;
+#--MARKER-- Test 18
+  is @list.elems, $old-num + 2, "two new files downloaded";
 
 }
 
-empty-directory 'tmp';
-shell('rmdir tmp');
+#empty-directory 'tmp';
+#shell('rmdir tmp');
 done-testing;

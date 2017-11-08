@@ -1,9 +1,15 @@
 {
     "database-name": "citations",
-    "ecosystem-urls": [
-      "http://ecosystem-api.p6c.org/projects.json",
-      "https://raw.githubusercontent.com/ugexe/Perl6-ecosystems/master/cpan.json"
-    ],
+    "ecosystem-urls": {
+        "ecosys": {
+            "date": "2000-01-01",
+            "url": "http://ecosystem-api.p6c.org/projects.json"
+        },
+        "cpan6": {
+            "date": "2017-10-17",
+            "url": "https://raw.githubusercontent.com/ugexe/Perl6-ecosystems/master/cpan.json"
+        }
+    },
     "archive-directory": "archive",
     "target-directory": "db",
     "html-template": "CitationTemplate.tmpl",

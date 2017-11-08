@@ -34,10 +34,16 @@ dies-ok { $mc .= new() }, "dies with bad config file";
 'config.json'.IO.spurt: q:to/CONF/;
 {
   "database-name": "citations",
-  "ecosystem-urls": [
-    "http://ecosystem-api.p6c.org/projects.json",
-    "https://raw.githubusercontent.com/ugexe/Perl6-ecosystems/master/cpan.json"
-  ],
+  "ecosystem-urls": {
+      "ecosys": {
+          "date": "2000-01-01",
+          "url": "http://ecosystem-api.p6c.org/projects.json"
+      },
+      "cpan6": {
+          "date": "2017-10-17",
+          "url": "https://raw.githubusercontent.com/ugexe/Perl6-ecosystems/master/cpan.json"
+      }
+  },
   "archive-directory": "arc",
   "target-directory": "db",
   "html-template": "../CitationTemplate.tmpl",
@@ -66,37 +72,118 @@ is-deeply $sth.allrows, (['projectfiles'], ['cited']), "correct tables";
 #--MARKER-- Test 8
 nok $mc.configuration<logfile>.IO.f, "No log file on initiation";
 
-$mc.log("My test");
+$mc.log("Test the log  file");
 #--MARKER-- Test 9
 ok $mc.configuration<logfile>.IO.f, "Log file created";
 
+"$*CWD/../t-data/test.json".IO.copy: "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-01-01T1234Z.json";
 #--MARKER-- Test 10
-lives-ok { $mc.get-latest-project-file }, "getting new project file";
-my @list = dir $mc.configuration<archive-directory>;
-#--MARKER-- Test 11
-is @list.elems, 2, "two files downloaded";
-
-#--MARKER-- Test 12
 lives-ok { $mc.update }, "update routine lives";
+
+$sth = $mc.dbh.prepare(q:to/STATEMENT/);
+  SELECT t1.simple as eco, t2.simple as cited, t3.simple as xeco FROM
+  (SELECT simple FROM cited WHERE module="TotalEcosystem") as t1,
+  (SELECT simple FROM cited WHERE module="TotalCited") as t2,
+  (SELECT simple FROM cited WHERE module="TotalXEcosystem") as t3
+  STATEMENT
+$sth.execute;
+my %res= $sth.row(:hash);
+#--MARKER-- Test 11
+is %res<eco>, 23, "23 modules in Ecosystem in test.json";
+#--MARKER-- Test 12
+is %res<xeco>, 1, "1 module not in Ecosystem in test.json";
+#--MARKER-- Test 13
+is %res<cited>, 7, "7 modules in Ecosystem in test.json";
+
 # transfer some files to archive-directory
 for "$*CWD/../t-data".IO.dir( test => /'projects'/ ) { .copy: "$*CWD/{$mc.configuration<archive-directory>}/{ .subst(/^ .* '/' /,'') }" };
-#--MARKER-- Test 13
-lives-ok { $mc.update}, "adds test files to database";
+#--MARKER-- Test 14
+lives-ok { $mc.update }, "adds test files to database";
 
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
   SELECT count(date) as 'Num' FROM projectfiles where date='2015-11-20'
   STATEMENT
 $sth.execute;
-my %similar = $sth.row(:hash);
-#--MARKER-- Test 14
-ok %similar<Num> == 5, "Correct number of duplicate files";
+#--MARKER-- Test 15
+is $sth.row(:hash)<Num>, 5, "Correct number of duplicate files";
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
   SELECT count(valid) as 'Num' FROM projectfiles
-  WHERE date='2015-11-20' AND valid='Duplicate'
+  WHERE date='2015-11-20' AND valid='Dup'
   STATEMENT
 $sth.execute;
-%similar = $sth.row(:hash);
-#--MARKER-- Test 15
-ok %similar<Num> == 4,"Correct number of files marked 'duplicate'";
+#%similar = $sth.row(:hash);
+#--MARKER-- Test 16
+is $sth.row(:hash)<Num>, 4, "Correct number of files marked 'duplicate'";
+
+diag "create project file with depends errors to be trapped";
+"$*CWD/{$mc.configuration<archive-directory>}/projects_0_2015-01-01.json".IO.spurt(q:to/PROJ/);
+  [{
+      "depends": [],
+      "provides": {
+          "Acme::Meow": "lib/Acme/Meow.pm"
+      },
+      "name": "Acme::Meow",
+      "version": "*"
+  }, {
+      "version": "*",
+      "name": "JSON::Tiny",
+      "provides": {
+          "JSON::Tiny::Actions": "lib/JSON/Tiny/Actions.pm",
+          "JSON::Tiny::Grammar": "lib/JSON/Tiny/Grammar.pm",
+          "JSON::Tiny": "lib/JSON/Tiny.pm"
+      },
+      "depends": []
+  }]
+  PROJ
+
+$mc.verbose = True;
+#--MARKER-- Test 17
+output-like { $mc.update }, /'Filename' .* 'doesn\'t match pattern'/, "filename error trapped";
+$sth = $mc.dbh.prepare(q:to/STATEMENT/);
+  SELECT errors FROM projectfiles WHERE filename='projects_0_2015-01-01.json'
+  STATEMENT
+$sth.execute;
+#--MARKER-- Test 18
+is-deeply $sth.allrows, (['Y'],), "Error flag is set";
+
+$sth = $mc.dbh.prepare(q:to/STATEMENT/);
+  SELECT count(errors) as Err FROM projectfiles WHERE errors='Y'
+  STATEMENT
+$sth.execute;
+#--MARKER-- Test 19
+is $sth.row(:hash)<Err>,1, "One file labled error";
+
+"$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-01-01T1235Z.json".IO.spurt(q:to/PROJ/);
+  [{
+      "depends": ["JSON::Tiny"],
+      "provides": {
+          "Acme::Meow": "lib/Acme/Meow.pm"
+      },
+      "name": "Acme::Meow",
+      "version": "*"
+  }, {
+      "version": "*",
+      "name": "JSON::Tiny",
+      "provides": {
+          "JSON::Tiny::Actions": "lib/JSON/Tiny/Actions.pm",
+          "JSON::Tiny::Grammar": "lib/JSON/Tiny/Grammar.pm",
+          "JSON::Tiny": "lib/JSON/Tiny.pm"
+      },
+      "depends": []
+  }, {
+      "depends": [],
+      "name": "Testing",
+      "version": "*",
+      "provides": {
+          "Testing": "lib/Testing.pm",
+          "JSON::Tiny": "lib/JSON/Tiny.pm"
+      }
+  }]
+  PROJ
+
+$mc.verbose=True;
+#--MARKER-- Test 20
+output-like { $mc.update } , /'Data for' .+ 'added to cited table'/, 'Two modules providing same sub-module are allowed';
+
 
 done-testing;
