@@ -168,7 +168,7 @@ class ModuleCitation {
       $sth.execute( $date, 'TotalEcosystem', +@ecosystem, 0, 2);
       $sth.execute( $date, 'TotalCited', $cited-total, 0 , 2);
       $sth.execute( $date, 'TotalXEcosystem', +@x-ecosystem, 0, 2);
-      self.log("Data for $date added to cited table");
+      self.log("Data for $date added to cited");
     }
     self.log("Module errors: $module-err-msg") if $module-err-msg;
     return False;
@@ -299,12 +299,12 @@ class ModuleCitation {
     $sth.execute;
     my @existing-dates = $sth.allrows.flat;
     my %dates;
-    for "$*CWD/{$.configuration<archive-directory>}".IO.dir.map( { .subst(/^ .* '/' /,'') } )
+    for "$*CWD/{$.configuration<archive-directory>}".IO.dir.map( { .subst(/^ .* '/' /,'') } ).sort
       -> $filename {
       next if $filename ~~ any( @existing-files ); # filter out files already there
       if $filename ~~ / 'projects_' $<loc>=(\w+) '_' $<date>=(.*?) 'T' / {
         my $date = ~$<date>;
-         # define file(s) as duplicates if date is in cited.
+         # define file(s) as duplicates if date is in cited or about to process file.
          if $date eq any @existing-dates {
            self.add-file( $filename, $date, ~$<loc>, :type<duplicate>);
          } else {
@@ -312,7 +312,9 @@ class ModuleCitation {
            with %dates{$date}{~$<loc>} {
              # to get here, there is a file with the same date and location already in %dates, so mark as a duplicate
              self.add-file( $filename, $date, ~$<loc>, :type<duplicate>)
-           } else {%dates{$date}{~$<loc>} = $filename};
+           } else {
+             %dates{$date}{~$<loc>} = $filename
+           };
          }
       } else {
         self.log("Filename \<$filename> doesn't match pattern");
@@ -323,7 +325,7 @@ class ModuleCitation {
     # collect information where ecosystem is complete
     # only update cited files if all sources are downloaded.
     # note: if file for a date didnt match pattern then ecosys info will be incomplete
-    for %dates.kv -> $date, %locations {
+    for %dates.sort({.keys}) { my $date = $_.key; my %locations = $_.value.hash;
       # all locations must be present if loc-date < data-date
       if  %!configuration<ecosystem-urls>.map({
         .value<date> gt $date or ( .value<date> le $date and %locations{.key}:exists )
@@ -360,7 +362,7 @@ class ModuleCitation {
 
   method add-file(Str $fn, Str $date, Str $loc, Str :$type = 'valid' ) {
     # add file to database
-    self.log("Add \<$fn> to projectsfile table");
+    self.log("Add \<$fn> to projectsfile as $type");
     my $sth = $.dbh.do( qq:to/STATEMENT/  );
       INSERT INTO projectfiles ( filename, location, date, type )
       VALUES ( "$fn", "$loc","$date", "$type" )

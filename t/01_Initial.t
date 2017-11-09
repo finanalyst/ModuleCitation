@@ -190,7 +190,7 @@ is $sth.row(:hash)<Err>,1, "One file labled with name error";
 
 $mc.verbose=True;
 #--MARKER-- Test 21
-output-like { $mc.update } , /'Data for' .+ 'added to cited table'/, 'Two modules providing same sub-module are allowed';
+output-like { $mc.update } , /'Data for' .+ 'added to cited'/, 'Two modules providing same sub-module are allowed';
 
 "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-02-01T1235Z.json".IO.spurt(q:to/PROJ/);
   [{

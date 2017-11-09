@@ -45,7 +45,7 @@ $mc.verbose=True;
     WHERE date='2015-11-20'
     STATEMENT
 #--MARKER-- Test 9
-stdout-like { $mc.update }, / 'Add' .* 'to projectsfile table' /, "Logging message goes to Stdout when verbose is on";
+stdout-like { $mc.update }, / 'Add' .* 'to projectsfile' /, "Logging message goes to Stdout when verbose is on";
 
 diag "testing the depends structure";
 $mc.verbose=False;
