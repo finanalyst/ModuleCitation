@@ -13,6 +13,7 @@ class ModuleCitation {
   has Bool $.verbose is rw = False;
   has %!citing = (); # compiled from module names
   has %!alias = (); # compiled from provides fields
+  has @.file-types = <valid duplicate json-err name-err ecosys-err tarjan-err>; # list of valid types. More info will be in log
 
   my regex base-name { [<-[:]>|| '::' ] * }; # a module contains at least one word character or :: but not a single :
   my regex adverb {
@@ -46,10 +47,12 @@ class ModuleCitation {
           filename varchar(50),
           location varchar(7),
           date varchar(12),
-          errors varchar(2),
-          valid text
+          type varchar(10)
         )
         STATEMENT
+      =comment
+          type is used to indicate the validity of the files. See @.filetypes for codes. Log will contain more info.
+
       $sth = $!dbh.do(q:to/STATEMENT/);
         CREATE TABLE cited (
           date varchar(12),
@@ -75,7 +78,7 @@ class ModuleCitation {
     }
   }
 
-  method add-date( Str $date, List $list ) {
+  method add-date( Str $date, List $list --> Bool ) { # true if Tarjan-error detected
     my $module-err-msg = '';
     %!citing = ();
     %!alias = (); # empty aliases
@@ -132,7 +135,8 @@ class ModuleCitation {
     # check for cycles in the citation matrix
     $trj.init( %trj-matrix );
     if $trj.find-cycles() > 0 {
-      self.log("No change to cited table because Tarjan strongly connected components found")
+      self.log("No change to cited table because Tarjan strongly connected components found");
+      return True;
     } else {
       #create citations matrix
       my @ecosystem  = %!citing.keys.map( { .trim } ).sort;
@@ -167,6 +171,7 @@ class ModuleCitation {
       self.log("Data for $date added to cited table");
     }
     self.log("Module errors: $module-err-msg") if $module-err-msg;
+    return False;
   }
 
   method analyse-dep( $dep-str --> List ) {
@@ -270,7 +275,7 @@ class ModuleCitation {
     }
   }
 
-  method update{
+  method update {
     =comment
       downloading files from multiple sources means that
         a) files for the same date and same location may exist - to be marked as duplicate
@@ -291,6 +296,7 @@ class ModuleCitation {
     $sth = $!dbh.prepare( q:to/STATEMENT/);
       SELECT distinct date FROM cited ORDER BY date ASC
       STATEMENT
+    $sth.execute;
     my @existing-dates = $sth.allrows.flat;
     my %dates;
     for "$*CWD/{$.configuration<archive-directory>}".IO.dir.map( { .subst(/^ .* '/' /,'') } )
@@ -300,40 +306,44 @@ class ModuleCitation {
         my $date = ~$<date>;
          # define file(s) as duplicates if date is in cited.
          if $date eq any @existing-dates {
-           self.add-file( $filename, $date, ~$<loc>, :dup);
+           self.add-file( $filename, $date, ~$<loc>, :type<duplicate>);
          } else {
            %dates{$date} = {} without %dates{$date};
-           %dates{$date}{~$<loc>} = $filename;
+           with %dates{$date}{~$<loc>} {
+             # to get here, there is a file with the same date and location already in %dates, so mark as a duplicate
+             self.add-file( $filename, $date, ~$<loc>, :type<duplicate>)
+           } else {%dates{$date}{~$<loc>} = $filename};
          }
       } else {
         self.log("Filename \<$filename> doesn't match pattern");
-        self.add-file( $filename, '1999-01-01', 'NA', :err);
+        self.add-file( $filename, '1999-01-01', 'NA', :type<name-err>);
       }
     }
 
     # collect information where ecosystem is complete
     # only update cited files if all sources are downloaded.
+    # note: if file for a date didnt match pattern then ecosys info will be incomplete
     for %dates.kv -> $date, %locations {
       # all locations must be present if loc-date < data-date
       if  %!configuration<ecosystem-urls>.map({
         .value<date> gt $date or ( .value<date> le $date and %locations{.key}:exists )
       }).all {
         my @json-list = ();
-        my Bool $err = False; # we need a taint flag in case one of the files has a JSON error
+        my Bool $json-err = False; # taint flag in case one of the files has a JSON error
         for %locations.kv -> $loc, $fn {
           try {
             @json-list.append(from-json("$*CWD/{$.configuration<archive-directory>}/$fn".IO.slurp).list)
           }
           if $! {
-            #TODO trigger another call to get-latest-project-files
-            $err = True;
+            #TODO trigger on failure another call to get-latest-project-files
+            $json-err = True;
             self.log( "JSON error reading  $fn: " ~ $! );
           }
-        } # locations loop
-        self.add-date($date, @json-list) unless $err;
+        } # end locations loop
+        my $tarjan-err = self.add-date($date, @json-list) unless $json-err;
         # add both files to projectfiles
         for %locations.kv -> $loc, $fn {
-          self.add-file($fn, $date, $loc, :err($err) )
+          self.add-file($fn, $date, $loc, :type($json-err ?? 'json-err' !! ($tarjan-err ?? 'tarjan-err' !! 'valid')) )
         }
       } else {
         #TODO trigger more downloads
@@ -342,18 +352,18 @@ class ModuleCitation {
             %.configuration<ecosystem-urls>.keys.map({ "$_ : " ~ ( %locations{$_} // 'N/a' ) }).join(",\n\t")
           );
           for %locations.kv -> $loc, $fn {
-            self.add-file($fn, $date, $loc, :err )
+            self.add-file($fn, $date, $loc, :type<ecosys-err> )
           }
       }
     }
   }
 
-  method add-file(Str $fn, Str $date, Str $loc, Bool :$dup = False, Bool :$err = False ) {
+  method add-file(Str $fn, Str $date, Str $loc, Str :$type = 'valid' ) {
     # add file to database
-    self.log("Adding data for $fn to projectsfile table");
+    self.log("Add \<$fn> to projectsfile table");
     my $sth = $.dbh.do( qq:to/STATEMENT/  );
-      INSERT INTO projectfiles ( filename, location, date, valid, errors )
-      VALUES ( "$fn", "$loc","$date", "{$dup ?? 'Dup' !! 'OK'}", "{ $err ?? 'Y' !! 'N' }" )
+      INSERT INTO projectfiles ( filename, location, date, type )
+      VALUES ( "$fn", "$loc","$date", "$type" )
       STATEMENT
   }
 
@@ -511,7 +521,7 @@ class ModuleCitation {
 
     # Get the valid project file for this date to extract description data
     $sth = $!dbh.prepare( qq:to/STATEMENT/ );
-          SELECT filename from projectfiles where date="$date" and valid="OK"
+          SELECT filename from projectfiles where date="$date" and type="valid"
           STATEMENT
     $sth.execute;
     my $projectfile = $sth.allrows.flat.tail;

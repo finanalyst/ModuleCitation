@@ -107,13 +107,20 @@ $sth.execute;
 #--MARKER-- Test 15
 is $sth.row(:hash)<Num>, 5, "Correct number of duplicate files";
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
-  SELECT count(valid) as 'Num' FROM projectfiles
-  WHERE date='2015-11-20' AND valid='Dup'
+  SELECT count(type) as 'Num' FROM projectfiles
+  WHERE date='2015-11-20' AND type='duplicate'
   STATEMENT
 $sth.execute;
-#%similar = $sth.row(:hash);
 #--MARKER-- Test 16
 is $sth.row(:hash)<Num>, 4, "Correct number of files marked 'duplicate'";
+
+$sth = $mc.dbh.prepare(q:to/STATEMENT/);
+  SELECT count(type) as 'Num' FROM projectfiles
+  WHERE date='2017-10-25' AND type='ecosys-err'
+  STATEMENT
+$sth.execute;
+#--MARKER-- Test 17
+is $sth.row(:hash)<Num>, 1, "Incomplete ecosystem detected for 2017-10-25";
 
 diag "create project file with depends errors to be trapped";
 "$*CWD/{$mc.configuration<archive-directory>}/projects_0_2015-01-01.json".IO.spurt(q:to/PROJ/);
@@ -137,23 +144,23 @@ diag "create project file with depends errors to be trapped";
   PROJ
 
 $mc.verbose = True;
-#--MARKER-- Test 17
+#--MARKER-- Test 18
 output-like { $mc.update }, /'Filename' .* 'doesn\'t match pattern'/, "filename error trapped";
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
-  SELECT errors FROM projectfiles WHERE filename='projects_0_2015-01-01.json'
-  STATEMENT
-$sth.execute;
-#--MARKER-- Test 18
-is-deeply $sth.allrows, (['Y'],), "Error flag is set";
-
-$sth = $mc.dbh.prepare(q:to/STATEMENT/);
-  SELECT count(errors) as Err FROM projectfiles WHERE errors='Y'
+  SELECT type FROM projectfiles WHERE filename='projects_0_2015-01-01.json'
   STATEMENT
 $sth.execute;
 #--MARKER-- Test 19
-is $sth.row(:hash)<Err>,1, "One file labled error";
+is-deeply $sth.allrows, (['name-err'],), "Name error is caught";
 
-"$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-01-01T1235Z.json".IO.spurt(q:to/PROJ/);
+$sth = $mc.dbh.prepare(q:to/STATEMENT/);
+  SELECT count(type) as Err FROM projectfiles WHERE type='name-err'
+  STATEMENT
+$sth.execute;
+#--MARKER-- Test 20
+is $sth.row(:hash)<Err>,1, "One file labled with name error";
+
+"$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-01-02T1235Z.json".IO.spurt(q:to/PROJ/);
   [{
       "depends": ["JSON::Tiny"],
       "provides": {
@@ -182,7 +189,79 @@ is $sth.row(:hash)<Err>,1, "One file labled error";
   PROJ
 
 $mc.verbose=True;
-#--MARKER-- Test 20
+#--MARKER-- Test 21
 output-like { $mc.update } , /'Data for' .+ 'added to cited table'/, 'Two modules providing same sub-module are allowed';
+
+"$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-02-01T1235Z.json".IO.spurt(q:to/PROJ/);
+  [{
+      "depends": ["JSON::Tiny"],
+      "provides": {
+          "Acme::Meow": "lib/Acme/Meow.pm"
+      },
+      "name": "Acme::Meow",
+      "version": "*"
+  }, {
+      "version": "*",
+      "name": "JSON::Tiny",
+      "provides": {
+          "JSON::Tiny::Actions": "lib/JSON/Tiny/Actions.pm",
+          "JSON::Tiny::Grammar": "lib/JSON/Tiny/Grammar.pm",
+          "JSON::Tiny": "lib/JSON/Tiny.pm"
+      },
+      "depends": []
+  }, {
+      "depends": []
+      "name": "Testing",
+      "version": "*",
+      "provides": {
+          "Testing": "lib/Testing.pm",
+          "JSON::Tiny": "lib/JSON/Tiny.pm"
+      }
+  }]
+  PROJ
+
+#--MARKER-- Test 22
+  output-like { $mc.update } , /'JSON error reading'/, 'JSON error is caught and logged';
+  $sth = $mc.dbh.prepare(q:to/STATEMENT/);
+    SELECT type FROM projectfiles WHERE filename='projects_ecosys_2001-02-01T1235Z.json'
+    STATEMENT
+  $sth.execute;
+#--MARKER-- Test 23
+  is-deeply $sth.allrows, (['json-err'],), "Json error is marked in database";
+
+  "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-02-02T1235Z.json".IO.spurt(q:to/PROJ/);
+    [{
+        "depends": ["JSON::Tiny"],
+        "provides": {
+            "Acme::Meow": "lib/Acme/Meow.pm"
+        },
+        "name": "Acme::Meow",
+        "version": "*"
+    }, {
+        "version": "*",
+        "name": "JSON::Tiny",
+        "provides": {
+            "JSON::Tiny::Actions": "lib/JSON/Tiny/Actions.pm",
+            "JSON::Tiny::Grammar": "lib/JSON/Tiny/Grammar.pm",
+            "JSON::Tiny": "lib/JSON/Tiny.pm"
+        },
+        "depends": ["hoopla"]
+    },{
+        "depends": ["Acme::Meow"],
+        "provides": {
+            "Acme::Meow": "lib/Acme/Meow.pm"
+        },
+        "name": "hoopla",
+        "version": "*"
+    }]
+    PROJ
+#--MARKER-- Test 24
+    output-like { $mc.update } , /'Tarjan strongly connected components found'/, 'Tarjan caught and logged';
+    $sth = $mc.dbh.prepare(q:to/STATEMENT/);
+      SELECT type FROM projectfiles WHERE filename='projects_ecosys_2001-02-02T1235Z.json'
+      STATEMENT
+    $sth.execute;
+#--MARKER-- Test 25
+    is-deeply $sth.allrows, (['tarjan-err'],), "Tarjan error is marked in database";
 
 done-testing;
