@@ -76,30 +76,25 @@ $mc.log("Test the log  file");
 #--MARKER-- Test 9
 ok $mc.configuration<logfile>.IO.f, "Log file created";
 
-"$*CWD/../t-data/test.json".IO.copy: "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-01-01T1234Z.json";
+"$*CWD/../t-data/test-ok.json".IO.copy: "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-01-01T1234Z.json";
+my $rv;
 #--MARKER-- Test 10
-lives-ok { $mc.update }, "update routine lives";
-
+lives-ok { $rv = $mc.update }, "update routine lives";
+#--MARKER-- Test 11
+ok $rv, "update gives normal return to test file";
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
-  SELECT t1.simple as eco, t2.simple as cited, t3.simple as xeco FROM
-  (SELECT simple FROM cited WHERE module="TotalEcosystem") as t1,
-  (SELECT simple FROM cited WHERE module="TotalCited") as t2,
-  (SELECT simple FROM cited WHERE module="TotalXEcosystem") as t3
+  SELECT module, simple FROM cited WHERE system=2 ORDER BY module
   STATEMENT
 $sth.execute;
-my %res= $sth.row(:hash);
-#--MARKER-- Test 11
-is %res<eco>, 23, "23 modules in Ecosystem in test.json";
+my @res= $sth.allrows;
 #--MARKER-- Test 12
-is %res<xeco>, 1, "1 module not in Ecosystem in test.json";
-#--MARKER-- Test 13
-is %res<cited>, 7, "7 modules in Ecosystem in test.json";
-
+is-deeply @res.Seq, (["TotalCited", 5], ["TotalEcosystem", 23], ["TotalXEcosystem", 1]), "date in db with test-ok.json as expected";
 # transfer some files to archive-directory
 for "$*CWD/../t-data".IO.dir( test => /'projects'/ ) { .copy: "$*CWD/{$mc.configuration<archive-directory>}/{ .subst(/^ .* '/' /,'') }" };
+#--MARKER-- Test 13
+lives-ok { $rv = $mc.update }, "adds test files to database";
 #--MARKER-- Test 14
-lives-ok { $mc.update }, "adds test files to database";
-
+nok $rv, "an update error should have been detected";
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
   SELECT count(date) as 'Num' FROM projectfiles where date='2015-11-20'
   STATEMENT

@@ -13,12 +13,17 @@ for <tmp/html tmp/popular > {
 # transfer some files to test directories
 for <readme.start.md readme.end.md> { copy( "t-data/$_", "tmp/$_" )  };
 copy( "t-data/META6.json", "tmp/popular/META6.json" );
-
 do {
   temp $*CWD ~= '/tmp';
 
   use ModuleCitation;
   my ModuleCitation $mc .=new();
+
+  # uses the database created in 01_initial.t
+  # eliminate bad dates.
+  $mc.dbh.do( q:to/STATEMENT/ );
+  DELETE from cited WHERE date<"2002-01-01"
+  STATEMENT
 
 #--MARKER-- Test 1
   lives-ok {$mc.update-csv-files }, "update csv method lives";

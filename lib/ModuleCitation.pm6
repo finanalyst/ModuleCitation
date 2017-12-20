@@ -5,10 +5,13 @@ use Algorithm::Tarjan; # to test for cycles
 use DBIish;
 use HTML::Template;
 
+#no precompilation;
+
 class ModuleCitation {
   has %.configuration = ();
   has $.dbh; # the database handle
-  has @!parts = <Simple Recursive>;
+  has @!table1-fields = ();
+  has @!table2-fields = ();
   has @!core-modules = <Test NativeCall zef>; #core modules that are installed
   has Bool $.verbose is rw = False;
   has %!citing = (); # compiled from module names
@@ -44,25 +47,24 @@ class ModuleCitation {
     unless $db-preconnection-exists {    # db does not exist, so it needs to be created
       my $sth = $!dbh.do(q:to/STATEMENT/);
         CREATE TABLE projectfiles (
-          filename varchar(50),
-          location varchar(7),
-          date varchar(12),
-          type varchar(10)
+          filename text,           -- base name of file with project data
+          location text,           -- location where file was downloaded from
+          date text,               -- date file was downloaded
+          type text                -- status of content of file, see @.filetypes, and log
         )
         STATEMENT
-      =comment
-          type is used to indicate the validity of the files. See @.filetypes for codes. Log will contain more info.
-
       $sth = $!dbh.do(q:to/STATEMENT/);
         CREATE TABLE cited (
-          date varchar(12),
-          module varchar(50),
-          system integer,
-          simple integer,
-          recursive integer
+          date text,       -- date added to table
+          module text, -- cannonical name of module
+          system integer, -- status integer
+          simple integer,  -- number of simple citations
+          recursive integer -- number of recursive citations
           )
         STATEMENT
     }
+  @!table2-fields = < date module system simple recursive >;
+  @!table1-fields = <filename location date type>; # try to keep table creation and insert synchronised
   }
 
   method get-latest-project-files () {
@@ -78,7 +80,7 @@ class ModuleCitation {
     }
   }
 
-  method add-date( Str $date, List $list --> Bool ) { # true if Tarjan-error detected
+  method add-date( Str $date, List $list --> Bool ) { # returns true if Tarjan-error detected
     my $module-err-msg = '';
     %!citing = ();
     %!alias = (); # empty aliases
@@ -91,26 +93,28 @@ class ModuleCitation {
       # %!citing{base-name} contains the version number of set
       # if a module has been picked up in a source, then the next version is dropped.
       if $mod<name> ~~ / <module> / and
-        ( %!citing{~$<module><base-name>}:!exists or %!citing{~$<module><base-name>} lt $mod<version>)
+        ( %!citing{~$<module><base-name>}:!exists or %!citing{~$<module><base-name>}{~$<module><base-name>} lt $mod<version>)
         {
         my $name = ~$<module><base-name>;
         # exclude core-modules
         unless $name ~~ any @!core-modules {
-          %!citing{$name} = {}; # add module as top-level of ecosystem
+          %!citing{$name}{$name} = $mod<version>; # add module as top-level of ecosystem
+          # if another topline module provides the name from a sub-module, the topline module takes preference
+          %!alias{$name} = [ $name ] if %!alias{$name}:exists;
           # consider the 'provides' field and make each element an alias to the main module
           # structure of the 'provides' field is Hash of  Sub-Module:File pairs. Only need the keys
           with $mod<provides> {
-            if $_.WHAT ~~ (Hash) {
-              #criterion 3, another Top-Line module provides name as dependency, but Top-Line with same name takes preference
-              %!alias{$name} = ( $name, ) if %!alias{$name}:exists and $name ne all %!alias{$name};
-              for  $_.keys -> $sub-mod {
-                next if $sub-mod eq any @!core-modules; # do not allow any core-module name into alias value
-                with %!alias{$sub-mod} -> @pointed-to {
-                  # criterion 4, add to list unles another Top-line module already provides itself as dependency
-                  %!alias{$sub-mod} = ( %!alias{$sub-mod}, $name ) unless $sub-mod eq any @pointed-to;
-                } else {
-                  %!alias{$sub-mod} = $name , ; #creates a list
-                }
+            next unless $_.WHAT ~~ (Hash);
+            # must be a Hash, so if not, ignore.
+            for  $_.keys -> $sub-mod {
+              next if $sub-mod eq any @!core-modules; # do not allow any core-module name into alias value
+              next if $sub-mod eq $name; # the spec implies that all code in the module should be in provides
+              with %!alias{$sub-mod} -> @pointed-to {
+                # criterion 4, add Top-line module as alias to Provides sub-module
+                # unless another Top-line module already provides itself as dependency
+                %!alias{$sub-mod}.push( $name ) unless $sub-mod eq any @pointed-to;
+              } else { # does not exist
+                %!alias{$sub-mod} = [ $name ] ;
               }
             }
           }
@@ -142,32 +146,35 @@ class ModuleCitation {
       my @ecosystem  = %!citing.keys.map( { .trim } ).sort;
       my %cited = ();
       for @ecosystem -> $citer {
-          next unless %!citing{$citer}.keys; # skip if citer hasnt dependencies
-          for @!parts -> $part {
-            for self.citations-from( $citer, $part ).flat -> $cited {
+          next unless +%!citing{$citer}.keys > 1; # skip if citer more than one Dependency
+          # it has one - itself
+          for <Simple Recursive> -> $part {
+            for  self.citations-from( $citer, $part ) -> $cited {
               next unless $cited; # skip blank elements
               %cited{ $cited }{ $part }{ $citer } = 1 # same as creating a set
             }
          }
       }
-      $sth = $!dbh.prepare( q:to/STATEMENT/ );
-        INSERT INTO cited (date, module, simple, recursive, system) VALUES ( ?, ?, ?, ?, ?)
-        STATEMENT
+      #   @!table2-fields = < date module system simple recursive >
+      $sth = $!dbh.prepare( qq:to/STATEMENT/) ;
+        INSERT INTO cited ({ @!table2-fields.join(',') })
+        VALUES ( { ( '?' xx @!table2-fields.elems ).join(',') } )
+      STATEMENT
       my $cited-total = 0;
       my @x-ecosystem = %!citing.keys.grep( { $_ !~~ any(@ecosystem) } );
       for @ecosystem -> $mod {
         my $num = +%cited{$mod}<Simple>.keys;
-        $sth.execute( $date, $mod, $num, +%cited{$mod}<Recursive>.keys, 0);
+        $sth.execute( $date, $mod, 0, $num, +%cited{$mod}<Recursive>.keys);
         $cited-total++ if $num;
       }
       for @x-ecosystem -> $mod {
         my $num = +%cited{$mod}<Simple>.keys;
-        $sth.execute( $date, $mod, $num, +%cited{$mod}<Recursive>.keys, 1);
+        $sth.execute( $date, $mod, 1, $num, +%cited{$mod}<Recursive>.keys);
         $cited-total++ if $num;
       }
-      $sth.execute( $date, 'TotalEcosystem', +@ecosystem, 0, 2);
-      $sth.execute( $date, 'TotalCited', $cited-total, 0 , 2);
-      $sth.execute( $date, 'TotalXEcosystem', +@x-ecosystem, 0, 2);
+      $sth.execute( $date, 'TotalEcosystem', 2,+@ecosystem, 0);
+      $sth.execute( $date, 'TotalCited', 2,$cited-total, 0 );
+      $sth.execute( $date, 'TotalXEcosystem', 2,+@x-ecosystem, 0);
       self.log("Data for $date added to cited");
     }
     self.log("Module errors: $module-err-msg") if $module-err-msg;
@@ -255,9 +262,10 @@ class ModuleCitation {
     return ($err, %mods);
   }
 
-  method citations-from( Str $citer, Str $mode ) {
+  method citations-from( Str $citer, Str $mode --> Array ) {
     return Empty if $citer ~~ any @!core-modules;
-    unless %!citing{$citer}:exists or %!alias{$citer}:exists { # recursively a cited module may be a citer.
+    unless %!citing{$citer}:exists or %!alias{$citer}:exists {
+      # recursively a cited module may be a citer.
       # modules themselves can be cited, and so can modules they 'provide'
       # sub-modules are treated for citation purposes as aliases of the module
       # without either the module or sub-module, the cited name is not in the Ecosystem
@@ -265,17 +273,20 @@ class ModuleCitation {
     }
     my @cited-candidates;
     for %!citing{$citer}.keys {
-      @cited-candidates.append($_.list) with %!alias{$_} ;
+      next if $_ eq $citer; # each element cites itself at least once
+      @cited-candidates.append( %!alias{$_}.list ) with %!alias{$_} ;
       @cited-candidates.append($_) if %!alias{$_}:!exists and $_ ne any @!core-modules;
     };
-    return |@cited-candidates unless $mode ~~ / Recursive /;
-    return gather for @cited-candidates.list -> $target {
-      my @tmp = $.citations-from( $target, $mode ).flat ;
-      take @tmp.elems ?? ( $target , @tmp.list, ) !! $target ;
+    return @cited-candidates unless $mode ~~ / Recursive /;
+    my @tmp = @cited-candidates;
+    for @cited-candidates -> $target {
+      next unless $target;
+      @tmp.append: $.citations-from( $target, $mode ).flat ;
     }
+    return @tmp;
   }
 
-  method update {
+  method update( --> Bool) {
     =comment
       downloading files from multiple sources means that
         a) files for the same date and same location may exist - to be marked as duplicate
@@ -286,6 +297,7 @@ class ModuleCitation {
         - cited data is only added if there are files for each source
         - this requires we know when a new source became available
 
+    my $normal-exit = True;
     # discover which files are already in database
     my $sth = $!dbh.prepare( q:to/STATEMENT/ );
       SELECT filename FROM projectfiles
@@ -325,11 +337,14 @@ class ModuleCitation {
     # collect information where ecosystem is complete
     # only update cited files if all sources are downloaded.
     # note: if file for a date didnt match pattern then ecosys info will be incomplete
-    for %dates.sort({.keys}) { my $date = $_.key; my %locations = $_.value.hash;
+    for %dates.sort({.keys}) {
+      my $date = $_.key;
+      my %locations = $_.value.hash;
       # all locations must be present if loc-date < data-date
       if  %!configuration<ecosystem-urls>.map({
         .value<date> gt $date or ( .value<date> le $date and %locations{.key}:exists )
       }).all {
+        # here the system is complete
         my @json-list = ();
         my Bool $json-err = False; # taint flag in case one of the files has a JSON error
         for %locations.kv -> $loc, $fn {
@@ -337,18 +352,23 @@ class ModuleCitation {
             @json-list.append(from-json("$*CWD/{$.configuration<archive-directory>}/$fn".IO.slurp).list)
           }
           if $! {
-            #TODO trigger on failure another call to get-latest-project-files
-            $json-err = True;
+            #Caller must decide whether to reload
+            # date of file with error may already have passed
+            $normal-exit &&= ! ($json-err = True);
             self.log( "JSON error reading  $fn: " ~ $! );
           }
         } # end locations loop
-        my $tarjan-err = self.add-date($date, @json-list) unless $json-err;
+        # we now have a json with all modules if no json-error
+        my $tarjan-err;
+        unless $json-err {
+          $normal-exit &&= ! ( $tarjan-err = self.add-date($date, @json-list) );
+        }
         # add both files to projectfiles
         for %locations.kv -> $loc, $fn {
           self.add-file($fn, $date, $loc, :type($json-err ?? 'json-err' !! ($tarjan-err ?? 'tarjan-err' !! 'valid')) )
         }
       } else {
-        #TODO trigger more downloads
+        $normal-exit &&= False;
         self.log(
           "Incomplete ecosystem:\n\t" ~
             %.configuration<ecosystem-urls>.keys.map({ "$_ : " ~ ( %locations{$_} // 'N/a' ) }).join(",\n\t")
@@ -358,11 +378,13 @@ class ModuleCitation {
           }
       }
     }
+    return $normal-exit;
   }
 
   method add-file(Str $fn, Str $date, Str $loc, Str :$type = 'valid' ) {
     # add file to database
     self.log("Add \<$fn> to projectsfile as $type");
+    #@!table1-fields = <filename location date type>
     my $sth = $.dbh.do( qq:to/STATEMENT/  );
       INSERT INTO projectfiles ( filename, location, date, type )
       VALUES ( "$fn", "$loc","$date", "$type" )
@@ -507,7 +529,6 @@ class ModuleCitation {
     # copy head into new README
     my $readme = "{%!configuration<task-popular-directory>}/README.md";
     "readme.start.md".IO.copy: $readme;
-
     my %json = try from-json( $metajson.IO.slurp );
     if $! {
       self.log("Task Compilation ended. $!");
