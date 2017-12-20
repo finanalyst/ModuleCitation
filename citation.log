@@ -1729,3 +1729,11 @@
 2017-12-20T08:28:14Z: ../git_html/GraphFile_simple.csv created.
 2017-12-20T08:28:28Z: ../git_html/GraphFile_recursive.csv created.
 2017-12-20T08:28:30Z: Html index file created.
+2017-12-20T08:44:36Z: Downloaded data to archive/projects_cpan6_2017-12-20T08:44:36Z.json
+2017-12-20T08:44:37Z: Downloaded data to archive/projects_ecosys_2017-12-20T08:44:37Z.json
+2017-12-20T08:44:38Z: Add <projects_cpan6_2017-12-20T08:44:36Z.json> to projectsfile as duplicate
+2017-12-20T08:44:38Z: Add <projects_ecosys_2017-12-20T08:44:37Z.json> to projectsfile as duplicate
+2017-12-20T08:44:38Z: ../git_html/GraphFile_AllModules.csv created.
+2017-12-20T08:44:52Z: ../git_html/GraphFile_simple.csv created.
+2017-12-20T08:45:06Z: ../git_html/GraphFile_recursive.csv created.
+2017-12-20T08:45:08Z: Html index file created.
