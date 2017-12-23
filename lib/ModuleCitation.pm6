@@ -213,8 +213,9 @@ class ModuleCitation {
                   } else { $err ~= 'invalid module pattern: <' ~ $spec<name> ~ ">" }
                 }
               }
+            when ! .defined { } #do nothing as this is an empty string
             default {
-              $err ~= 'invalid module pattern: <' ~ $spec ~ ">";
+              $err ~= 'invalid module pattern: <' ~ $spec.perl ~ ">";
             }
           }
         }
@@ -247,9 +248,9 @@ class ModuleCitation {
                         my %v = ();
                         for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
                         %mods{ $<module><base-name> } = %v;
-                      } else { $err ~= 'Wrong module pattern: <' ~ $spec<name> ~ ">"}
-                    }
+                    } else { $err ~= 'Wrong module pattern: <' ~ $spec<name> ~ ">"}
                   }
+                }
                 default {
                   $err ~= 'Unknown module pattern: <' ~ $spec ~ ">";
                 }
@@ -300,7 +301,7 @@ class ModuleCitation {
     my $normal-exit = True;
     # discover which files are already in database
     my $sth = $!dbh.prepare( q:to/STATEMENT/ );
-      SELECT filename FROM projectfiles
+        SELECT filename FROM projectfiles
       STATEMENT
     $sth.execute;
     my @existing-files = $sth.allrows.flat;
@@ -370,8 +371,8 @@ class ModuleCitation {
       } else {
         $normal-exit &&= False;
         self.log(
-          "Incomplete ecosystem:\n\t" ~
-            %.configuration<ecosystem-urls>.keys.map({ "$_ : " ~ ( %locations{$_} // 'N/a' ) }).join(",\n\t")
+            "Incomplete ecosystem:\n\t" ~
+              %.configuration<ecosystem-urls>.keys.map({ "$_ : " ~ ( %locations{$_} // 'N/a' ) }).join(",\n\t")
           );
           for %locations.kv -> $loc, $fn {
             self.add-file($fn, $date, $loc, :type<ecosys-err> )
@@ -386,8 +387,8 @@ class ModuleCitation {
     self.log("Add \<$fn> to projectsfile as $type");
     #@!table1-fields = <filename location date type>
     my $sth = $.dbh.do( qq:to/STATEMENT/  );
-      INSERT INTO projectfiles ( filename, location, date, type )
-      VALUES ( "$fn", "$loc","$date", "$type" )
+        INSERT INTO projectfiles ( filename, location, date, type )
+        VALUES ( "$fn", "$loc","$date", "$type" )
       STATEMENT
   }
 
@@ -399,11 +400,11 @@ class ModuleCitation {
     $sth.execute;
     my $date = $sth.allrows.flat.tail;
     $sth = $!dbh.prepare( qq:to/STATEMENT/ );
-      SELECT t1.simple, t2.simple, t3.simple
-      from
-        (select simple from cited where date="$date" and module="TotalEcosystem") as t1,
-          (select simple from cited where date="$date" and module="TotalCited") as t2,
-            (select simple from cited where date="$date" and module="TotalXEcosystem") as t3
+        SELECT t1.simple, t2.simple, t3.simple
+        from
+          (select simple from cited where date="$date" and module="TotalEcosystem") as t1,
+            (select simple from cited where date="$date" and module="TotalCited") as t2,
+              (select simple from cited where date="$date" and module="TotalXEcosystem") as t3
       STATEMENT
     $sth.execute;
     my @totals = $sth.allrows.flat;
@@ -445,7 +446,7 @@ class ModuleCitation {
           :s_name(  sprintf("%s",%orders<Simple>[$n]<Name> ) ),
           :s_s_sim( sprintf("%6.2f",%orders<Simple>[$n]<Simple> ) ),
           :s_r_rec( sprintf("%6.2f",%orders<Simple>[$n]<Recursive> ) ),
-          :r_name(  sprintf("%s", %orders<Simple>[$n]<Name> ) ),
+          :r_name(  sprintf("%s", %orders<Recursive>[$n]<Name> ) ),
           :r_s_sim( sprintf("%6.2f",%orders<Recursive>[$n]<Simple> ) ),
           :r_r_rec( sprintf("%6.2f",%orders<Recursive>[$n]<Recursive> ) )
         ));
@@ -471,13 +472,13 @@ class ModuleCitation {
     my %filenames = <simple recursive all> Z=> ('GraphFile_simple.csv','GraphFile_recursive.csv','GraphFile_AllModules.csv');
     my @headings = <Date ModulesCited AllModules>;
     my $sth = $.dbh.prepare( q:to/STATEMENT/ );
-      select distinct(cited.date) as Date,t1.simple as AllModules, t2.simple as ModulesCited
-      from cited,
-      (select date, module, simple from cited  where module="TotalEcosystem") as t1,
-      (select date, module, simple from cited where module="TotalCited") as t2
-      where cited.date=t1.date and cited.date=t2.date
-      order by date asc
-    STATEMENT
+        select distinct(cited.date) as Date,t1.simple as AllModules, t2.simple as ModulesCited
+        from cited,
+        (select date, module, simple from cited  where module="TotalEcosystem") as t1,
+        (select date, module, simple from cited where module="TotalCited") as t2
+        where cited.date=t1.date and cited.date=t2.date
+        order by date asc
+      STATEMENT
     $sth.execute;
     "{%!configuration<html-directory>}/{%filenames<all>}".IO.spurt:
       ( @headings.join(','),
@@ -571,7 +572,6 @@ class ModuleCitation {
     $readme.IO.spurt( @data.map( { "| {$_<Name>} | {$_<Index>} | { self.get-description( $_<Name>, $modules ) } |" } ).join("\n"),:append);
     #add date
     $readme.IO.spurt( qq:to/DATE/ ,:append );
-
 
       ## Date of Compilation
 
