@@ -1815,3 +1815,13 @@
 2017-12-30T03:38:53Z: ../git_html/GraphFile_simple.csv created.
 2017-12-30T03:39:07Z: ../git_html/GraphFile_recursive.csv created.
 2017-12-30T03:39:10Z: Html index file created.
+2018-01-01T12:59:45Z: Downloaded data to archive/projects_cpan6_2018-01-01T12:59:45Z.json
+2018-01-01T12:59:51Z: Downloaded data to archive/projects_ecosys_2018-01-01T12:59:51Z.json
+2018-01-01T12:59:57Z: Data for 2018-01-01 added to cited
+2018-01-01T12:59:57Z: Module errors: At <2018-01-01> for <SemVer> 'depends': invalid module pattern: <Any>
+2018-01-01T12:59:57Z: Add <projects_cpan6_2018-01-01T12:59:45Z.json> to projectsfile as valid
+2018-01-01T12:59:57Z: Add <projects_ecosys_2018-01-01T12:59:51Z.json> to projectsfile as valid
+2018-01-01T12:59:57Z: ../git_html/GraphFile_AllModules.csv created.
+2018-01-01T13:00:11Z: ../git_html/GraphFile_simple.csv created.
+2018-01-01T13:00:25Z: ../git_html/GraphFile_recursive.csv created.
+2018-01-01T13:00:27Z: Html index file created.
