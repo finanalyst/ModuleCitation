@@ -1,7 +1,7 @@
 use v6.c;
 use Test;
 use Test::Output;
-use lib 'lib';
+#use lib 'lib';
 use File::Directory::Tree;
 use JSON::Fast;
 

@@ -2,7 +2,7 @@
 use v6.c;
 use Test;
 use Test::Output;
-use lib 'lib';
+#use lib 'lib';
 use File::Directory::Tree;
 
 for <tmp tmp/db tmp/arc > {
