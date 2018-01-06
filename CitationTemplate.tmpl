@@ -117,11 +117,11 @@
 				<P>Non-topline modules that are cited are:</p>
 				<table class="table table-condensed table-striped panel-body">
 					<thead>
-						<tr><th>Module Name</th></tr>
+						<tr><th>Module Name</th><th>Module is cited by</th></tr>
 					</thead>
 					<tbody>
 						<TMPL_LOOP XEcoLoop>
-						<tr><td><TMPL_VAR ModName></td></tr>
+						<tr><td><TMPL_VAR ModName></td><td><TMPL_VAR ModCited></td></tr>
 						</TMPL_LOOP>
 					</tbody>
 				</table>

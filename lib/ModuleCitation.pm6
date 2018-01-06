@@ -16,6 +16,7 @@ class ModuleCitation {
   has Bool $.verbose is rw = False;
   has %!citing = (); # compiled from module names
   has %!alias = (); # compiled from provides fields
+  has %.x-system-citations = (); # for use when there is a current download file
   has @.file-types = <valid duplicate json-err name-err ecosys-err tarjan-err>; # list of valid types. More info will be in log
 
   my regex base-name { [<-[:]>|| '::' ] * }; # a module contains at least one word character or :: but not a single :
@@ -162,6 +163,7 @@ class ModuleCitation {
       STATEMENT
       my $cited-total = 0;
       my @x-ecosystem = %!citing.keys.grep( { $_ !~~ any(@ecosystem) } );
+      my Bool $today = $date eq DateTime.now.Date;
       for @ecosystem -> $mod {
         my $num = +%cited{$mod}<Simple>.keys;
         $sth.execute( $date, $mod, 0, $num, +%cited{$mod}<Recursive>.keys);
@@ -171,6 +173,7 @@ class ModuleCitation {
         my $num = +%cited{$mod}<Simple>.keys;
         $sth.execute( $date, $mod, 1, $num, +%cited{$mod}<Recursive>.keys);
         $cited-total++ if $num;
+        %!x-system-citations{$mod} = %cited{$mod}<Simple>.keys if $today;
       }
       $sth.execute( $date, 'TotalEcosystem', 2,+@ecosystem, 0);
       $sth.execute( $date, 'TotalCited', 2,$cited-total, 0 );
@@ -193,7 +196,7 @@ class ModuleCitation {
                 my %v = ();
                 for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
                 %mods{ $<module><base-name> } = %v;
-              } else { $err ~= "invalid module pattern: \<$spec>"}
+              } else { $err ~= "invalid module pattern 1: \<$spec>"}
             }
             when 'Array' { # a list of module names, which are alternatives
               for $spec.list -> $elem {
@@ -201,7 +204,7 @@ class ModuleCitation {
                   my %v = ();
                   for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
                   %mods{ $<module><base-name> } = %v;
-                } else { $err ~= "invalid module pattern: \<$elem>"}
+                } else { $err ~= "invalid module pattern 2: \<$elem>"}
               }
             }
             when 'Hash' { # an element contains hints as well as the Module name
@@ -210,12 +213,13 @@ class ModuleCitation {
                     my %v = ();
                     for $<module><adverb>.list  { %v{ ~$_<a-name> } = ~$_<a-val> };
                     %mods{ $<module><base-name> } = %v;
-                  } else { $err ~= 'invalid module pattern: <' ~ $spec<name> ~ ">" }
+                  } else { $err ~= 'invalid module pattern 3: <' ~ $spec<name> ~ ">" }
                 }
               }
-            when ! .defined { } #do nothing as this is an empty string
+            when ! .defined {} #do nothing as this is an empty string
+            when 'Any' {} # a null in depends array
             default {
-              $err ~= 'invalid module pattern: <' ~ $spec.perl ~ ">";
+              $err ~= 'invalid module pattern 4: <' ~ $spec.perl ~ ">";
             }
           }
         }
@@ -451,14 +455,15 @@ class ModuleCitation {
           :r_r_rec( sprintf("%6.2f",%orders<Recursive>[$n]<Recursive> ) )
         ));
     }
-    $sth = $!dbh.prepare( qq:to/STATEMENT/ );
-      select module from cited where system=1 and date="$date"
-      STATEMENT
-    $sth.execute;
+    =comment
+        Now output the X-Ecosystem modules.
+        These have been collected separately for files collected today.
+
     if @totals[2] > 0 {
       %params<XEcosystem> = Bool::True;
-      for $sth.allrows -> $mod {
-              %params<XEcoLoop>.push: %( :ModName( sprintf("%s",$mod ) ), );
+      for %.x-system-citations.kv -> $mod, @citers {
+              %params<XEcoLoop>.push:
+                %( :ModName( sprintf("%s",$mod ) ), :ModCited(@citers.join(', ') ) );
       }
     } else {
       %params<XEcosystem> = Bool::False ;

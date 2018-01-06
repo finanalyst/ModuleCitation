@@ -1,7 +1,7 @@
 use v6.c;
 use Test;
 use Test::Output;
-#use lib 'lib';
+use lib 'lib';
 use File::Directory::Tree;
 use JSON::Fast;
 
@@ -14,7 +14,7 @@ for <tmp/html tmp/popular > {
 for <readme.start.md readme.end.md> { copy( "t-data/$_", "tmp/$_" )  };
 copy( "t-data/META6.json", "tmp/popular/META6.json" );
 do {
-  temp $*CWD ~= '/tmp';
+  temp $*CWD ~= '/tmp'; # adding tmp to existing cwd
 
   use ModuleCitation;
   my ModuleCitation $mc .=new();
@@ -162,17 +162,23 @@ is $err,'','hash with info ok';
   END
 #--MARKER-- Test 16
   is $err, '', 'real test works';
-
+  # copy test file with known x-system module as file for today
+  "$*CWD/../t-data/test_cpan6.json".IO.copy: "$*CWD/{$mc.configuration<archive-directory>}/projects_cpan6_{DateTime.now.Date}T1234Z.json";
+  "$*CWD/../t-data/test_ecosys.json".IO.copy: "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_{DateTime.now.Date}T1234Z.json";
+  $mc.update;
+#--MARKER-- Test 17
+  is +$mc.x-system-citations.keys, 8 , 'x-system citations data collected';
+  #$mc.generate-html;
+  # not sure how to test this automatically
   diag "Downloading from internet";
   my @list = dir $mc.configuration<archive-directory>;
   my $old-num = @list.elems;
   $mc.verbose = False;
-#--MARKER-- Test 17
+#--MARKER-- Test 18
   lives-ok { $mc.get-latest-project-files }, "getting new project files";
   @list = dir $mc.configuration<archive-directory>;
-#--MARKER-- Test 18
+#--MARKER-- Test 19
   is @list.elems, $old-num + 2, "two new files downloaded";
-
 }
 
 empty-directory 'tmp';

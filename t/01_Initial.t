@@ -2,7 +2,7 @@
 use v6.c;
 use Test;
 use Test::Output;
-#use lib 'lib';
+use lib 'lib';
 use File::Directory::Tree;
 
 for <tmp tmp/db tmp/arc > {
@@ -57,6 +57,7 @@ CONF
 
 #--MARKER-- Test 4
 lives-ok { $mc .= new() }, "object created with config";
+
 #--MARKER-- Test 5
 is $mc.configuration<database-name>, "citations", "configures ok";
 #--MARKER-- Test 6
@@ -94,7 +95,7 @@ for "$*CWD/../t-data".IO.dir( test => /'projects'/ ) { .copy: "$*CWD/{$mc.config
 #--MARKER-- Test 13
 lives-ok { $rv = $mc.update }, "adds test files to database";
 #--MARKER-- Test 14
-nok $rv, "an update error should have been detected";
+nok $rv, "an update error should be detected";
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
   SELECT count(date) as 'Num' FROM projectfiles where date='2015-11-20'
   STATEMENT
@@ -117,7 +118,7 @@ $sth.execute;
 #--MARKER-- Test 17
 is $sth.row(:hash)<Num>, 1, "Incomplete ecosystem detected for 2017-10-25";
 
-diag "create project file with depends errors to be trapped";
+diag "create project files with depends errors to be trapped";
 "$*CWD/{$mc.configuration<archive-directory>}/projects_0_2015-01-01.json".IO.spurt(q:to/PROJ/);
   [{
       "depends": [],
@@ -223,7 +224,6 @@ output-like { $mc.update } , /'Data for' .+ 'added to cited'/, 'Two modules prov
   $sth.execute;
 #--MARKER-- Test 23
   is-deeply $sth.allrows, (['json-err'],), "Json error is marked in database";
-
   "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-02-02T1235Z.json".IO.spurt(q:to/PROJ/);
     [{
         "depends": ["JSON::Tiny"],
@@ -258,5 +258,46 @@ output-like { $mc.update } , /'Data for' .+ 'added to cited'/, 'Two modules prov
     $sth.execute;
 #--MARKER-- Test 25
     is-deeply $sth.allrows, (['tarjan-err'],), "Tarjan error is marked in database";
+    "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-02-03T1235Z.json".IO.spurt(q:to/PROJ/);
+      [{
+          "depends": ["JSON::Tiny"],
+          "provides": {
+              "Acme::Meow": "lib/Acme/Meow.pm"
+          },
+          "name": "Acme::Meow",
+          "version": "*"
+      }, {
+          "version": "*",
+          "name": "JSON::Tiny",
+          "provides": {
+              "JSON::Tiny::Actions": "lib/JSON/Tiny/Actions.pm",
+              "JSON::Tiny::Grammar": "lib/JSON/Tiny/Grammar.pm",
+              "JSON::Tiny": "lib/JSON/Tiny.pm"
+          },
+          "depends": ["hoopla"]
+      },
+      {
+        "name" : "SemVer",
+        "source-url" : "http://www.cpan.org/authors/id/T/TY/TYIL/Perl6/SemVer-0.1.1.tar.gz",
+        "perl" : "6.c",
+        "resources" : [
+      null
+        ],
+        "depends" : [
+      null
+        ],
+        "tags" : [ ],
+        "provides" : {
+          "SemVer" : "lib/SemVer.pm6"
+        },
+        "version" : "0.1.1",
+        "meta-version" : 1,
+        "description" : "Class representing a semantic version",
+        "authors" : "Patrick Spek <p.spek@tyil.email>"
+      }
+      ]
+      PROJ
+#--MARKER-- Test 26
+      output-like { $mc.update } , /'Add <projects_ecosys_2001-02-03T1235Z.json> to projectsfile as valid'/, 'Zero depends Ok';
 
 done-testing;
