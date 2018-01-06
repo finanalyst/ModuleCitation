@@ -1865,3 +1865,13 @@
 2018-01-05T00:46:08Z: ../git_html/GraphFile_simple.csv created.
 2018-01-05T00:46:22Z: ../git_html/GraphFile_recursive.csv created.
 2018-01-05T00:46:24Z: Html index file created.
+2018-01-06T04:38:48Z: Could not download module metadata from cpan6: Please install IO::Socket::SSL in order to fetch https sites
+2018-01-06T04:56:00Z: Downloaded data to archive/projects_cpan6_2018-01-06T04:56:00Z.json
+2018-01-06T04:56:02Z: Downloaded data to archive/projects_ecosys_2018-01-06T04:56:02Z.json
+2018-01-06T04:58:12Z: Data for 2018-01-06 added to cited
+2018-01-06T04:58:12Z: Add <projects_cpan6_2018-01-06T04:56:00Z.json> to projectsfile as valid
+2018-01-06T04:58:12Z: Add <projects_ecosys_2018-01-06T04:56:02Z.json> to projectsfile as valid
+2018-01-06T04:59:51Z: ../git_html/GraphFile_AllModules.csv created.
+2018-01-06T05:01:45Z: ../git_html/GraphFile_simple.csv created.
+2018-01-06T05:03:39Z: ../git_html/GraphFile_recursive.csv created.
+2018-01-06T05:03:54Z: Html index file created.
