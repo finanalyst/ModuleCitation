@@ -2510,3 +2510,13 @@
 2018-03-31T20:06:57Z: ../git_html/GraphFile_simple.csv created.
 2018-03-31T20:09:52Z: ../git_html/GraphFile_recursive.csv created.
 2018-03-31T20:10:25Z: Html index file created.
+2018-03-31T21:01:13Z: Task::Popular list compiled
+2018-04-01T20:01:19Z: Downloaded data to archive/projects_cpan6_2018-04-01T20:01:19Z.json
+2018-04-01T20:01:21Z: Downloaded data to archive/projects_ecosys_2018-04-01T20:01:21Z.json
+2018-04-01T20:03:56Z: Data for 2018-04-01 added to cited
+2018-04-01T20:03:56Z: Add <projects_cpan6_2018-04-01T20:01:19Z.json> to projectsfile as valid
+2018-04-01T20:03:56Z: Add <projects_ecosys_2018-04-01T20:01:21Z.json> to projectsfile as valid
+2018-04-01T20:04:02Z: ../git_html/GraphFile_AllModules.csv created.
+2018-04-01T20:06:58Z: ../git_html/GraphFile_simple.csv created.
+2018-04-01T20:09:54Z: ../git_html/GraphFile_recursive.csv created.
+2018-04-01T20:10:27Z: Html index file created.
