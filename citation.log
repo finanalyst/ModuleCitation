@@ -3206,3 +3206,12 @@
 2018-07-07T20:08:09Z: ../git_html/GraphFile_simple.csv created.
 2018-07-07T20:12:01Z: ../git_html/GraphFile_recursive.csv created.
 2018-07-07T20:12:40Z: Html index file created.
+2018-07-08T20:01:16Z: Downloaded data to archive/projects_cpan6_2018-07-08T20:01:16Z.json
+2018-07-08T20:01:19Z: Downloaded data to archive/projects_ecosys_2018-07-08T20:01:19Z.json
+2018-07-08T20:04:16Z: Data for 2018-07-08 added to cited
+2018-07-08T20:04:16Z: Add <projects_cpan6_2018-07-08T20:01:16Z.json> to projectsfile as valid
+2018-07-08T20:04:16Z: Add <projects_ecosys_2018-07-08T20:01:19Z.json> to projectsfile as valid
+2018-07-08T20:04:23Z: ../git_html/GraphFile_AllModules.csv created.
+2018-07-08T20:08:19Z: ../git_html/GraphFile_simple.csv created.
+2018-07-08T20:12:15Z: ../git_html/GraphFile_recursive.csv created.
+2018-07-08T20:12:55Z: Html index file created.
