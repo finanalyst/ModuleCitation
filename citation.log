@@ -3838,3 +3838,12 @@
 2018-10-01T20:06:23Z: ../git_html/GraphFile_simple.csv created.
 2018-10-01T20:10:55Z: ../git_html/GraphFile_recursive.csv created.
 2018-10-01T20:11:39Z: Html index file created.
+2018-10-02T20:01:09Z: Downloaded data to archive/projects_cpan6_2018-10-02T20:01:09Z.json
+2018-10-02T20:01:11Z: Downloaded data to archive/projects_ecosys_2018-10-02T20:01:11Z.json
+2018-10-02T20:01:34Z: No change to cited table because Tarjan strongly connected components found
+2018-10-02T20:01:34Z: Add <projects_cpan6_2018-10-02T20:01:09Z.json> to projectsfile as tarjan-err
+2018-10-02T20:01:34Z: Add <projects_ecosys_2018-10-02T20:01:11Z.json> to projectsfile as tarjan-err
+2018-10-02T20:01:48Z: ../git_html/GraphFile_AllModules.csv created.
+2018-10-02T20:06:36Z: ../git_html/GraphFile_simple.csv created.
+2018-10-02T20:11:23Z: ../git_html/GraphFile_recursive.csv created.
+2018-10-02T20:12:09Z: Html index file created.
