@@ -1,2 +1,3 @@
 lib/.precomp/*
 tmp/*
+db/citations.sqlite3

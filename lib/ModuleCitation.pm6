@@ -4,6 +4,8 @@ use HTTP::UserAgent;
 use Algorithm::Tarjan; # to test for cycles
 use DBIish;
 use HTML::Template;
+use Template::Mustache;
+my $template-system = 'html';
 
 #no precompilation;
 
@@ -12,12 +14,12 @@ class ModuleCitation {
   has $.dbh; # the database handle
   has @!table1-fields = ();
   has @!table2-fields = ();
-  has @!core-modules = <Test NativeCall zef>; #core modules that are installed
+  has @!core-modules = <Test NativeCall zef Pod::To::Text >; #core modules that are installed
   has Bool $.verbose is rw = False;
   has %!citing = (); # compiled from module names
   has %!alias = (); # compiled from provides fields
-  has %.x-system-citations = (); # for use when there is a current download file
-  has @.file-types = <valid duplicate json-err name-err ecosys-err tarjan-err>; # list of valid types. More info will be in log
+  has @.cycles = (); # only for one date like xsystem
+  has @.file-types = <valid duplicate json-err name-err ecosys-err>; # list of valid types. More info will be in log
 
   my regex base-name { [<-[:]>|| '::' ] * }; # a module contains at least one word character or :: but not a single :
   my regex adverb {
@@ -63,6 +65,13 @@ class ModuleCitation {
           recursive integer -- number of recursive citations
           )
         STATEMENT
+        =comment db system status
+            system takes values:
+            0=ordinary module,
+            1=module not in system,
+            2=metadata about period,
+            3=module in cycle
+
     }
   @!table2-fields = < date module system simple recursive >;
   @!table1-fields = <filename location date type>; # try to keep table creation and insert synchronised
@@ -81,108 +90,132 @@ class ModuleCitation {
     }
   }
 
-  method add-date( Str $date, List $list --> Bool ) { # returns true if Tarjan-error detected
-    my $module-err-msg = '';
-    %!citing = ();
-    %!alias = (); # empty aliases
-    # each value of alias is a list of one or more elements
-    my $sth;
-    my Algorithm::Tarjan $trj .= new;
-    my %trj-matrix;
-    for $list.list -> $mod {
-      # first criterion is that only the latest version is used
-      # %!citing{base-name} contains the version number of set
-      # if a module has been picked up in a source, then the next version is dropped.
-      if $mod<name> ~~ / <module> / and
-        ( %!citing{~$<module><base-name>}:!exists or %!citing{~$<module><base-name>}{~$<module><base-name>} lt $mod<version>)
-        {
-        my $name = ~$<module><base-name>;
-        # exclude core-modules
-        unless $name ~~ any @!core-modules {
-          %!citing{$name}{$name} = $mod<version>; # add module as top-level of ecosystem
-          # if another topline module provides the name from a sub-module, the topline module takes preference
-          %!alias{$name} = [ $name ] if %!alias{$name}:exists;
-          # consider the 'provides' field and make each element an alias to the main module
-          # structure of the 'provides' field is Hash of  Sub-Module:File pairs. Only need the keys
-          with $mod<provides> {
-            next unless $_.WHAT ~~ (Hash);
-            # must be a Hash, so if not, ignore.
-            for  $_.keys -> $sub-mod {
-              next if $sub-mod eq any @!core-modules; # do not allow any core-module name into alias value
-              next if $sub-mod eq $name; # the spec implies that all code in the module should be in provides
-              with %!alias{$sub-mod} -> @pointed-to {
-                # criterion 4, add Top-line module as alias to Provides sub-module
-                # unless another Top-line module already provides itself as dependency
-                %!alias{$sub-mod}.push( $name ) unless $sub-mod eq any @pointed-to;
-              } else { # does not exist
-                %!alias{$sub-mod} = [ $name ] ;
-              }
-            }
-          }
-          # consider the 'depends' field
-          with $mod<depends> {
-            my ($err, %mods) = self.analyse-dep($_);
-            if $err eq '' {
-              for %mods.kv -> $ref-name, %adverbs {
-                # second criterion is that the module is not from another language source
-                without %adverbs<from> {
-                  %!citing{$name}{$ref-name} = $mod<version>   ;
-                  %trj-matrix{$name}.push: $ref-name;
+    method add-date( Str $date, List $list ) {
+        my $module-err-msg = '';
+        # empty containers that are date related
+        %!citing = ();
+        %!alias = ();
+        @!cycles = ();
+        # each value of alias is a list of one or more elements
+        my $sth;
+        my Algorithm::Tarjan $trj .= new;
+        my %trj-matrix;
+        # for each module listed as a Topline module in Ecosystem (+cpan)
+        for $list.list -> $mod {
+            # first criterion for inclusion in citation collection is that it is the latest version
+            # %!citing{base-name} contains the version number of set
+            # if a module has been picked up in a source, then the next version is dropped.
+            if $mod<name> ~~ / <module> / and
+                ( %!citing{~$<module><base-name>}:!exists
+                or %!citing{~$<module><base-name>}{~$<module><base-name>} lt $mod<version>
+                )
+            {
+                my $name = ~$<module><base-name>;
+                # now analyse the depends fields
+                # but exclude core-modules
+                unless $name ~~ any @!core-modules {
+                    %!citing{$name}{$name} = $mod<version>; # add module as top-level of ecosystem
+                    # if another topline module provides the name from a sub-module,
+                    # the topline module takes preference
+                    %!alias{$name} = [ $name ] if %!alias{$name}:exists;
+                    # consider the 'provides' field and make each element an alias to the main module
+                    # structure of the 'provides' field is Hash of  Sub-Module:File pairs. Only need the keys
+                    with $mod<provides> {
+                        next unless $_.WHAT ~~ (Hash);
+                        # must be a Hash, so if not, ignore.
+                        for  $_.keys -> $sub-mod {
+                            next if $sub-mod eq any @!core-modules; # do not allow any core-module name into alias value
+                            next if $sub-mod eq $name; # the spec implies that all code in the module should be in provides
+                            with %!alias{$sub-mod} -> @pointed-to {
+                                # criterion 4, add Top-line module as alias to Provides sub-module
+                                # unless another Top-line module already provides itself as dependency
+                                %!alias{$sub-mod}.push( $name ) unless $sub-mod eq any @pointed-to;
+                            }
+                            else { # does not exist yet in collection (being referenced by module, but module not processed)
+                                %!alias{$sub-mod} = [ $name ] ;
+                            }
+                        }
+                    }
+                    # consider the 'depends' field
+                    with $mod<depends> {
+                        my ($err, %mods) = self.analyse-dep($_);
+                        if $err eq '' {
+                            for %mods.kv -> $ref-name, %adverbs {
+                                # second criterion is that the module is not from another language source
+                                without %adverbs<from> {
+                                    # finally add module to collection and to tarjan matrix
+                                    %!citing{$name}{$ref-name} = $mod<version>;
+                                    %trj-matrix{$name}.push: $ref-name;
+                                }
+                            }
+                        }
+                        else { # accumulate warning messages for all modules
+                            $module-err-msg ~= "At \<$date> for \<$name> 'depends': $err";
+                        }
+                    }
                 }
-              }
-            } else { # accumulate warning messages
-              $module-err-msg ~= "At \<$date> for \<$name> 'depends': $err";
             }
-          }
         }
-      }
-    }
-    # check for cycles in the citation matrix
-    $trj.init( %trj-matrix );
-    if $trj.find-cycles() > 0 {
-      self.log("No change to cited table because Tarjan strongly connected components found");
-      return True;
-    } else {
-      #create citations matrix
-      my @ecosystem  = %!citing.keys.map( { .trim } ).sort;
-      my %cited = ();
-      for @ecosystem -> $citer {
-          next unless +%!citing{$citer}.keys > 1; # skip if citer more than one Dependency
-          # it has one - itself
-          for <Simple Recursive> -> $part {
-            for  self.citations-from( $citer, $part ) -> $cited {
-              next unless $cited; # skip blank elements
-              %cited{ $cited }{ $part }{ $citer } = 1 # same as creating a set
+        # check for cycles in the citation matrix
+        $trj.init( %trj-matrix );
+        if $trj.find-cycles() > 0 {
+            self.log("Tarjan strongly connected components found:\n\t"
+                ~ 'cycle: ' ~$trj.strongly-connected.join("\n\tcycle: ")
+            );
+            @!cycles = $trj.strongly-connected;
+            # remove these modules from system
+            for @!cycles {
+                for .split(',') -> $badmod {
+                    note %!citing{$badmod.trim}:delete
+                }
             }
-         }
-      }
-      #   @!table2-fields = < date module system simple recursive >
-      $sth = $!dbh.prepare( qq:to/STATEMENT/) ;
-        INSERT INTO cited ({ @!table2-fields.join(',') })
-        VALUES ( { ( '?' xx @!table2-fields.elems ).join(',') } )
-      STATEMENT
-      my $cited-total = 0;
-      my @x-ecosystem = %!citing.keys.grep( { $_ !~~ any(@ecosystem) } );
-      my Bool $today = $date eq DateTime.now.Date;
-      for @ecosystem -> $mod {
-        my $num = +%cited{$mod}<Simple>.keys;
-        $sth.execute( $date, $mod, 0, $num, +%cited{$mod}<Recursive>.keys);
-        $cited-total++ if $num;
-      }
-      for @x-ecosystem -> $mod {
-        my $num = +%cited{$mod}<Simple>.keys;
-        $sth.execute( $date, $mod, 1, $num, +%cited{$mod}<Recursive>.keys);
-        $cited-total++ if $num;
-        %!x-system-citations{$mod} = %cited{$mod}<Simple>.keys if $today;
-      }
-      $sth.execute( $date, 'TotalEcosystem', 2,+@ecosystem, 0);
-      $sth.execute( $date, 'TotalCited', 2,$cited-total, 0 );
-      $sth.execute( $date, 'TotalXEcosystem', 2,+@x-ecosystem, 0);
-      self.log("Data for $date added to cited");
+        }
+        #create citations matrix
+        my @ecosystem  = %!citing.keys.map( { .trim } ).sort;
+        my %cited = ();
+        for @ecosystem -> $citer {
+            next unless +%!citing{$citer}.keys > 1; # skip if citer more than one Dependency
+            # it has one - itself
+                for <Simple Recursive> -> $part {
+                for  self.citations-from( $citer, $part ) -> $cited {
+                    next unless $cited; # skip blank elements
+                    %cited{ $cited }{ $part }{ $citer } = 1 # same as creating a set
+                }
+            }
+        }
+        # Add modules to database
+        #   @!table2-fields = < date module system simple recursive >
+        $sth = $!dbh.prepare( qq:to/STATEMENT/) ;
+            INSERT INTO cited ({ @!table2-fields.join(',') })
+            VALUES ( { ( '?' xx @!table2-fields.elems ).join(',') } )
+            STATEMENT
+        my $cited-total = 0;
+        # cyclic modules have already been eliminated
+        # now remove modules for which there was another sort of error
+        my @x-ecosystem = %!citing.keys.grep( { $_ !~~ any(@ecosystem) } );
+        for @ecosystem -> $mod {
+            my $num = +%cited{$mod}<Simple>.keys;
+            $sth.execute( $date, $mod, 0, $num, +%cited{$mod}<Recursive>.keys);
+            $cited-total++ if $num;
+        }
+        for @x-ecosystem -> $mod {
+            my $num = +%cited{$mod}<Simple>.keys;
+            # we need the quoting modules, so store as part of module name
+            $sth.execute( $date,  $mod ~ '<--' ~ %cited{$mod}<Simple>.keys.join(', ') , 1, $num, +%cited{$mod}<Recursive>.keys );
+            $cited-total++ if $num;
+        }
+        $sth.execute( $date, 'TotalEcosystem', 2,+@ecosystem, 0);
+        $sth.execute( $date, 'TotalCited', 2,$cited-total, 0 );
+        $sth.execute( $date, 'TotalXEcosystem', 2,+@x-ecosystem, 0);
+        for @!cycles.kv -> $n, $list {
+            for $list.split(', ') -> $mod {
+                $sth.execute( $date, $mod, 3, $n+1, 0)
+            }
+        }
+        self.log("Data for $date added to cited");
+        self.log("Module errors: $module-err-msg") if $module-err-msg;
+        return False;
     }
-    self.log("Module errors: $module-err-msg") if $module-err-msg;
-    return False;
-  }
 
   method analyse-dep( $dep-str --> List ) {
     my %mods = ();
@@ -291,100 +324,108 @@ class ModuleCitation {
     return @tmp;
   }
 
-  method update( --> Bool) {
-    =comment
-      downloading files from multiple sources means that
+    method update( --> Bool) {
+        =comment
+        downloading files from multiple sources means that
         a) files for the same date and same location may exist - to be marked as duplicate
         b) data from all sources needs to be combined to study the whole ecosystem
         c) a file from one source can be downloaded, but not from another, and at another time, vice versa.
-           This means that complete information does exist in database, but is not used.
+        This means that complete information does exist in database, but is not used.
         So:
         - cited data is only added if there are files for each source
         - this requires we know when a new source became available
+        Returns True if all OK, viz. no problem
+                        False if not OK, viz. problem detected
 
-    my $normal-exit = True;
-    # discover which files are already in database
-    my $sth = $!dbh.prepare( q:to/STATEMENT/ );
-        SELECT filename FROM projectfiles
-      STATEMENT
-    $sth.execute;
-    my @existing-files = $sth.allrows.flat;
-    # discover which dates are already in database
-    $sth = $!dbh.prepare( q:to/STATEMENT/);
-      SELECT distinct date FROM cited ORDER BY date ASC
-      STATEMENT
-    $sth.execute;
-    my @existing-dates = $sth.allrows.flat;
-    my %dates;
-    for "$*CWD/{$.configuration<archive-directory>}".IO.dir.map( { .subst(/^ .* '/' /,'') } ).sort
-      -> $filename {
-      next if $filename ~~ any( @existing-files ); # filter out files already there
-      if $filename ~~ / 'projects_' $<loc>=(\w+) '_' $<date>=(.*?) 'T' / {
-        my $date = ~$<date>;
-         # define file(s) as duplicates if date is in cited or about to process file.
-         if $date eq any @existing-dates {
-           self.add-file( $filename, $date, ~$<loc>, :type<duplicate>);
-         } else {
-           %dates{$date} = {} without %dates{$date};
-           with %dates{$date}{~$<loc>} {
-             # to get here, there is a file with the same date and location already in %dates, so mark as a duplicate
-             self.add-file( $filename, $date, ~$<loc>, :type<duplicate>)
-           } else {
-             %dates{$date}{~$<loc>} = $filename
-           };
-         }
-      } else {
-        self.log("Filename \<$filename> doesn't match pattern");
-        self.add-file( $filename, '1999-01-01', 'NA', :type<name-err>);
-      }
-    }
+        my $problem-detected = False;
+        # discover which files are already in database
+        my $sth = $!dbh.prepare( q:to/STATEMENT/ );
+                SELECT filename FROM projectfiles
+            STATEMENT
+        $sth.execute;
+        my @existing-files = $sth.allrows.flat;
+        # discover which dates are already in database
+        $sth = $!dbh.prepare( q:to/STATEMENT/);
+                SELECT distinct date FROM cited ORDER BY date ASC
+            STATEMENT
+        $sth.execute;
+        my @existing-dates = $sth.allrows.flat;
+        my %dates;
 
-    # collect information where ecosystem is complete
-    # only update cited files if all sources are downloaded.
-    # note: if file for a date didnt match pattern then ecosys info will be incomplete
-    for %dates.sort({.keys}) {
-      my $date = $_.key;
-      my %locations = $_.value.hash;
-      # all locations must be present if loc-date < data-date
-      if  %!configuration<ecosystem-urls>.map({
-        .value<date> gt $date or ( .value<date> le $date and %locations{.key}:exists )
-      }).all {
-        # here the system is complete
-        my @json-list = ();
-        my Bool $json-err = False; # taint flag in case one of the files has a JSON error
-        for %locations.kv -> $loc, $fn {
-          try {
-            @json-list.append(from-json("$*CWD/{$.configuration<archive-directory>}/$fn".IO.slurp).list)
-          }
-          if $! {
-            #Caller must decide whether to reload
-            # date of file with error may already have passed
-            $normal-exit &&= ! ($json-err = True);
-            self.log( "JSON error reading  $fn: " ~ $! );
-          }
-        } # end locations loop
-        # we now have a json with all modules if no json-error
-        my $tarjan-err;
-        unless $json-err {
-          $normal-exit &&= ! ( $tarjan-err = self.add-date($date, @json-list) );
+        for "$*CWD/{$.configuration<archive-directory>}".IO.dir.map( { .subst(/^ .* '/' /,'') } ).sort
+            -> $filename {
+            next if $filename ~~ any( @existing-files ); # filter out files already there
+            if $filename ~~ / 'projects_' $<loc>=(\w+) '_' $<date>=(.*?) 'T' / {
+                my $date = ~$<date>;
+                # define file(s) as duplicates if date is in cited or about to process file.
+                if $date eq any @existing-dates {
+                    self.add-file( $filename, $date, ~$<loc>, :type<duplicate>);
+                }
+                else {
+                    %dates{$date} = {} without %dates{$date};
+                    with %dates{$date}{~$<loc>} {
+                        # to get here, there is a file with the same date and location already in %dates, so mark as a duplicate
+                        self.add-file( $filename, $date, ~$<loc>, :type<duplicate>)
+                    }
+                    else {
+                        %dates{$date}{~$<loc>} = $filename
+                    }
+                }
+            }
+            else {
+                self.log("Filename \<$filename> doesn't match pattern");
+                self.add-file( $filename, '1999-01-01', 'NA', :type<name-err>);
+            }
         }
-        # add both files to projectfiles
-        for %locations.kv -> $loc, $fn {
-          self.add-file($fn, $date, $loc, :type($json-err ?? 'json-err' !! ($tarjan-err ?? 'tarjan-err' !! 'valid')) )
+
+        # collect information where ecosystem is complete
+        # only update cited files if all sources are downloaded.
+        # note: if file for a date didnt match pattern then ecosys info will be incomplete
+        for %dates.sort({.keys}) {
+            my $date = $_.key;
+            my %locations = $_.value.hash;
+            # all locations must be present if loc-date < data-date
+            if  %!configuration<ecosystem-urls>.map({
+                .value<date> gt $date or ( .value<date> le $date and %locations{.key}:exists )
+                }).all
+            {
+                # here the system is complete
+                my @json-list = ();
+                my Bool $json-err = False; # taint flag in case one of the files has a JSON error
+                for %locations.kv -> $loc, $fn {
+                    try {
+                        CATCH {
+                            default {
+                                say 'in json catch ' ~ .message;
+                                #Caller must decide whether to reload
+                                # date of file with error may already have passed
+                                $problem-detected = $json-err = True;
+                                self.log( "JSON error reading $fn: " ~ .message );
+                            }
+                        }
+                        @json-list.append(from-json("$*CWD/{$.configuration<archive-directory>}/$fn".IO.slurp).list);
+                    }
+                } # end locations loop
+                # we now have a json with all modules if no json-error
+                self.add-date($date, @json-list) unless $json-err;
+                # add both files to projectfiles
+                for %locations.kv -> $loc, $fn {
+                    self.add-file($fn, $date, $loc, :type($json-err ?? 'json-err' !! 'valid') )
+                }
+            }
+            else {
+                $problem-detected = True;
+                self.log(
+                    "Incomplete ecosystem:\n\t" ~
+                    %.configuration<ecosystem-urls>.keys.map({ "$_ : " ~ ( %locations{$_} // 'N/a' ) }).join(",\n\t")
+                );
+                for %locations.kv -> $loc, $fn {
+                    self.add-file($fn, $date, $loc, :type<ecosys-err> )
+                }
+            }
         }
-      } else {
-        $normal-exit &&= False;
-        self.log(
-            "Incomplete ecosystem:\n\t" ~
-              %.configuration<ecosystem-urls>.keys.map({ "$_ : " ~ ( %locations{$_} // 'N/a' ) }).join(",\n\t")
-          );
-          for %locations.kv -> $loc, $fn {
-            self.add-file($fn, $date, $loc, :type<ecosys-err> )
-          }
-      }
+        return ! $problem-detected;
     }
-    return $normal-exit;
-  }
 
   method add-file(Str $fn, Str $date, Str $loc, Str :$type = 'valid' ) {
     # add file to database
@@ -412,14 +453,7 @@ class ModuleCitation {
       STATEMENT
     $sth.execute;
     my @totals = $sth.allrows.flat;
-    my $template = HTML::Template.from_file( %!configuration<html-template> );
-    my %params = N_MOD => @totals[0],
-        N_CIT => @totals[1],
-        PC_CIT => sprintf("%6.2f%%",100 * @totals[1] / @totals[0]),
-        DATE => $date,
-        N_ROWS => %.configuration<top-limit>,
-        CORES => @!core-modules.join(', ')
-        ;
+
     my %orders;
     for <Simple Recursive> -> $part {
       $sth = $!dbh.prepare( qq:to/STATEMENT/ );
@@ -444,32 +478,119 @@ class ModuleCitation {
       %orders{$part} = $sth.allrows(:array-of-hash);
     }
 
-    for 0 ..^ %!configuration<top-limit> -> $n {
-        %params<modules>.push( %(
-          :order( sprintf("% 3d", $n+1 ) ),
-          :s_name(  sprintf("%s",%orders<Simple>[$n]<Name> ) ),
-          :s_s_sim( sprintf("%6.2f",%orders<Simple>[$n]<Simple> ) ),
-          :s_r_rec( sprintf("%6.2f",%orders<Simple>[$n]<Recursive> ) ),
-          :r_name(  sprintf("%s", %orders<Recursive>[$n]<Name> ) ),
-          :r_s_sim( sprintf("%6.2f",%orders<Recursive>[$n]<Simple> ) ),
-          :r_r_rec( sprintf("%6.2f",%orders<Recursive>[$n]<Recursive> ) )
-        ));
-    }
-    =comment
-        Now output the X-Ecosystem modules.
-        These have been collected separately for files collected today.
+    # get x-system
+    $sth = $!dbh.prepare( qq:to/STATEMENT/ );
+      SELECT module
+        FROM cited
+        WHERE date="$date" and system=1
+      STATEMENT
+    $sth.execute;
+    my @xsystem = $sth.allrows.flat;
 
-    if @totals[2] > 0 {
-      %params<XEcosystem> = Bool::True;
-      for %.x-system-citations.kv -> $mod, @citers {
-              %params<XEcoLoop>.push:
-                %( :ModName( sprintf("%s",$mod ) ), :ModCited(@citers.join(', ') ) );
-      }
-    } else {
-      %params<XEcosystem> = Bool::False ;
+    # get cycles
+    $sth = $!dbh.prepare( qq:to/STATEMENT/ );
+      SELECT cited.simple as Cycle, Group_Concat(t1.module, ', ') as List
+        FROM cited INNER JOIN cited as t1
+        ON cited.rowid = t1.rowid
+        WHERE cited.date="$date" and cited.system=3
+        GROUP BY cited.simple
+      STATEMENT
+    $sth.execute;
+    my @cycles = $sth.allrows(:array-of-hash);
+
+    # generate html using template.
+    given $template-system {
+        when 'html' {
+            #put into template
+            my $template = HTML::Template.from_file(%!configuration<html-template> );
+            my %params = N_MOD => @totals[0],
+                N_CIT => @totals[1],
+                PC_CIT => sprintf("%6.2f%%",100 * @totals[1] / @totals[0]),
+                DATE => $date,
+                N_ROWS => %.configuration<top-limit>,
+                CORES => @!core-modules.join(', ')
+                ;
+            for 0 ..^ %!configuration<top-limit> -> $n {
+                %params<modules>.push( %(
+                  :order( sprintf("% 3d", $n+1 ) ),
+                  :s_name(  sprintf("%s",%orders<Simple>[$n]<Name> ) ),
+                  :s_s_sim( sprintf("%6.2f",%orders<Simple>[$n]<Simple> ) ),
+                  :s_r_rec( sprintf("%6.2f",%orders<Simple>[$n]<Recursive> ) ),
+                  :r_name(  sprintf("%s", %orders<Recursive>[$n]<Name> ) ),
+                  :r_s_sim( sprintf("%6.2f",%orders<Recursive>[$n]<Simple> ) ),
+                  :r_r_rec( sprintf("%6.2f",%orders<Recursive>[$n]<Recursive> ) )
+                ));
+            }
+            if @totals[2] > 0 {
+              %params<XEcosystem> = True;
+              for @xsystem -> $mod {
+                  if $mod ~~ / $<nm>=(.+) '<--' $<citing>=(.+) $ / {
+                      %params<XEcoLoop>.push:
+                            %( :ModName( ~$<nm> ), :ModCited( ~$<citing> ))
+                    }
+                    else {
+                        %params<XEcoLoop>.push:
+                              %( :ModName( $mod ), :ModCited( 'N/a in database' ))
+                    }
+              }
+            } else {
+              %params<XEcosystem> = False ;
+            }
+            if +@cycles > 0 {
+              %params<Cyclic> = True;
+              for @cycles -> %info {
+                      %params<CyclicLoop>.push:
+                        %( :Cycle( %info<Cycle> ), :ModList(%info<List> ) );
+              }
+            } else {
+              %params<Cyclic> = False ;
+            }
+
+            $template.with_params( %params );
+            "{%!configuration<html-directory>}/index.html".IO.spurt: $template.output;
+        }
+        when 'mustache' {
+            my %params = n_mod => @totals[0],
+                n_cit=> @totals[1],
+                pc_cit => sprintf("%6.2f%%",100 * @totals[1] / @totals[0]),
+                date => $date,
+                n_rows => %.configuration<top-limit>,
+                cores => @!core-modules.join(', ')
+                ;
+            for 0 ..^ %!configuration<top-limit> -> $n {
+                %params<modules>.push( %(
+                  :order( sprintf("% 3d", $n+1 ) ),
+                  :s_name(  sprintf("%s",%orders<Simple>[$n]<Name> ) ),
+                  :s_s_sim( sprintf("%6.2f",%orders<Simple>[$n]<Simple> ) ),
+                  :s_r_rec( sprintf("%6.2f",%orders<Simple>[$n]<Recursive> ) ),
+                  :r_name(  sprintf("%s", %orders<Recursive>[$n]<Name> ) ),
+                  :r_s_sim( sprintf("%6.2f",%orders<Recursive>[$n]<Simple> ) ),
+                  :r_r_rec( sprintf("%6.2f",%orders<Recursive>[$n]<Recursive> ) )
+                ));
+            }
+            if @totals[2] > 0 {
+              %params<XEcosystem> = True;
+              for %.x-system-citations.kv -> $mod, @citers {
+                      %params<XEcoLoop>.push:
+                        %( :ModName( sprintf("%s",$mod ) ), :ModCited(@citers.join(', ') ) );
+              }
+            } else {
+              %params<XEcosystem> = False ;
+            }
+            if +@cycles > 0 {
+              %params<Cyclic> = True;
+              for @cycles -> %info {
+                      %params<CyclicLoop>.push:
+                        %( :Cycle( %info<Cycle> ), :ModList(%info<List> ) );
+              }
+            } else {
+              %params<Cyclic> = False ;
+            }
+
+            my $stache = Template::Mustache.new;
+            $stache.render( %!configuration<mustache-template>.IO.slurp, :literal, %params )
+        }
     }
-    $template.with_params( %params );
-    "{%!configuration<html-directory>}/index.html".IO.spurt: $template.output;
     self.log("Html index file created.")
   }
 

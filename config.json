@@ -13,6 +13,7 @@
     "archive-directory": "archive",
     "target-directory": "db",
     "html-template": "CitationTemplate.tmpl",
+    "mustache-template": "CitationTemplate.mustache",
     "html-directory": "../git_html",
     "logfile": "citation.log",
     "top-limit": "50",

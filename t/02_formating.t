@@ -166,8 +166,15 @@ is $err,'','hash with info ok';
   "$*CWD/../t-data/test_cpan6.json".IO.copy: "$*CWD/{$mc.configuration<archive-directory>}/projects_cpan6_{DateTime.now.Date}T1234Z.json";
   "$*CWD/../t-data/test_ecosys.json".IO.copy: "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_{DateTime.now.Date}T1234Z.json";
   $mc.update;
+  my $sth = $mc.dbh.prepare( qq:to/STATEMENT/ );
+    SELECT module
+      FROM cited
+      WHERE date="{DateTime.now.Date}" and system=1
+    STATEMENT
+  $sth.execute;
+  my @xsystem = $sth.allrows.flat;
 #--MARKER-- Test 17
-  is +$mc.x-system-citations.keys, 8 , 'x-system citations data collected';
+  is +@xsystem, 8 , 'x-system data collected in db';
   #$mc.generate-html;
   # not sure how to test this automatically
   diag "Downloading from internet";
@@ -182,5 +189,5 @@ is $err,'','hash with info ok';
 }
 
 empty-directory 'tmp';
-shell('rmdir tmp');
+rmtree 'tmp';
 done-testing;

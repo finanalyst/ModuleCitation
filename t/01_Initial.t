@@ -47,6 +47,7 @@ dies-ok { $mc .= new() }, "dies with bad config file";
   "archive-directory": "arc",
   "target-directory": "db",
   "html-template": "../CitationTemplate.tmpl",
+  "mustache-template": "../CitationTemplate.mustache",
   "html-directory": "html",
   "logfile": "citations.log",
   "top-limit": "10",
@@ -83,13 +84,16 @@ my $rv;
 lives-ok { $rv = $mc.update }, "update routine lives";
 #--MARKER-- Test 11
 ok $rv, "update gives normal return to test file";
+
+diag 'database related tests';
+
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
   SELECT module, simple FROM cited WHERE system=2 ORDER BY module
   STATEMENT
 $sth.execute;
 my @res= $sth.allrows;
 #--MARKER-- Test 12
-is-deeply @res.Seq, (["TotalCited", 5], ["TotalEcosystem", 23], ["TotalXEcosystem", 1]), "date in db with test-ok.json as expected";
+is-deeply @res.Seq, (["TotalCited", 5], ["TotalEcosystem", 23], ["TotalXEcosystem", 1]), "totals as expected";
 # transfer some files to archive-directory
 for "$*CWD/../t-data".IO.dir( test => /'projects'/ ) { .copy: "$*CWD/{$mc.configuration<archive-directory>}/{ .subst(/^ .* '/' /,'') }" };
 #--MARKER-- Test 13
@@ -102,6 +106,7 @@ $sth = $mc.dbh.prepare(q:to/STATEMENT/);
 $sth.execute;
 #--MARKER-- Test 15
 is $sth.row(:hash)<Num>, 5, "Correct number of duplicate files";
+
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
   SELECT count(type) as 'Num' FROM projectfiles
   WHERE date='2015-11-20' AND type='duplicate'
@@ -141,7 +146,7 @@ diag "create project files with depends errors to be trapped";
 
 $mc.verbose = True;
 #--MARKER-- Test 18
-output-like { $mc.update }, /'Filename' .* 'doesn\'t match pattern'/, "filename error trapped";
+stdout-like { $mc.update }, /'Filename' .* 'doesn\'t match pattern'/, "filename error trapped";
 $sth = $mc.dbh.prepare(q:to/STATEMENT/);
   SELECT type FROM projectfiles WHERE filename='projects_0_2015-01-01.json'
   STATEMENT
@@ -186,7 +191,7 @@ is $sth.row(:hash)<Err>,1, "One file labled with name error";
 
 $mc.verbose=True;
 #--MARKER-- Test 21
-output-like { $mc.update } , /'Data for' .+ 'added to cited'/, 'Two modules providing same sub-module are allowed';
+stdout-like { $mc.update } , /'Data for' .+ 'added to cited'/, 'Two modules providing same sub-module are allowed';
 
 "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-02-01T1235Z.json".IO.spurt(q:to/PROJ/);
   [{
@@ -217,13 +222,14 @@ output-like { $mc.update } , /'Data for' .+ 'added to cited'/, 'Two modules prov
   PROJ
 
 #--MARKER-- Test 22
-  output-like { $mc.update } , /'JSON error reading'/, 'JSON error is caught and logged';
+  stdout-like { $mc.update } , /'JSON error reading'/, 'JSON error is caught and logged';
   $sth = $mc.dbh.prepare(q:to/STATEMENT/);
     SELECT type FROM projectfiles WHERE filename='projects_ecosys_2001-02-01T1235Z.json'
     STATEMENT
   $sth.execute;
 #--MARKER-- Test 23
   is-deeply $sth.allrows, (['json-err'],), "Json error is marked in database";
+
   "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-02-02T1235Z.json".IO.spurt(q:to/PROJ/);
     [{
         "depends": ["JSON::Tiny"],
@@ -250,14 +256,15 @@ output-like { $mc.update } , /'Data for' .+ 'added to cited'/, 'Two modules prov
         "version": "*"
     }]
     PROJ
+
 #--MARKER-- Test 24
-    output-like { $mc.update } , /'Tarjan strongly connected components found'/, 'Tarjan caught and logged';
+    stdout-like { $mc.update } , /'Tarjan strongly connected components found'/, 'Tarjan caught';
     $sth = $mc.dbh.prepare(q:to/STATEMENT/);
-      SELECT type FROM projectfiles WHERE filename='projects_ecosys_2001-02-02T1235Z.json'
+      SELECT module FROM cited WHERE date="2001-02-02" AND system=3
       STATEMENT
     $sth.execute;
 #--MARKER-- Test 25
-    is-deeply $sth.allrows, (['tarjan-err'],), "Tarjan error is marked in database";
+    is-deeply $sth.allrows, (["Acme::Meow"], ["JSON::Tiny"], ["hoopla"]), "Cyclical modules captured in database";
     "$*CWD/{$mc.configuration<archive-directory>}/projects_ecosys_2001-02-03T1235Z.json".IO.spurt(q:to/PROJ/);
       [{
           "depends": ["JSON::Tiny"],
@@ -298,6 +305,6 @@ output-like { $mc.update } , /'Data for' .+ 'added to cited'/, 'Two modules prov
       ]
       PROJ
 #--MARKER-- Test 26
-      output-like { $mc.update } , /'Add <projects_ecosys_2001-02-03T1235Z.json> to projectsfile as valid'/, 'Zero depends Ok';
+      stdout-like { $mc.update } , /'Add <projects_ecosys_2001-02-03T1235Z.json> to projectsfile as valid'/, 'Zero depends Ok';
 
 done-testing;

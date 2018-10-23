@@ -3,12 +3,11 @@ use v6.c;
 use lib 'lib';
 use ModuleCitation;
 
-sub MAIN( Bool :$v=True ) {
-  my ModuleCitation $mc .= new( :verbose($v));
+sub MAIN( Bool :verbose(:$v) = True ) {
+  my ModuleCitation $mc .= new;
+  $mc.verbose = $v;
   $mc.get-latest-project-files;
-  until ( $mc.update or $++ > 5 ) {};
-  # if update returns false, there is a problem with a downloaded file, so try to download again.
-  # try 5 times and then give up
+  note "A json or ecosystem error occurred. Check log." unless $mc.update;
   $mc.update-csv-files;
   $mc.generate-html;
 }

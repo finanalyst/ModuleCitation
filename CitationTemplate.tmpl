@@ -21,7 +21,7 @@
 <body>
 	<div class="container">
 		<header class="panel panel-primary lead">
-			<div class="panel-heading"Mod>
+			<div class="panel-heading">
 				<h1 class="panel-title">Ecosystem Citation Index</h1>
 			</div>
 			<div class="panel-body suckin-btm">
@@ -38,7 +38,8 @@
 					</P>
 					<P>This page contains the data for the top <TMPL_VAR N_ROWS> modules in
 					<a href="#graphs">graphical form</a> from the time data was collected to the present,
-					<a href="#tabulation">tabulated</a> for the top <TMPL_VAR N_ROWS> modules. Modules
+					<a href="#tabulation">tabulated</a> for the top <TMPL_VAR N_ROWS> modules. Modules <a href="#cyclic">
+						in a cycle</a> and modules
 					<a href="#xecosystem">not in the Ecosystem</a> (possibly module meta data errors) are listed,
 					followed by <a href="#definitions">definitions and credits</a>.<p>
 			</div>
@@ -101,6 +102,39 @@
 			  </table>
 			</div>
 		</div>
+		<TMPL_IF Cyclic>
+		<footer class="panel panel-primary" id="cyclic">
+			<div class="panel-heading">
+				<h1 class="panel-title">Modules in Reference Cycle</h1>
+			</div>
+			<div class="panel-body panel-primary">
+				<P>A reference cycle occurs when one module <b>M</b> refers to another module,
+					[which refers to another module,]* which
+					refers to module <b>M</b>.</p>
+				<p>A reference cycle could be handled in several ways in a citation system. However, since self-referential
+					modules introduce instabilities to an ecosystem of modules, they should be considered <b>evil</b>, and detected.
+					Consequently, the strategy chosen here is to eliminate all such modules from the citation pool.</p>
+				<p>
+					Technically, the modules identified here as in a reference cycle, are analysed as nodes in a directed graph
+					and are <strong>strongly connected</strong> as determined using
+					Tarjan's algorithm. </p>
+				<p>The literature indicates that modules may be strongly connected without being in a
+					cycle. If this is the case - that is the modules listed as cyclical below are not self referential - please let the author
+					know since acyclic, strongly connected nodes in a directed graph are mathematically interesting.
+			</p>
+				<table class="table table-condensed table-striped panel-body">
+					<thead>
+						<tr><th>Cycle</th><th>Modules in Cycle</th></tr>
+					</thead>
+					<tbody>
+						<TMPL_LOOP CyclicLoop>
+						<tr><td><TMPL_VAR Cycle></td><td><TMPL_VAR ModList></td></tr>
+						</TMPL_LOOP>
+					</tbody>
+				</table>
+			</div>
+		</footer>
+		</TMPL_IF>
 		<TMPL_IF XEcosystem>
 		<footer class="panel panel-primary" id="xecosystem">
 			<div class="panel-heading">
@@ -149,7 +183,7 @@
 				</ol>
 			</p>
         <p>Graphs drawn with package from <a href="http://dygraphs.com/">Dynagraphs</a>. </p>
-        <p>Data is gathered from Ecosystem projects file (used by panda). Adverbs are stripped from Module names.</p>
+        <p>Data is gathered from Ecosystem and cpan6 projects file (used by zef). Adverbs are stripped from Module names.</p>
         <p>Thanks to Zoffix and Moritz Lentz for suggestions.</p>
         <p>Analysis is the author's, no grant has been made, no aim is intended other than interest. Hopefully, no one is offended.
         Kind suggestions always welcome at rnhainsworth at the main gmail domain.</p>
