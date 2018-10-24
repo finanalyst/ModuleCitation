@@ -12,6 +12,7 @@
     },
     "archive-directory": "archive",
     "target-directory": "db",
+    "template-system": "html",
     "html-template": "CitationTemplate.tmpl",
     "mustache-template": "CitationTemplate.mustache",
     "html-directory": "../git_html",
