@@ -375,3 +375,14 @@
 2018-11-10T20:09:42Z: ../git_html/GraphFile_simple.csv created.
 2018-11-10T20:15:03Z: ../git_html/GraphFile_recursive.csv created.
 2018-11-10T20:15:54Z: Html index file created.
+2018-11-11T20:01:12Z: Downloaded data to archive/projects_ecosys_2018-11-11T20:01:12Z.json
+2018-11-11T20:01:13Z: Downloaded data to archive/projects_cpan6_2018-11-11T20:01:13Z.json
+2018-11-11T20:01:39Z: Tarjan strongly connected components found:
+	cycle: Foo::Dependencies::A-on-B,Foo::Dependencies::B-on-A
+2018-11-11T20:04:12Z: Data for 2018-11-11 added to cited
+2018-11-11T20:04:12Z: Add <projects_ecosys_2018-11-11T20:01:12Z.json> to projectsfile as valid
+2018-11-11T20:04:12Z: Add <projects_cpan6_2018-11-11T20:01:13Z.json> to projectsfile as valid
+2018-11-11T20:04:21Z: ../git_html/GraphFile_AllModules.csv created.
+2018-11-11T20:09:55Z: ../git_html/GraphFile_simple.csv created.
+2018-11-11T20:15:29Z: ../git_html/GraphFile_recursive.csv created.
+2018-11-11T20:16:21Z: Html index file created.
